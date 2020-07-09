@@ -6,6 +6,7 @@ import BaseValuePair = Shadowrun.BaseValuePair;
 import DamageData = Shadowrun.DamageData;
 import AttackData = Shadowrun.AttackData;
 import LabelField = Shadowrun.LabelField;
+import { SR5Roll } from './overhaul/SR5Roll';
 
 export type TemplateData = {
     header: {
@@ -13,7 +14,6 @@ export type TemplateData = {
         img: string;
     };
     tokenId?: string;
-    dice?: Die[];
     parts?: ModList<number>;
     limit?: BaseValuePair<number> & LabelField;
     testName?: string;
@@ -31,10 +31,14 @@ export type TemplateData = {
     }[];
     description?: object;
     previewTemplate?: boolean;
+    hits?: number;
+    dice?: Die[];
 };
 
-export const createChatData = async (templateData: TemplateData, roll?: Roll) => {
+export const createChatData = async (templateData: TemplateData, { roll, rollMode }: { roll?: SR5Roll; rollMode?: string } = {}) => {
     const template = `systems/shadowrun5e/templates/rolls/roll-card.html`;
+    templateData.hits = roll?.hits;
+    templateData.dice = roll?.dice[0].rolls;
     const html = await renderTemplate(template, templateData);
     const actor = templateData.actor;
 
@@ -57,7 +61,7 @@ export const createChatData = async (templateData: TemplateData, roll?: Roll) =>
     if (roll) {
         chatData['sound'] = CONFIG.sounds.dice;
     }
-    const rollMode = game.settings.get('core', 'rollMode');
+    rollMode = rollMode ?? (game.settings.get('core', 'rollMode') as string);
 
     if (['gmroll', 'blindroll'].includes(rollMode)) chatData['whisper'] = ChatMessage.getWhisperIDs('GM');
     if (rollMode === 'blindroll') chatData['blind'] = true;
@@ -84,7 +88,7 @@ export const addChatMessageContextOptions = (html, options) => {
             callback: (li) => SR5Actor.secondChance(li),
             condition: canRoll,
             icon: '<i class="fas fa-dice-d6"></i>',
-        }
+        },
     );
     return options;
 };

@@ -1,6 +1,8 @@
 /**
  * An error that occurs during the rolling of dice.
  */
+import { createChatData, TemplateData } from '../chat';
+
 export class DiceError extends Error {
     constructor(message: string) {
         super(message);
@@ -26,8 +28,12 @@ export class SR5Roll extends Roll {
      */
     public static ToFormula(count: number, limit: number = -1, explode: boolean = false): string {
         let formula = `${count}d6`;
-        if (explode) { formula += 'x6'; }
-        if (limit > 0) { formula += `kh${limit}`; }
+        if (explode) {
+            formula += 'x6';
+        }
+        if (limit > 0) {
+            formula += `kh${limit}`;
+        }
 
         return `${formula}cs>=5`;
     }
@@ -40,7 +46,7 @@ export class SR5Roll extends Roll {
      */
     public static Roll(count: number, limit: number = -1, explode: boolean = false): SR5Roll {
         if (count <= 0) {
-            throw new DiceError("Must request least one die be rolled.");
+            throw new DiceError('Must request least one die be rolled.');
         }
 
         return new SR5Roll(count, limit, explode).roll();
@@ -63,7 +69,7 @@ export class SR5Roll extends Roll {
 
     constructor(count: number, limit: number = -1, explode: boolean = false) {
         if (count <= 0) {
-            throw new DiceError("Must request least one die be rolled.");
+            throw new DiceError('Must request least one die be rolled.');
         }
 
         super(SR5Roll.ToFormula(count, limit, explode));
@@ -77,6 +83,7 @@ export class SR5Roll extends Roll {
         // This *works* but something bugs me about it...
         // I have a vague nagging in the back of my head that it may leak.
         Object.assign(this, result);
+        this._rolled = true;
         return this;
     }
 
@@ -111,7 +118,7 @@ export class SR5Roll extends Roll {
      * Is this roll a regular (non-critical) glitch?
      */
     get isGlitch(): boolean {
-        return this.glitches > (this.dice.length/2);
+        return this.glitches > this.dice.length / 2;
     }
 
     /**
@@ -122,8 +129,28 @@ export class SR5Roll extends Roll {
     }
 
     // Override to define how it looks, what template renders, etc...
-    toMessage(chatData: object, { rollMode, create }: { rollMode?: string; create?: boolean }): Promise<ChatMessage | any> {
-        return super.toMessage(chatData, { rollMode, create });
+    async toMessage(templateData: TemplateData, { rollMode, create }: { rollMode?: string; create?: boolean } = { create: true }): Promise<ChatMessage | any> {
+        // if we haven't rolled, roll
+        if (!this._rolled) this.roll();
+        // check game settings and call super function if they want the default roll cards
+        if (game.settings.get('shadowrun5e', 'displayDefaultRollCard')) {
+            await super.toMessage(templateData, { rollMode, create });
+        }
+
+        // create custom roll template
+        this.templateData = templateData;
+        if (create) {
+            const chatData = await createChatData(templateData, { roll: this, rollMode });
+            return ChatMessage.create(chatData, { displaySheet: false });
+        }
+
+        return undefined;
+    }
+
+    toJSON(): any {
+        const data = super.toJSON();
+        data.class = 'Roll';
+        return data;
     }
 
     // Override to define how it looks, what template renders, etc...
@@ -135,4 +162,6 @@ export class SR5Roll extends Roll {
     render(chatOptions?: object): Promise<JQuery | HTMLElement> {
         return super.render(chatOptions);
     }
+
+    public templateData: TemplateData | undefined;
 }

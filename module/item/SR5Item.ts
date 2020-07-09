@@ -12,7 +12,8 @@ import ComplexFormLevelData = Shadowrun.ComplexFormLevelData;
 import FireRangeData = Shadowrun.FireRangeData;
 import BlastData = Shadowrun.BlastData;
 import { ChatData } from './ChatData';
-import { AdvancedRollProps, ShadowrunRoll, ShadowrunRoller } from '../rolls/ShadowrunRoller';
+import { AdvancedRollProps, ShadowrunRoller } from '../rolls/ShadowrunRoller';
+import { SR5Roll } from '../overhaul/SR5Roll';
 import Template from '../template';
 import { createChatData } from '../chat';
 
@@ -71,7 +72,7 @@ export class SR5Item extends Item {
 
     get hasRoll(): boolean {
         const { action } = this.data.data;
-        return !!(action && action.type !== '' && (action.skill || action.attribute) );
+        return !!(action && action.type !== '' && (action.skill || action.attribute));
     }
     get hasTemplate(): boolean {
         return this.isAreaOfEffect();
@@ -477,7 +478,7 @@ export class SR5Item extends Item {
      * @param event - mouse event
      * @param options - any additional roll options to pass along - note that currently the Item will overwrite -- WIP
      */
-    async rollTest(event, options?: Partial<AdvancedRollProps>): Promise<ShadowrunRoll | undefined> {
+    async rollTest(event, options?: Partial<AdvancedRollProps>): Promise<SR5Roll | undefined> {
         const promise = ShadowrunRoller.itemRoll(event, this, options);
 
         // handle promise when it resolves for our own stuff
@@ -654,8 +655,9 @@ export class SR5Item extends Item {
 
     async openPdfSource() {
         const source = this.getBookSource();
-        if (source === '') { // @ts-ignore
-            ui.notifications.error(game.i18n.localize('SR5.SourceFieldEmptyError'))
+        if (source === '') {
+            // @ts-ignore
+            ui.notifications.error(game.i18n.localize('SR5.SourceFieldEmptyError'));
         }
         // TODO open PDF to correct location
         // parse however you need, all "buttons" will lead to this function
