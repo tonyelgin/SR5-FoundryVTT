@@ -22,28 +22,28 @@ export class SR5Item extends Item {
     actor: SR5Actor;
 
     // Flag Functions
-    getLastFireMode(): FireModeData | undefined {
-        return this.getFlag('shadowrun5e', 'lastFireMode');
+    getLastFireMode(): FireModeData {
+        return this.getFlag('shadowrun5e', 'lastFireMode') || { value: 0 };
     }
     async setLastFireMode(fireMode: FireModeData) {
         return this.setFlag('shadowrun5e', 'lastFireMode', fireMode);
     }
     getLastSpellForce(): SpellForceData {
-        return this.getFlag('shadowrun5e', 'lastSpellForce');
+        return this.getFlag('shadowrun5e', 'lastSpellForce') || { value: 0 };
     }
     async setLastSpellForce(force: SpellForceData) {
         return this.setFlag('shadowrun5e', 'lastSpellForce', force);
     }
     getLastComplexFormLevel(): ComplexFormLevelData {
-        return this.getFlag('shadowrun5e', 'lastComplexFormLevel');
+        return this.getFlag('shadowrun5e', 'lastComplexFormLevel') || { value: 0 };
     }
     async setLastComplexFormLevel(level: ComplexFormLevelData) {
         return this.setFlag('shadowrun5e', 'lastComplexFormLevel', level);
     }
-    getLastFireRange(): FireRangeData {
-        return this.getFlag('shadowrun5e', 'lastFireRange') || 0;
+    getLastFireRangeMod(): FireRangeData {
+        return this.getFlag('shadowrun5e', 'lastFireRange') || { value: 0 };
     }
-    setLastFireRange(environmentalMod: FireRangeData) {
+    async setLastFireRangeMod(environmentalMod: FireRangeData) {
         return this.setFlag('shadowrun5e', 'lastFireRange', environmentalMod);
     }
 
@@ -70,7 +70,8 @@ export class SR5Item extends Item {
     }
 
     get hasRoll(): boolean {
-        return !!(this.data.data.action && this.data.data.action.type !== '');
+        const { action } = this.data.data;
+        return !!(action && action.type !== '' && (action.skill || action.attribute) );
     }
     get hasTemplate(): boolean {
         return this.isAreaOfEffect();
@@ -91,16 +92,20 @@ export class SR5Item extends Item {
 
         const { technology, range, action } = item.data;
 
-        if (technology?.conceal) {
+        if (technology) {
+            if (!technology.condition_monitor) technology.condition_monitor = { value: 0 };
+            technology.condition_monitor.max = 8 + Math.ceil(technology.rating / 2);
+
+            if (!technology.conceal) technology.conceal = {};
             technology.conceal.mod = {};
+
             equippedMods.forEach((mod) => {
                 if (technology?.conceal && mod.data.data.technology.conceal.value) {
                     technology.conceal.mod[mod.name] = mod.data.data.technology.conceal.value;
                 }
             });
 
-            technology.conceal.value =
-                technology.conceal.base + Helpers.totalMods(technology.conceal.mod);
+            technology.conceal.value = technology.conceal.base + Helpers.totalMods(technology.conceal.mod);
         }
 
         if (action) {
@@ -112,15 +117,14 @@ export class SR5Item extends Item {
             // handle overrides from mods
             equippedMods.forEach((mod) => {
                 if (mod.data.data.accuracy) action.limit.mod[mod.name] = mod.data.data.accuracy;
-                if (mod.data.data.dice_pool)
-                    action.dice_pool_mod[mod.name] = mod.data.data.dice_pool;
+                if (mod.data.data.dice_pool) action.dice_pool_mod[mod.name] = mod.data.data.dice_pool;
             });
 
             if (equippedAmmo) {
                 // add mods to damage from ammo
-                action.damage.mod[`SR5.Ammo ${equippedAmmo.name}`] = equippedAmmo.data.data.damage;
+                action.damage.mod[`${equippedAmmo.name}`] = equippedAmmo.data.data.damage;
                 // add mods to ap from ammo
-                action.damage.ap.mod[`SR5.Ammo ${equippedAmmo.name}`] = equippedAmmo.data.data.ap;
+                action.damage.ap.mod[`${equippedAmmo.name}`] = equippedAmmo.data.data.ap;
 
                 // override element
                 if (equippedAmmo.data.data.element) {
@@ -143,19 +147,22 @@ export class SR5Item extends Item {
 
             // once all damage mods have been accounted for, sum base and mod to value
             action.damage.value = action.damage.base + Helpers.totalMods(action.damage.mod);
-            action.damage.ap.value =
-                action.damage.ap.base + Helpers.totalMods(action.damage.ap.mod);
+            action.damage.ap.value = action.damage.ap.base + Helpers.totalMods(action.damage.ap.mod);
 
             action.limit.value = action.limit.base + Helpers.totalMods(action.limit.mod);
 
             if (this.actor) {
                 if (action.damage.attribute) {
-                    action.damage.value += this.actor.data.data.attributes[
-                        action.damage.attribute
-                    ].value;
+                    const { attribute } = action.damage;
+                    // TODO convert this in the template
+                    action.damage.mod[game.i18n.localize(CONFIG.SR5.attributes[attribute])] = this.actor.findAttribute(attribute)?.value;
+                    action.damage.value = action.damage.base + Helpers.totalMods(action.damage.mod);
                 }
                 if (action.limit.attribute) {
-                    action.limit.value += this.actor.data.data.limits[action.limit.attribute].value;
+                    const { attribute } = action.limit;
+                    // TODO convert this in the template
+                    action.limit.mod[game.i18n.localize(CONFIG.SR5.limits[attribute])] = this.actor.findLimit(attribute)?.value;
+                    action.limit.value = action.limit.base + Helpers.totalMods(action.limit.mod);
                 }
             }
         }
@@ -169,10 +176,6 @@ export class SR5Item extends Item {
                 });
                 if (range.rc) range.rc.value = range.rc.base + Helpers.totalMods(range.rc.mod);
             }
-        }
-
-        if (item.data.condition_monitor) {
-            item.data.condition_monitor.max = 8 + Math.ceil(item.data.technology.rating / 2);
         }
 
         if (item.type === 'adept_power') {
@@ -191,30 +194,32 @@ export class SR5Item extends Item {
 
         const post = (bonus = {}) => {
             // if only post, don't roll and post a card version -- otherwise roll
-            const onComplete = postOnly ? () => {
-                const { token } = this.actor;
-                const attack = this.getAttackData(0);
-                // don't include any hits
-                delete attack?.hits;
-                // generate chat data
-                createChatData({
-                    header: {
-                        name: this.name,
-                        img: this.img,
-                    },
-                    testName: this.getRollName(),
-                    actor: this.actor,
-                    tokenId: token ? `${token.scene._id}.${token.id}` : undefined,
-                    description: this.getChatData(),
-                    item: this,
-                    previewTemplate: this.hasTemplate,
-                    attack,
-                    ...bonus,
-                }).then((chatData) => {
-                    // create the message
-                    return ChatMessage.create(chatData, { displaySheet: false });
-                });
-            } : () => this.rollTest(event);
+            const onComplete = postOnly
+                ? () => {
+                      const { token } = this.actor;
+                      const attack = this.getAttackData(0);
+                      // don't include any hits
+                      delete attack?.hits;
+                      // generate chat data
+                      createChatData({
+                          header: {
+                              name: this.name,
+                              img: this.img,
+                          },
+                          testName: this.getRollName(),
+                          actor: this.actor,
+                          tokenId: token ? `${token.scene._id}.${token.id}` : undefined,
+                          description: this.getChatData(),
+                          item: this,
+                          previewTemplate: this.hasTemplate,
+                          attack,
+                          ...bonus,
+                      }).then((chatData) => {
+                          // create the message
+                          return ChatMessage.create(chatData, { displaySheet: false });
+                      });
+                  }
+                : () => this.rollTest(event);
 
             if (!postOnly && this.hasTemplate) {
                 // onComplete is called when template is finished
@@ -235,7 +240,7 @@ export class SR5Item extends Item {
             dialogData.close = async (html) => {
                 if (oldClose) {
                     // the oldClose we put on the dialog will return a boolean
-                    const ret = await oldClose(html) as unknown as boolean;
+                    const ret = ((await oldClose(html)) as unknown) as boolean;
                     if (!ret) return;
                 }
                 post();
@@ -282,18 +287,11 @@ export class SR5Item extends Item {
     }
 
     getEquippedAmmo() {
-        return (this.items || []).filter(
-            (item) => item.type === 'ammo' && item.data.data?.technology?.equipped
-        )[0];
+        return (this.items || []).filter((item) => item.type === 'ammo' && item.data.data?.technology?.equipped)[0];
     }
 
     getEquippedMods() {
-        return (this.items || []).filter(
-            (item) =>
-                item.type === 'modification' &&
-                item.data.data.type === 'weapon' &&
-                item.data.data?.technology?.equipped
-        );
+        return (this.items || []).filter((item) => item.type === 'modification' && item.data.data.type === 'weapon' && item.data.data?.technology?.equipped);
     }
 
     async equipWeaponMod(iid) {
@@ -479,20 +477,14 @@ export class SR5Item extends Item {
      * @param event - mouse event
      * @param options - any additional roll options to pass along - note that currently the Item will overwrite -- WIP
      */
-    async rollTest(
-        event,
-        options?: Partial<AdvancedRollProps>
-    ): Promise<ShadowrunRoll | undefined> {
+    async rollTest(event, options?: Partial<AdvancedRollProps>): Promise<ShadowrunRoll | undefined> {
         const promise = ShadowrunRoller.itemRoll(event, this, options);
 
         // handle promise when it resolves for our own stuff
         promise.then(async (roll) => {
             // complex form handles fade
             if (this.isComplexForm()) {
-                const totalFade = Math.max(
-                    this.getFade() + this.getLastComplexFormLevel().value,
-                    2
-                );
+                const totalFade = Math.max(this.getFade() + this.getLastComplexFormLevel().value, 2);
                 await this.actor.rollFade({ event }, totalFade);
             } // spells handle drain, force, and attack data
             else if (this.isSpell()) {
@@ -503,10 +495,7 @@ export class SR5Item extends Item {
                     }
                 }
                 const forceData = this.getLastSpellForce();
-                const drain = Math.max(
-                    this.getDrain() + forceData.value + (forceData.reckless ? 3 : 0),
-                    2
-                );
+                const drain = Math.max(this.getDrain() + forceData.value + (forceData.reckless ? 3 : 0), 2);
                 await this.actor?.rollDrain({ event }, drain);
             } // weapons handle ammo and attack data
             else if (this.data.type === 'weapon') {
@@ -553,8 +542,7 @@ export class SR5Item extends Item {
         const { controlled } = canvas.tokens;
         const targets = controlled.reduce((arr, t) => (t.actor ? arr.concat([t.actor]) : arr), []);
         if (character && controlled.length === 0) targets.push(character);
-        if (!targets.length)
-            throw new Error(`You must designate a specific Token as the roll target`);
+        if (!targets.length) throw new Error(`You must designate a specific Token as the roll target`);
         return targets;
     }
 
@@ -640,11 +628,7 @@ export class SR5Item extends Item {
         return true;
     }
 
-    async updateEmbeddedEntity(
-        embeddedName: string,
-        updateData: object | object[],
-        options?: object
-    ) {
+    async updateEmbeddedEntity(embeddedName: string, updateData: object | object[], options?: object) {
         await this.updateOwnedItem(updateData);
         return this;
     }
@@ -668,12 +652,20 @@ export class SR5Item extends Item {
         return true;
     }
 
+    async openPdfSource() {
+        const source = this.getBookSource();
+        if (source === '') { // @ts-ignore
+            ui.notifications.error(game.i18n.localize('SR5.SourceFieldEmptyError'))
+        }
+        // TODO open PDF to correct location
+        // parse however you need, all "buttons" will lead to this function
+        const [code, page] = source.split(' ');
+        //@ts-ignore
+        ui.PDFoundry.open(code, page);
+    }
+
     isAreaOfEffect(): boolean {
-        return (
-            this.isGrenade() ||
-            (this.isSpell() && this.data.data.range === 'los_a') ||
-            this.hasExplosiveAmmo()
-        );
+        return this.isGrenade() || (this.isSpell() && this.data.data.range === 'los_a') || this.hasExplosiveAmmo();
     }
 
     isGrenade(): boolean {
@@ -698,6 +690,14 @@ export class SR5Item extends Item {
 
     isMeleeWeapon(): boolean {
         return this.data.type === 'weapon' && this.data.data.category === 'melee';
+    }
+
+    isEquipped(): boolean {
+        return this.data.data.technology?.equipped || false;
+    }
+
+    getBookSource(): string {
+        return this.data.data.description.source;
     }
 
     getAttackData(hits: number): AttackData | undefined {
@@ -749,7 +749,7 @@ export class SR5Item extends Item {
         return this.data.data.action?.attribute2;
     }
 
-    getRollName(): string {
+    getRollName(): string | undefined {
         if (this.isRangedWeapon()) {
             return game.i18n.localize('SR5.RangeWeaponAttack');
         }
@@ -762,7 +762,8 @@ export class SR5Item extends Item {
         if (this.isSpell()) {
             return game.i18n.localize('SR5.SpellCast');
         }
-        return this.name;
+        if (this.hasRoll) return this.name;
+        return undefined;
     }
 
     getLimit(): LimitField {
@@ -890,5 +891,26 @@ export class SR5Item extends Item {
                 dropoff,
             };
         }
+    }
+
+    /**
+     * Override setFlag to remove the 'SR5.' from keys in modlists, otherwise it handles them as embedded keys
+     * @param scope
+     * @param key
+     * @param value
+     */
+    setFlag(scope: string, key: string, value: any): Promise<Entity> {
+        const newValue = Helpers.onSetFlag(value);
+        return super.setFlag(scope, key, newValue);
+    }
+
+    /**
+     * Override getFlag to add back the 'SR5.' keys correctly to be handled
+     * @param scope
+     * @param key
+     */
+    getFlag(scope: string, key: string): any {
+        const data = super.getFlag(scope, key);
+        return Helpers.onGetFlag(data);
     }
 }

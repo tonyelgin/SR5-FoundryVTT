@@ -33,16 +33,16 @@ export type TemplateData = {
     previewTemplate?: boolean;
 };
 
-export const createChatData = async (templateData: TemplateData, roll?) => {
+export const createChatData = async (templateData: TemplateData, roll?: Roll) => {
     const template = `systems/shadowrun5e/templates/rolls/roll-card.html`;
     const html = await renderTemplate(template, templateData);
     const actor = templateData.actor;
 
     const chatData = {
         user: game.user._id,
-        type: CONST.CHAT_MESSAGE_TYPES.ROLL,
+        type: roll ? CONST.CHAT_MESSAGE_TYPES.ROLL : CONST.CHAT_MESSAGE_TYPES.OTHER,
         content: html,
-        roll,
+        roll: roll ? JSON.stringify(roll) : undefined,
         speaker: {
             actor: actor?._id,
             token: actor?.token,
@@ -59,18 +59,17 @@ export const createChatData = async (templateData: TemplateData, roll?) => {
     }
     const rollMode = game.settings.get('core', 'rollMode');
 
-    if (['gmroll', 'blindroll'].includes(rollMode))
-        chatData['whisper'] = ChatMessage.getWhisperIDs('GM');
+    if (['gmroll', 'blindroll'].includes(rollMode)) chatData['whisper'] = ChatMessage.getWhisperIDs('GM');
     if (rollMode === 'blindroll') chatData['blind'] = true;
 
     return chatData;
 };
 
-export const addChatMessageContextOptions = function (html, options) {
+export const addChatMessageContextOptions = (html, options) => {
     const canRoll = (li) => {
         const msg = game.messages.get(li.data().messageId);
 
-        msg.getFlag('shadowrun5e', 'customRoll');
+        return msg.getFlag('shadowrun5e', 'customRoll');
     };
 
     options.push(
@@ -92,9 +91,9 @@ export const addChatMessageContextOptions = function (html, options) {
 
 export const addRollListeners = (app: ChatMessage, html) => {
     if (!app.getFlag('shadowrun5e', 'customRoll')) return;
+    const item = SR5Item.getItemFromMessage(html);
     html.on('click', '.test-roll', async (event) => {
         event.preventDefault();
-        const item = SR5Item.getItemFromMessage(html);
         if (item) {
             const roll = await item.rollTest(event, { hideRollMessage: true });
             if (roll && roll.templateData) {
@@ -109,14 +108,12 @@ export const addRollListeners = (app: ChatMessage, html) => {
     html.on('click', '.test', async (event) => {
         event.preventDefault();
         const type = event.currentTarget.dataset.action;
-        const item = SR5Item.getItemFromMessage(html);
         if (item) {
             await item.rollExtraTest(type, event);
         }
     });
     html.on('click', '.place-template', (event) => {
         event.preventDefault();
-        const item = SR5Item.getItemFromMessage(html);
         if (item) {
             const template = Template.fromItem(item);
             template?.drawPreview(event);
@@ -126,5 +123,5 @@ export const addRollListeners = (app: ChatMessage, html) => {
         event.preventDefault();
         $(event.currentTarget).siblings('.card-description').toggle();
     });
-    $(html).find('.card-description').hide();
+    if (item?.hasRoll && app.isRoll) $(html).find('.card-description').hide();
 };
