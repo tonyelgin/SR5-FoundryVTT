@@ -1,6 +1,6 @@
 import { SR5RollDialog, SR5RollDialogOptions } from './SR5RollDialog';
 import { SR5Actor } from '../actor/SR5Actor';
-import { SR5Roll } from '../overhaul/SR5Roll';
+import { SR5Roll } from '../roll/SR5Roll';
 import { TemplateData } from '../chat';
 
 export type SR5ActorRollDialogOptions = SR5RollDialogOptions & {

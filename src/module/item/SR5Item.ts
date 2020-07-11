@@ -13,7 +13,7 @@ import FireRangeData = Shadowrun.FireRangeData;
 import BlastData = Shadowrun.BlastData;
 import { ChatData } from './ChatData';
 import { AdvancedRollProps, ShadowrunRoller } from '../rolls/ShadowrunRoller';
-import { SR5Roll } from '../overhaul/SR5Roll';
+import { SR5Roll } from '../roll/SR5Roll';
 import Template from '../template';
 import { createChatData } from '../chat';
 

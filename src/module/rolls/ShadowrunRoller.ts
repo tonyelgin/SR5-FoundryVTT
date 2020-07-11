@@ -7,7 +7,7 @@ import DamageData = Shadowrun.DamageData;
 import { Helpers } from '../helpers';
 import { SR5Actor } from '../actor/SR5Actor';
 import { SR5Item } from '../item/SR5Item';
-import { SR5Roll } from '../overhaul/SR5Roll';
+import { SR5Roll } from '../roll/SR5Roll';
 
 export interface BasicRollProps {
     name?: string;

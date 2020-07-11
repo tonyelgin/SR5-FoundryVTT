@@ -1,6 +1,6 @@
 import KeyValuePair = Shadowrun.KeyValuePair;
 import ModList = Shadowrun.ModList;
-import { SR5Roll } from '../overhaul/SR5Roll';
+import { SR5Roll } from '../roll/SR5Roll';
 import { TemplateData } from '../chat';
 
 export type SR5RollDialogOptions = {
@@ -125,6 +125,6 @@ export class SR5RollDialog extends Application {
     }
 
     get template(): string {
-        return 'systems/shadowrun5e/templates/rolls/roll-dialog.html';
+        return 'systems/shadowrun5e/dist/templates/rolls/roll-dialog.html';
     }
 }

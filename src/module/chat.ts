@@ -1,11 +1,12 @@
 import { SR5Actor } from './actor/SR5Actor';
 import { SR5Item } from './item/SR5Item';
 import Template from './template';
-import ModList = Shadowrun.ModList;
 import BaseValuePair = Shadowrun.BaseValuePair;
 import DamageData = Shadowrun.DamageData;
 import AttackData = Shadowrun.AttackData;
 import LabelField = Shadowrun.LabelField;
+import KeyValuePair = Shadowrun.KeyValuePair;
+import { SR5Roll } from './roll/SR5Roll';
 
 export type TemplateData = {
     header: {
@@ -34,8 +35,8 @@ export type TemplateData = {
 
 export const createChatData = async (templateData: TemplateData, { roll, rollMode }: { roll?: SR5Roll; rollMode?: string } = {}) => {
     const template = `systems/shadowrun5e/dist/templates/rolls/roll-card.html`;
-    templateData.hits = roll?.hits;
-    templateData.dice = roll?.dice[0].rolls;
+    templateData['hits'] = roll?.hits;
+    templateData['dice'] = roll?.dice[0].rolls;
     const html = await renderTemplate(template, templateData);
     const actor = templateData.actor;
 
