@@ -18,13 +18,11 @@ export class SR5ActorSkillRollDialog extends SR5ActorRollDialog {
     protected skill: string;
     protected category?: string;
     get skillField(): SkillField | undefined {
-        console.log(this.skillType);
         if (this.skillType === 'active') {
             return this.actor.findActiveSkill(this.skill);
         } else if (this.skillType === 'language') {
             return this.actor.findLanguageSkill(this.skill);
         } else if (this.skillType === 'knowledge' && this.category) {
-            console.log('knowledge');
             return this.actor.findKnowledgeSkill(this.category, this.skill);
         }
     }
@@ -43,15 +41,12 @@ export class SR5ActorSkillRollDialog extends SR5ActorRollDialog {
         this.skillType = options.skillType ?? 'active';
         this.category = options.category;
         this.skill = options.skill;
-        console.log(this.skill);
-        console.log(this.skillField);
-        if (this.skillField) {
-            this.addUniquePart(this.skillField.label ?? '', this.skillField.value);
+        if (this.skillField?.label) {
+            this.addPart(this.skillField.label, this.skillField.value);
             this.attribute = this.skillField.attribute;
-            console.log(this.attribute);
         }
-        if (this.attributeField) {
-            this.addUniquePart(this.attributeField.label ?? '', this.attributeField.value);
+        if (this.attributeField?.label) {
+            this.addPart(this.attributeField.label, this.attributeField.value);
         }
         this.limit = this.limitField?.value ?? 0;
     }
@@ -62,16 +57,17 @@ export class SR5ActorSkillRollDialog extends SR5ActorRollDialog {
         data.attribute = this.attribute;
         data.enableAttributeOption = true;
 
-        console.log(data);
-
         return data;
     }
 
     changeAttribute(attributeId) {
-        if (this.attributeField?.label) {
-            this.removePart(this.attributeField.label)
-        }
+        const oldAtt = this.attributeField;
         this.attribute = attributeId;
+
+        if (oldAtt?.label) {
+            this.removePart(oldAtt.label);
+        }
+
         if (this.attributeField?.label) {
             this.addPart(this.attributeField.label, this.attributeField.value);
         }
@@ -79,18 +75,33 @@ export class SR5ActorSkillRollDialog extends SR5ActorRollDialog {
     }
 
     changeSkill(skillId) {
-        if (this.attributeField?.label) {
-            this.removePart(this.attributeField?.label)
-        }
-
-        if (this.skillField?.label) {
-            this.removePart(this.skillField.label);
-        }
+        const oldSkill = this.skillField;
+        const oldAtt = this.attributeField;
         this.skill = skillId;
+
         if (this.skillField?.label) {
-            this.addPart(this.skillField.label, this.skillField.value);
+            this.attribute = this.skillField.attribute;
+        }
+        this.removePart('SR5.Defaulting');
+
+        // remove old parts
+        if (oldAtt?.label) {
+            this.removePart(oldAtt?.label);
+        }
+        if (oldSkill?.label) {
+            this.removePart(oldSkill.label);
         }
 
+        if (this.skillField?.label) {
+            // add the defaulting key if at 0, otherwise add the skill to parts
+            if (this.skillField.value === 0) {
+                this.addPart('SR5.Defaulting', -1);
+            } else {
+                this.addPart(this.skillField.label, this.skillField.value);
+            }
+        }
+
+        // add attribute to parts
         if (this.attributeField?.label) {
             this.addPart(this.attributeField.label, this.attributeField.value);
         }

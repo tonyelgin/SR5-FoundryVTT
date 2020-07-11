@@ -7560,20 +7560,16 @@ class SR5ActorSkillRollDialog extends SR5ActorRollDialog_1.SR5ActorRollDialog {
         this.skillType = (_a = options.skillType) !== null && _a !== void 0 ? _a : 'active';
         this.category = options.category;
         this.skill = options.skill;
-        console.log(this.skill);
-        console.log(this.skillField);
-        if (this.skillField) {
-            this.addUniquePart((_b = this.skillField.label) !== null && _b !== void 0 ? _b : '', this.skillField.value);
+        if ((_b = this.skillField) === null || _b === void 0 ? void 0 : _b.label) {
+            this.addPart(this.skillField.label, this.skillField.value);
             this.attribute = this.skillField.attribute;
-            console.log(this.attribute);
         }
-        if (this.attributeField) {
-            this.addUniquePart((_c = this.attributeField.label) !== null && _c !== void 0 ? _c : '', this.attributeField.value);
+        if ((_c = this.attributeField) === null || _c === void 0 ? void 0 : _c.label) {
+            this.addPart(this.attributeField.label, this.attributeField.value);
         }
         this.limit = (_e = (_d = this.limitField) === null || _d === void 0 ? void 0 : _d.value) !== null && _e !== void 0 ? _e : 0;
     }
     get skillField() {
-        console.log(this.skillType);
         if (this.skillType === 'active') {
             return this.actor.findActiveSkill(this.skill);
         }
@@ -7581,7 +7577,6 @@ class SR5ActorSkillRollDialog extends SR5ActorRollDialog_1.SR5ActorRollDialog {
             return this.actor.findLanguageSkill(this.skill);
         }
         else if (this.skillType === 'knowledge' && this.category) {
-            console.log('knowledge');
             return this.actor.findKnowledgeSkill(this.category, this.skill);
         }
     }
@@ -7596,33 +7591,48 @@ class SR5ActorSkillRollDialog extends SR5ActorRollDialog_1.SR5ActorRollDialog {
         data.skill = this.skill;
         data.attribute = this.attribute;
         data.enableAttributeOption = true;
-        console.log(data);
+        data.enableSkillOption = true;
         return data;
     }
     changeAttribute(attributeId) {
-        var _a, _b, _c, _d;
-        if ((_a = this.attributeField) === null || _a === void 0 ? void 0 : _a.label) {
-            this.removePart(this.attributeField.label);
-        }
+        var _a, _b, _c;
+        const oldAtt = this.attributeField;
         this.attribute = attributeId;
-        if ((_b = this.attributeField) === null || _b === void 0 ? void 0 : _b.label) {
+        if (oldAtt === null || oldAtt === void 0 ? void 0 : oldAtt.label) {
+            this.removePart(oldAtt.label);
+        }
+        if ((_a = this.attributeField) === null || _a === void 0 ? void 0 : _a.label) {
             this.addPart(this.attributeField.label, this.attributeField.value);
         }
-        this.limit = (_d = (_c = this.limitField) === null || _c === void 0 ? void 0 : _c.value) !== null && _d !== void 0 ? _d : 0;
+        this.limit = (_c = (_b = this.limitField) === null || _b === void 0 ? void 0 : _b.value) !== null && _c !== void 0 ? _c : 0;
     }
     changeSkill(skillId) {
-        var _a, _b, _c, _d, _e;
-        if ((_a = this.attributeField) === null || _a === void 0 ? void 0 : _a.label) {
-            this.removePart((_b = this.attributeField) === null || _b === void 0 ? void 0 : _b.label);
-        }
-        if ((_c = this.skillField) === null || _c === void 0 ? void 0 : _c.label) {
-            this.removePart(this.skillField.label);
-        }
+        var _a, _b, _c;
+        const oldSkill = this.skillField;
+        const oldAtt = this.attributeField;
         this.skill = skillId;
-        if ((_d = this.skillField) === null || _d === void 0 ? void 0 : _d.label) {
-            this.addPart(this.skillField.label, this.skillField.value);
+        if ((_a = this.skillField) === null || _a === void 0 ? void 0 : _a.label) {
+            this.attribute = this.skillField.attribute;
         }
-        if ((_e = this.attributeField) === null || _e === void 0 ? void 0 : _e.label) {
+        this.removePart('SR5.Defaulting');
+        // remove old parts
+        if (oldAtt === null || oldAtt === void 0 ? void 0 : oldAtt.label) {
+            this.removePart(oldAtt === null || oldAtt === void 0 ? void 0 : oldAtt.label);
+        }
+        if (oldSkill === null || oldSkill === void 0 ? void 0 : oldSkill.label) {
+            this.removePart(oldSkill.label);
+        }
+        if ((_b = this.skillField) === null || _b === void 0 ? void 0 : _b.label) {
+            // add the defaulting key if at 0, otherwise add the skill to parts
+            if (this.skillField.value === 0) {
+                this.addPart('SR5.Defaulting', -1);
+            }
+            else {
+                this.addPart(this.skillField.label, this.skillField.value);
+            }
+        }
+        // add attribute to parts
+        if ((_c = this.attributeField) === null || _c === void 0 ? void 0 : _c.label) {
             this.addPart(this.attributeField.label, this.attributeField.value);
         }
     }
@@ -7791,7 +7801,6 @@ class SR5RollDialog extends Application {
             key,
             value,
         });
-        this.render();
     }
     addUniquePart(key, value) {
         if (this.hasPartKey(key)) {
@@ -7805,11 +7814,9 @@ class SR5RollDialog extends Application {
         const index = this.parts.findIndex((part) => part.key === key);
         if (index >= 0)
             this.parts[index].value = value;
-        this.render();
     }
     removePart(key) {
         this.parts = this.parts.filter((p) => p.key !== key);
-        this.render();
     }
     togglePart(key, value) {
         if (this.hasPartKey(key)) {

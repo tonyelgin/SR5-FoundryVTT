@@ -149,7 +149,6 @@ export class SR5RollDialog extends Application {
             key,
             value,
         });
-        this.render();
     }
 
     addUniquePart(key: string, value: number): void {
@@ -163,12 +162,10 @@ export class SR5RollDialog extends Application {
     updatePart(key: string, value: number) {
         const index = this.parts.findIndex((part) => part.key === key);
         if (index >= 0) this.parts[index].value = value;
-        this.render();
     }
 
     removePart(key: string) {
         this.parts = this.parts.filter((p) => p.key !== key);
-        this.render();
     }
 
     togglePart(key: string, value: number) {
