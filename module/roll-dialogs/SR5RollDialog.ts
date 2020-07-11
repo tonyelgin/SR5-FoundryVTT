@@ -1,6 +1,7 @@
 import KeyValuePair = Shadowrun.KeyValuePair;
 import ModList = Shadowrun.ModList;
-import { SR5Roll } from './SR5Roll';
+import { SR5Roll } from '../overhaul/SR5Roll';
+import { TemplateData } from '../chat';
 
 export type SR5RollDialogOptions = {
     parts?: ModList<number>;
@@ -10,9 +11,27 @@ export type SR5RollDialogOptions = {
 
 export class SR5RollDialog extends Application {
     // handle extended tests
-    protected m_extended: boolean = false;
-    protected m_parts: KeyValuePair[] = [];
-    protected m_limit: number = 0;
+    private m_extended: boolean = false;
+    private m_parts: KeyValuePair[] = [];
+    private m_limit: number = 0;
+
+    get extended() {
+        return this.m_extended;
+    }
+
+    get limit(): number {
+        return this.m_limit;
+    }
+
+    get parts(): Shadowrun.KeyValuePair[] {
+        return this.m_parts;
+    }
+
+    get count(): number {
+        return this.parts.reduce((total, current) => {
+            return total + current.value;
+        }, 0);
+    }
 
     /**
      * @Override
@@ -71,27 +90,38 @@ export class SR5RollDialog extends Application {
             .find('[name="wounds"]')
             .on('change', (event) => console.log(event));
 
-        $(html).find('.roll-test').on('click', this.rollTest.bind(this));
+        $(html).find('[name="roll-test"]').on('click', this.rollTest.bind(this));
     }
 
     getRoll(): SR5Roll {
-        const total = this.m_parts.reverse().reduce((total, current) => {
-            return total + current.value;
-        }, 0);
-        return new SR5Roll(total, this.m_limit);
+        return new SR5Roll(this.count, this.limit);
+    }
+
+    getRollTemplateData(): TemplateData {
+        return {
+            header: {
+                name: 'SR5.Roll',
+                img: '',
+            },
+            parts: this.m_parts,
+            testName: 'SR5.Roll',
+        };
     }
 
     async rollTest(event) {
+        console.log(event);
+        console.log(this.count);
         event.preventDefault();
         const roll = this.getRoll();
-        await roll.toMessage({
-            header: {
-                name: 'Test',
-                img: '',
-            },
-            testName: 'Test',
-        });
+        await roll.toMessage(this.getRollTemplateData());
         await this.close();
+    }
+
+    addPart(key: string, value: number): void {
+        this.m_parts.push({
+            key,
+            value,
+        });
     }
 
     get template(): string {

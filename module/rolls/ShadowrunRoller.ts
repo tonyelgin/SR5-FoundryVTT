@@ -126,7 +126,7 @@ export class ShadowrunRoller {
             ...props,
         };
 
-        roll?.toMessage(templateData);
+        // roll?.toMessage(templateData);
         return roll;
     }
 

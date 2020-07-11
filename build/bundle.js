@@ -1122,7 +1122,7 @@ class SR5Actor extends Actor {
 }
 exports.SR5Actor = SR5Actor;
 
-},{"../helpers":14,"../rolls/ShadowrunRoller":25}],2:[function(require,module,exports){
+},{"../helpers":14,"../rolls/ShadowrunRoller":26}],2:[function(require,module,exports){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -1140,7 +1140,7 @@ const chummer_import_form_1 = require("../apps/chummer-import-form");
 const SkillEditForm_1 = require("../apps/skills/SkillEditForm");
 const KnowledgeSkillEditForm_1 = require("../apps/skills/KnowledgeSkillEditForm");
 const LanguageSkillEditForm_1 = require("../apps/skills/LanguageSkillEditForm");
-const SR5RollDialog_1 = require("../overhaul/SR5RollDialog");
+const SR5ActorRollDialog_1 = require("../roll-dialogs/SR5ActorRollDialog");
 /**
  * Extend the basic ActorSheet with some very simple modifications
  */
@@ -1608,7 +1608,8 @@ class SR5ActorSheet extends ActorSheet {
     _onRollPrompt(event) {
         return __awaiter(this, void 0, void 0, function* () {
             event.preventDefault();
-            const dialog = new SR5RollDialog_1.SR5RollDialog({
+            const dialog = new SR5ActorRollDialog_1.SR5ActorRollDialog({
+                actor: this.actor,
                 parts: {
                     'SR5.Base': 5,
                     'SR5.Specialization': 2,
@@ -1777,7 +1778,7 @@ class SR5ActorSheet extends ActorSheet {
 }
 exports.SR5ActorSheet = SR5ActorSheet;
 
-},{"../apps/chummer-import-form":3,"../apps/skills/KnowledgeSkillEditForm":6,"../apps/skills/LanguageSkillEditForm":7,"../apps/skills/SkillEditForm":8,"../helpers":14,"../overhaul/SR5RollDialog":24}],3:[function(require,module,exports){
+},{"../apps/chummer-import-form":3,"../apps/skills/KnowledgeSkillEditForm":6,"../apps/skills/LanguageSkillEditForm":7,"../apps/skills/SkillEditForm":8,"../helpers":14,"../roll-dialogs/SR5ActorRollDialog":24}],3:[function(require,module,exports){
 "use strict";
 
 var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
@@ -2575,7 +2576,7 @@ var ChummerImportForm = /*#__PURE__*/function (_FormApplication) {
 
 exports.ChummerImportForm = ChummerImportForm;
 
-},{"@babel/runtime/helpers/asyncToGenerator":29,"@babel/runtime/helpers/classCallCheck":30,"@babel/runtime/helpers/createClass":31,"@babel/runtime/helpers/get":33,"@babel/runtime/helpers/getPrototypeOf":34,"@babel/runtime/helpers/inherits":35,"@babel/runtime/helpers/interopRequireDefault":36,"@babel/runtime/helpers/possibleConstructorReturn":37,"@babel/runtime/regenerator":41}],4:[function(require,module,exports){
+},{"@babel/runtime/helpers/asyncToGenerator":30,"@babel/runtime/helpers/classCallCheck":31,"@babel/runtime/helpers/createClass":32,"@babel/runtime/helpers/get":34,"@babel/runtime/helpers/getPrototypeOf":35,"@babel/runtime/helpers/inherits":36,"@babel/runtime/helpers/interopRequireDefault":37,"@babel/runtime/helpers/possibleConstructorReturn":38,"@babel/runtime/regenerator":42}],4:[function(require,module,exports){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -2929,7 +2930,7 @@ var OverwatchScoreTracker = /*#__PURE__*/function (_Application) {
 exports.OverwatchScoreTracker = OverwatchScoreTracker;
 (0, _defineProperty2["default"])(OverwatchScoreTracker, "MatrixOverwatchDiceCount", '2d6');
 
-},{"@babel/runtime/helpers/classCallCheck":30,"@babel/runtime/helpers/createClass":31,"@babel/runtime/helpers/defineProperty":32,"@babel/runtime/helpers/get":33,"@babel/runtime/helpers/getPrototypeOf":34,"@babel/runtime/helpers/inherits":35,"@babel/runtime/helpers/interopRequireDefault":36,"@babel/runtime/helpers/possibleConstructorReturn":37}],6:[function(require,module,exports){
+},{"@babel/runtime/helpers/classCallCheck":31,"@babel/runtime/helpers/createClass":32,"@babel/runtime/helpers/defineProperty":33,"@babel/runtime/helpers/get":34,"@babel/runtime/helpers/getPrototypeOf":35,"@babel/runtime/helpers/inherits":36,"@babel/runtime/helpers/interopRequireDefault":37,"@babel/runtime/helpers/possibleConstructorReturn":38}],6:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.KnowledgeSkillEditForm = void 0;
@@ -3268,7 +3269,7 @@ exports.addRollListeners = (app, html) => {
         $(html).find('.card-description').hide();
 };
 
-},{"./actor/SR5Actor":1,"./item/SR5Item":16,"./template":27}],11:[function(require,module,exports){
+},{"./actor/SR5Actor":1,"./item/SR5Item":16,"./template":28}],11:[function(require,module,exports){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -5210,7 +5211,7 @@ class SR5Item extends Item {
 }
 exports.SR5Item = SR5Item;
 
-},{"../apps/dialogs/ShadowrunItemDialog":4,"../chat":10,"../helpers":14,"../rolls/ShadowrunRoller":25,"../template":27,"./ChatData":15}],17:[function(require,module,exports){
+},{"../apps/dialogs/ShadowrunItemDialog":4,"../chat":10,"../helpers":14,"../rolls/ShadowrunRoller":26,"../template":28,"./ChatData":15}],17:[function(require,module,exports){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -5673,7 +5674,7 @@ function rollItemMacro(itemName) {
 }
 handlebars_1.registerHandlebarHelpers();
 
-},{"./actor/SR5Actor":1,"./actor/SR5ActorSheet":2,"./apps/gmtools/OverwatchScoreTracker":5,"./canvas":9,"./chat":10,"./combat":11,"./config":12,"./handlebars":13,"./helpers":14,"./item/SR5Item":16,"./item/SR5ItemSheet":17,"./migrator/Migrator":19,"./rolls/ShadowrunRoller":25,"./settings":26}],19:[function(require,module,exports){
+},{"./actor/SR5Actor":1,"./actor/SR5ActorSheet":2,"./apps/gmtools/OverwatchScoreTracker":5,"./canvas":9,"./chat":10,"./combat":11,"./config":12,"./handlebars":13,"./helpers":14,"./item/SR5Item":16,"./item/SR5ItemSheet":17,"./migrator/Migrator":19,"./rolls/ShadowrunRoller":26,"./settings":27}],19:[function(require,module,exports){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -6680,6 +6681,61 @@ exports.SR5Roll = SR5Roll;
 
 },{"../chat":10}],24:[function(require,module,exports){
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.SR5ActorRollDialog = void 0;
+const SR5RollDialog_1 = require("./SR5RollDialog");
+const SR5Roll_1 = require("../overhaul/SR5Roll");
+class SR5ActorRollDialog extends SR5RollDialog_1.SR5RollDialog {
+    constructor(options) {
+        super(options);
+        this.m_pushTheLimit = false;
+        this.m_actor = options.actor;
+    }
+    get actor() {
+        return this.m_actor;
+    }
+    get pushTheLimit() {
+        return this.m_pushTheLimit;
+    }
+    getData(options) {
+        const data = super.getData(options);
+        data.actor = this.m_actor;
+        data.enableEdgeOption = true;
+        data.edge = this.m_actor.getEdge();
+        return data;
+    }
+    getRoll() {
+        return new SR5Roll_1.SR5Roll(this.count, this.limit, this.pushTheLimit);
+    }
+    getTestName() {
+        return 'Unknown Test';
+    }
+    getRollTemplateData() {
+        const templateData = super.getRollTemplateData();
+        templateData.header = {
+            name: this.actor.name,
+            img: this.actor.img,
+        };
+        templateData.testName = this.getTestName();
+        templateData.actor = this.actor;
+        return templateData;
+    }
+    activateListeners(html) {
+        super.activateListeners(html);
+        $(html)
+            .find('[name="push-the-limit"]')
+            .on('click', (event) => {
+            this.m_pushTheLimit = true;
+            // add push the limit to parts list
+            this.addPart('SR5.PushTheLimit', this.actor.getEdge().max);
+            return this.rollTest(event);
+        });
+    }
+}
+exports.SR5ActorRollDialog = SR5ActorRollDialog;
+
+},{"../overhaul/SR5Roll":23,"./SR5RollDialog":25}],25:[function(require,module,exports){
+"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -6691,7 +6747,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SR5RollDialog = void 0;
-const SR5Roll_1 = require("./SR5Roll");
+const SR5Roll_1 = require("../overhaul/SR5Roll");
 class SR5RollDialog extends Application {
     constructor(options) {
         super();
@@ -6713,6 +6769,20 @@ class SR5RollDialog extends Application {
         if (options === null || options === void 0 ? void 0 : options.extended) {
             this.m_extended = options.extended;
         }
+    }
+    get extended() {
+        return this.m_extended;
+    }
+    get limit() {
+        return this.m_limit;
+    }
+    get parts() {
+        return this.m_parts;
+    }
+    get count() {
+        return this.parts.reduce((total, current) => {
+            return total + current.value;
+        }, 0);
     }
     /**
      * @Override
@@ -6748,26 +6818,35 @@ class SR5RollDialog extends Application {
         $(html)
             .find('[name="wounds"]')
             .on('change', (event) => console.log(event));
-        $(html).find('.roll-test').on('click', this.rollTest.bind(this));
+        $(html).find('[name="roll-test"]').on('click', this.rollTest.bind(this));
     }
     getRoll() {
-        const total = this.m_parts.reverse().reduce((total, current) => {
-            return total + current.value;
-        }, 0);
-        return new SR5Roll_1.SR5Roll(total, this.m_limit);
+        return new SR5Roll_1.SR5Roll(this.count, this.limit);
+    }
+    getRollTemplateData() {
+        return {
+            header: {
+                name: 'SR5.Roll',
+                img: '',
+            },
+            parts: this.m_parts,
+            testName: 'SR5.Roll',
+        };
     }
     rollTest(event) {
         return __awaiter(this, void 0, void 0, function* () {
+            console.log(event);
+            console.log(this.count);
             event.preventDefault();
             const roll = this.getRoll();
-            yield roll.toMessage({
-                header: {
-                    name: 'Test',
-                    img: '',
-                },
-                testName: 'Test'
-            });
+            yield roll.toMessage(this.getRollTemplateData());
             yield this.close();
+        });
+    }
+    addPart(key, value) {
+        this.m_parts.push({
+            key,
+            value,
         });
     }
     get template() {
@@ -6776,7 +6855,7 @@ class SR5RollDialog extends Application {
 }
 exports.SR5RollDialog = SR5RollDialog;
 
-},{"./SR5Roll":23}],25:[function(require,module,exports){
+},{"../overhaul/SR5Roll":23}],26:[function(require,module,exports){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -6850,7 +6929,7 @@ class ShadowrunRoller {
                     name: name || '',
                     img: img || '',
                 }, tokenId: token ? `${token.scene._id}.${token.id}` : undefined, limit, testName: title, dicePool: helpers_1.Helpers.totalMods(parts), parts }, props);
-            roll === null || roll === void 0 ? void 0 : roll.toMessage(templateData);
+            // roll?.toMessage(templateData);
             return roll;
         });
     }
@@ -6975,7 +7054,7 @@ class ShadowrunRoller {
 }
 exports.ShadowrunRoller = ShadowrunRoller;
 
-},{"../helpers":14,"../overhaul/SR5Roll":23}],26:[function(require,module,exports){
+},{"../helpers":14,"../overhaul/SR5Roll":23}],27:[function(require,module,exports){
 "use strict";
 // game settings for shadowrun 5e
 Object.defineProperty(exports, "__esModule", { value: true });
@@ -7036,7 +7115,7 @@ exports.registerSystemSettings = () => {
     });
 };
 
-},{"./migrator/VersionMigration":20}],27:[function(require,module,exports){
+},{"./migrator/VersionMigration":20}],28:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 class Template extends MeasuredTemplate {
@@ -7137,7 +7216,7 @@ class Template extends MeasuredTemplate {
 }
 exports.default = Template;
 
-},{}],28:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 function _assertThisInitialized(self) {
   if (self === void 0) {
     throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
@@ -7147,7 +7226,7 @@ function _assertThisInitialized(self) {
 }
 
 module.exports = _assertThisInitialized;
-},{}],29:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
   try {
     var info = gen[key](arg);
@@ -7185,7 +7264,7 @@ function _asyncToGenerator(fn) {
 }
 
 module.exports = _asyncToGenerator;
-},{}],30:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
 function _classCallCheck(instance, Constructor) {
   if (!(instance instanceof Constructor)) {
     throw new TypeError("Cannot call a class as a function");
@@ -7193,7 +7272,7 @@ function _classCallCheck(instance, Constructor) {
 }
 
 module.exports = _classCallCheck;
-},{}],31:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 function _defineProperties(target, props) {
   for (var i = 0; i < props.length; i++) {
     var descriptor = props[i];
@@ -7211,7 +7290,7 @@ function _createClass(Constructor, protoProps, staticProps) {
 }
 
 module.exports = _createClass;
-},{}],32:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 function _defineProperty(obj, key, value) {
   if (key in obj) {
     Object.defineProperty(obj, key, {
@@ -7228,7 +7307,7 @@ function _defineProperty(obj, key, value) {
 }
 
 module.exports = _defineProperty;
-},{}],33:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 var superPropBase = require("./superPropBase");
 
 function _get(target, property, receiver) {
@@ -7252,7 +7331,7 @@ function _get(target, property, receiver) {
 }
 
 module.exports = _get;
-},{"./superPropBase":39}],34:[function(require,module,exports){
+},{"./superPropBase":40}],35:[function(require,module,exports){
 function _getPrototypeOf(o) {
   module.exports = _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
     return o.__proto__ || Object.getPrototypeOf(o);
@@ -7261,7 +7340,7 @@ function _getPrototypeOf(o) {
 }
 
 module.exports = _getPrototypeOf;
-},{}],35:[function(require,module,exports){
+},{}],36:[function(require,module,exports){
 var setPrototypeOf = require("./setPrototypeOf");
 
 function _inherits(subClass, superClass) {
@@ -7280,7 +7359,7 @@ function _inherits(subClass, superClass) {
 }
 
 module.exports = _inherits;
-},{"./setPrototypeOf":38}],36:[function(require,module,exports){
+},{"./setPrototypeOf":39}],37:[function(require,module,exports){
 function _interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : {
     "default": obj
@@ -7288,7 +7367,7 @@ function _interopRequireDefault(obj) {
 }
 
 module.exports = _interopRequireDefault;
-},{}],37:[function(require,module,exports){
+},{}],38:[function(require,module,exports){
 var _typeof = require("../helpers/typeof");
 
 var assertThisInitialized = require("./assertThisInitialized");
@@ -7302,7 +7381,7 @@ function _possibleConstructorReturn(self, call) {
 }
 
 module.exports = _possibleConstructorReturn;
-},{"../helpers/typeof":40,"./assertThisInitialized":28}],38:[function(require,module,exports){
+},{"../helpers/typeof":41,"./assertThisInitialized":29}],39:[function(require,module,exports){
 function _setPrototypeOf(o, p) {
   module.exports = _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
     o.__proto__ = p;
@@ -7313,7 +7392,7 @@ function _setPrototypeOf(o, p) {
 }
 
 module.exports = _setPrototypeOf;
-},{}],39:[function(require,module,exports){
+},{}],40:[function(require,module,exports){
 var getPrototypeOf = require("./getPrototypeOf");
 
 function _superPropBase(object, property) {
@@ -7326,7 +7405,7 @@ function _superPropBase(object, property) {
 }
 
 module.exports = _superPropBase;
-},{"./getPrototypeOf":34}],40:[function(require,module,exports){
+},{"./getPrototypeOf":35}],41:[function(require,module,exports){
 function _typeof(obj) {
   "@babel/helpers - typeof";
 
@@ -7344,10 +7423,10 @@ function _typeof(obj) {
 }
 
 module.exports = _typeof;
-},{}],41:[function(require,module,exports){
+},{}],42:[function(require,module,exports){
 module.exports = require("regenerator-runtime");
 
-},{"regenerator-runtime":42}],42:[function(require,module,exports){
+},{"regenerator-runtime":43}],43:[function(require,module,exports){
 /**
  * Copyright (c) 2014-present, Facebook, Inc.
  *

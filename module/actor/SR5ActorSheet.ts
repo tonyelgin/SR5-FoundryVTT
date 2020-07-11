@@ -8,7 +8,7 @@ import SR5SheetFilters = Shadowrun.SR5SheetFilters;
 import Skills = Shadowrun.Skills;
 import { SR5Actor } from './SR5Actor';
 import MatrixAttribute = Shadowrun.MatrixAttribute;
-import { SR5RollDialog } from '../overhaul/SR5RollDialog';
+import { SR5ActorRollDialog } from '../roll-dialogs/SR5ActorRollDialog';
 
 /**
  * Extend the basic ActorSheet with some very simple modifications
@@ -479,7 +479,8 @@ export class SR5ActorSheet extends ActorSheet {
 
     async _onRollPrompt(event) {
         event.preventDefault();
-        const dialog = new SR5RollDialog({
+        const dialog = new SR5ActorRollDialog({
+            actor: this.actor,
             parts: {
                 'SR5.Base': 5,
                 'SR5.Specialization': 2,

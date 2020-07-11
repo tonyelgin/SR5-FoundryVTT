@@ -1,12 +1,12 @@
 import { SR5Actor } from './actor/SR5Actor';
 import { SR5Item } from './item/SR5Item';
 import Template from './template';
-import ModList = Shadowrun.ModList;
 import BaseValuePair = Shadowrun.BaseValuePair;
 import DamageData = Shadowrun.DamageData;
 import AttackData = Shadowrun.AttackData;
 import LabelField = Shadowrun.LabelField;
 import { SR5Roll } from './overhaul/SR5Roll';
+import KeyValuePair = Shadowrun.KeyValuePair;
 
 export type TemplateData = {
     header: {
@@ -14,7 +14,7 @@ export type TemplateData = {
         img: string;
     };
     tokenId?: string;
-    parts?: ModList<number>;
+    parts?: KeyValuePair[];
     limit?: BaseValuePair<number> & LabelField;
     testName?: string;
     actor?: SR5Actor;
