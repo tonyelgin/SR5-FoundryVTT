@@ -11,26 +11,10 @@ export type SR5RollDialogOptions = {
 
 export class SR5RollDialog extends Application {
     // handle extended tests
-    private m_extended: boolean = false;
-    private m_parts: KeyValuePair[] = [];
-    private m_limit: number = 0;
-    private m_situational: number = 0;
-
-    get extended() {
-        return this.m_extended;
-    }
-
-    get limit(): number {
-        return this.m_limit;
-    }
-
-    get parts(): Shadowrun.KeyValuePair[] {
-        return this.m_parts;
-    }
-
-    get situational(): number {
-        return this.m_situational;
-    }
+    protected extended: boolean = false;
+    protected parts: KeyValuePair[] = [];
+    protected limit: number = 0;
+    protected situational: number = 0;
 
     get count(): number {
         return this.parts.reduce((total, current) => {
@@ -44,12 +28,14 @@ export class SR5RollDialog extends Application {
      */
     getData(options?: any): any {
         const data = super.getData(options);
-        data.enableExtended = true;
-        data.extended = this.m_extended;
-        data.parts = this.m_parts;
-        data.limit = this.m_limit;
+        data.enableExtendedOption = true;
+        data.extended = this.extended;
+        data.parts = this.parts;
+        data.limit = this.limit;
         data.dicePool = this.count;
         if (this.situational) data.situational = this.situational;
+
+        data.config = CONFIG.SR5;
         return data;
     }
 
@@ -58,7 +44,7 @@ export class SR5RollDialog extends Application {
         // add parts from options
         if (options?.parts) {
             // map ModList to new config method
-            this.m_parts = Object.entries(options.parts).map(([key, value]) => {
+            this.parts = Object.entries(options.parts).map(([key, value]) => {
                 return {
                     key,
                     value,
@@ -68,7 +54,7 @@ export class SR5RollDialog extends Application {
 
         // add extended from options
         if (options?.extended) {
-            this.m_extended = options.extended;
+            this.extended = options.extended;
         }
     }
 
@@ -92,7 +78,7 @@ export class SR5RollDialog extends Application {
         $(html)
             .find('[name=extended]')
             .on('change', (event: any) => {
-                this.m_extended = event.currentTarget.checked;
+                this.extended = event.currentTarget.checked;
                 this.render();
             });
 
@@ -103,7 +89,7 @@ export class SR5RollDialog extends Application {
                 const evaluated = eval(value);
                 const num = Number(evaluated);
                 if (num) {
-                    this.m_situational = num;
+                    this.situational = num;
                     this.addUniquePart('SR5.SituationalModifier', num);
                 }
                 this.render();
@@ -124,8 +110,8 @@ export class SR5RollDialog extends Application {
             parts: this.parts,
             testName: 'SR5.Roll',
             limit: {
-                base: this.m_limit,
-                value: this.m_limit,
+                base: this.limit,
+                value: this.limit,
                 label: 'SR5.Limit',
             },
         };
@@ -133,7 +119,7 @@ export class SR5RollDialog extends Application {
 
     incrementExtended() {
         if (this.hasPartKey('SR5.ExtendedTest')) {
-            const extendedPart = this.m_parts.find((part) => part.key === 'SR5.ExtendedTest') ?? { key: 'SR5.ExtendedTest', value: 0 };
+            const extendedPart = this.parts.find((part) => part.key === 'SR5.ExtendedTest') ?? { key: 'SR5.ExtendedTest', value: 0 };
             extendedPart.value -= 1;
             this.updatePart('SR5.ExtendedTest', extendedPart.value);
         } else {
@@ -147,7 +133,7 @@ export class SR5RollDialog extends Application {
         const templateData = this.getRollTemplateData();
         await roll.toMessage(templateData);
         // if an extended test, don't close and keep around the -1 modifiers
-        if (this.m_extended) {
+        if (this.extended) {
             this.incrementExtended();
         } else {
             await this.close();
@@ -155,11 +141,11 @@ export class SR5RollDialog extends Application {
     }
 
     hasPartKey(key: string): boolean {
-        return this.m_parts.reduce((running, current) => running || current.key === key, false);
+        return this.parts.reduce((running, current) => running || current.key === key, false);
     }
 
     addPart(key: string, value: number): void {
-        this.m_parts.push({
+        this.parts.push({
             key,
             value,
         });
@@ -175,13 +161,13 @@ export class SR5RollDialog extends Application {
     }
 
     updatePart(key: string, value: number) {
-        const index = this.m_parts.findIndex((part) => part.key === key);
-        if (index >= 0) this.m_parts[index].value = value;
+        const index = this.parts.findIndex((part) => part.key === key);
+        if (index >= 0) this.parts[index].value = value;
         this.render();
     }
 
     removePart(key: string) {
-        this.m_parts = this.parts.filter((p) => p.key !== key);
+        this.parts = this.parts.filter((p) => p.key !== key);
         this.render();
     }
 

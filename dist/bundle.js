@@ -1293,6 +1293,23 @@ class SR5Actor extends Actor {
             return undefined;
         return this.data.data.skills.active[skillName];
     }
+    findLanguageSkill(skillId) {
+        if (skillId === undefined)
+            return undefined;
+        console.log(skillId);
+        const skill = this.data.data.skills.language.value[skillId];
+        skill.attribute = 'intuition';
+        skill.label = skill.name;
+        return skill;
+    }
+    findKnowledgeSkill(category, skillId) {
+        if (skillId === undefined || category === '')
+            return undefined;
+        const skill = this.data.data.skills.knowledge[category].value[skillId];
+        skill.label = skill.name;
+        skill.attribute = this.data.data.skills.knowledge[category].attribute;
+        return skill;
+    }
     findAttribute(attributeName) {
         if (attributeName === undefined)
             return undefined;
@@ -2062,7 +2079,7 @@ class SR5Actor extends Actor {
     }
 }
 exports.SR5Actor = SR5Actor;
-},{"../helpers":29,"../rolls/ShadowrunRoller":41}],17:[function(require,module,exports){
+},{"../helpers":29,"../rolls/ShadowrunRoller":42}],17:[function(require,module,exports){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -2081,6 +2098,7 @@ const SkillEditForm_1 = require("../apps/skills/SkillEditForm");
 const KnowledgeSkillEditForm_1 = require("../apps/skills/KnowledgeSkillEditForm");
 const LanguageSkillEditForm_1 = require("../apps/skills/LanguageSkillEditForm");
 const SR5ActorRollDialog_1 = require("../roll-dialogs/SR5ActorRollDialog");
+const SR5ActorSkillRollDialog_1 = require("../roll-dialogs/SR5ActorSkillRollDialog");
 /**
  * Extend the basic ActorSheet with some very simple modifications
  */
@@ -2618,21 +2636,21 @@ class SR5ActorSheet extends ActorSheet {
             event.preventDefault();
             const skill = event.currentTarget.dataset.skill;
             const category = event.currentTarget.dataset.category;
-            return this.actor.rollKnowledgeSkill(category, skill, { event: event });
+            return new SR5ActorSkillRollDialog_1.SR5ActorSkillRollDialog({ skill, actor: this.actor, skillType: 'knowledge', category }).render(true);
         });
     }
     _onRollLanguageSkill(event) {
         return __awaiter(this, void 0, void 0, function* () {
             event.preventDefault();
             const skill = event.currentTarget.dataset.skill;
-            return this.actor.rollLanguageSkill(skill, { event: event });
+            return new SR5ActorSkillRollDialog_1.SR5ActorSkillRollDialog({ skill, actor: this.actor, skillType: 'language' }).render(true);
         });
     }
     _onRollActiveSkill(event) {
         return __awaiter(this, void 0, void 0, function* () {
             event.preventDefault();
             const skill = event.currentTarget.dataset.skill;
-            return this.actor.rollActiveSkill(skill, { event: event });
+            return new SR5ActorSkillRollDialog_1.SR5ActorSkillRollDialog({ skill, actor: this.actor }).render(true);
         });
     }
     _onRollAttribute(event) {
@@ -2717,7 +2735,7 @@ class SR5ActorSheet extends ActorSheet {
     }
 }
 exports.SR5ActorSheet = SR5ActorSheet;
-},{"../apps/chummer-import-form":18,"../apps/skills/KnowledgeSkillEditForm":21,"../apps/skills/LanguageSkillEditForm":22,"../apps/skills/SkillEditForm":23,"../helpers":29,"../roll-dialogs/SR5ActorRollDialog":38}],18:[function(require,module,exports){
+},{"../apps/chummer-import-form":18,"../apps/skills/KnowledgeSkillEditForm":21,"../apps/skills/LanguageSkillEditForm":22,"../apps/skills/SkillEditForm":23,"../helpers":29,"../roll-dialogs/SR5ActorRollDialog":38,"../roll-dialogs/SR5ActorSkillRollDialog":39}],18:[function(require,module,exports){
 "use strict";
 
 var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
@@ -4202,7 +4220,7 @@ exports.addRollListeners = (app, html) => {
     if ((item === null || item === void 0 ? void 0 : item.hasRoll) && app.isRoll)
         $(html).find('.card-description').hide();
 };
-},{"./actor/SR5Actor":16,"./item/SR5Item":31,"./template":43}],26:[function(require,module,exports){
+},{"./actor/SR5Actor":16,"./item/SR5Item":31,"./template":44}],26:[function(require,module,exports){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -6147,7 +6165,7 @@ class SR5Item extends Item {
     }
 }
 exports.SR5Item = SR5Item;
-},{"../apps/dialogs/ShadowrunItemDialog":19,"../chat":25,"../helpers":29,"../rolls/ShadowrunRoller":41,"../template":43,"./ChatData":30}],32:[function(require,module,exports){
+},{"../apps/dialogs/ShadowrunItemDialog":19,"../chat":25,"../helpers":29,"../rolls/ShadowrunRoller":42,"../template":44,"./ChatData":30}],32:[function(require,module,exports){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -6604,7 +6622,7 @@ function rollItemMacro(itemName) {
     return item.rollTest(event);
 }
 handlebars_1.registerHandlebarHelpers();
-},{"./actor/SR5Actor":16,"./actor/SR5ActorSheet":17,"./apps/gmtools/OverwatchScoreTracker":20,"./canvas":24,"./chat":25,"./combat":26,"./config":27,"./handlebars":28,"./helpers":29,"./item/SR5Item":31,"./item/SR5ItemSheet":32,"./migrator/Migrator":34,"./rolls/ShadowrunRoller":41,"./settings":42}],34:[function(require,module,exports){
+},{"./actor/SR5Actor":16,"./actor/SR5ActorSheet":17,"./apps/gmtools/OverwatchScoreTracker":20,"./canvas":24,"./chat":25,"./combat":26,"./config":27,"./handlebars":28,"./helpers":29,"./item/SR5Item":31,"./item/SR5ItemSheet":32,"./migrator/Migrator":34,"./rolls/ShadowrunRoller":42,"./settings":43}],34:[function(require,module,exports){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -7462,41 +7480,30 @@ class SR5ActorRollDialog extends SR5RollDialog_1.SR5RollDialog {
     constructor(options) {
         var _a;
         super(options);
-        this.m_pushTheLimit = false;
-        this.m_wound = true;
-        this.m_actor = options.actor;
-        this.m_wound = (_a = options.wound) !== null && _a !== void 0 ? _a : true;
-        if (this.wound && this.m_actor.getWoundModifier() !== 0) {
-            this.addUniquePart('SR5.WoundModifier', this.m_actor.getWoundModifier());
+        this.actor = options.actor;
+        this.wound = (_a = options.wound) !== null && _a !== void 0 ? _a : true;
+        if (this.wound && this.actor.getWoundModifier() !== 0) {
+            this.addUniquePart('SR5.WoundModifier', this.actor.getWoundModifier());
         }
-    }
-    get actor() {
-        return this.m_actor;
-    }
-    get pushTheLimit() {
-        return this.m_pushTheLimit;
-    }
-    get wound() {
-        return this.m_wound;
     }
     getData(options) {
         const data = super.getData(options);
         // actor
         data.actor = this.actor;
         // edge
-        data.enableEdge = true;
+        data.enableEdgeOption = true;
         data.edge = this.actor.getEdge();
-        data.enablePushTheLimit = true;
+        data.enablePushTheLimitOption = true;
         data.pushTheLimit = this.pushTheLimit;
         // wounds
-        data.enableWound = true;
+        data.enableWoundOption = true;
         data.woundValue = this.actor.getWoundModifier();
         data.wound = this.wound;
         return data;
     }
     getRoll() {
         // add push the limit to parts list
-        if (this.m_pushTheLimit && !this.hasPartKey('SR5.PushTheLimit')) {
+        if (this.pushTheLimit && !this.hasPartKey('SR5.PushTheLimit')) {
             this.addPart('SR5.PushTheLimit', this.actor.getEdge().max);
         }
         return new SR5Roll_1.SR5Roll(this.count, this.limit, this.pushTheLimit);
@@ -7519,8 +7526,8 @@ class SR5ActorRollDialog extends SR5RollDialog_1.SR5RollDialog {
         $(html)
             .find('[name="push-the-limit"]')
             .on('change', (event) => {
-            this.m_pushTheLimit = event.currentTarget.checked;
-            if (this.m_pushTheLimit) {
+            this.pushTheLimit = event.currentTarget.checked;
+            if (this.pushTheLimit) {
                 this.addUniquePart('SR5.PushTheLimit', this.actor.getEdge().max);
             }
             else {
@@ -7530,8 +7537,8 @@ class SR5ActorRollDialog extends SR5RollDialog_1.SR5RollDialog {
         $(html)
             .find('[name="wound"]')
             .on('change', (event) => {
-            this.m_wound = event.currentTarget.checked;
-            if (this.m_wound) {
+            this.wound = event.currentTarget.checked;
+            if (this.wound) {
                 this.addUniquePart('SR5.WoundModifier', this.actor.getWoundModifier());
             }
             else {
@@ -7541,7 +7548,104 @@ class SR5ActorRollDialog extends SR5RollDialog_1.SR5RollDialog {
     }
 }
 exports.SR5ActorRollDialog = SR5ActorRollDialog;
-},{"../roll/SR5Roll":40,"./SR5RollDialog":39}],39:[function(require,module,exports){
+},{"../roll/SR5Roll":41,"./SR5RollDialog":40}],39:[function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.SR5ActorSkillRollDialog = void 0;
+const SR5ActorRollDialog_1 = require("./SR5ActorRollDialog");
+class SR5ActorSkillRollDialog extends SR5ActorRollDialog_1.SR5ActorRollDialog {
+    constructor(options) {
+        var _a, _b, _c, _d, _e;
+        super(options);
+        this.skillType = (_a = options.skillType) !== null && _a !== void 0 ? _a : 'active';
+        this.category = options.category;
+        this.skill = options.skill;
+        console.log(this.skill);
+        console.log(this.skillField);
+        if (this.skillField) {
+            this.addUniquePart((_b = this.skillField.label) !== null && _b !== void 0 ? _b : '', this.skillField.value);
+            this.attribute = this.skillField.attribute;
+            console.log(this.attribute);
+        }
+        if (this.attributeField) {
+            this.addUniquePart((_c = this.attributeField.label) !== null && _c !== void 0 ? _c : '', this.attributeField.value);
+        }
+        this.limit = (_e = (_d = this.limitField) === null || _d === void 0 ? void 0 : _d.value) !== null && _e !== void 0 ? _e : 0;
+    }
+    get skillField() {
+        console.log(this.skillType);
+        if (this.skillType === 'active') {
+            return this.actor.findActiveSkill(this.skill);
+        }
+        else if (this.skillType === 'language') {
+            return this.actor.findLanguageSkill(this.skill);
+        }
+        else if (this.skillType === 'knowledge' && this.category) {
+            console.log('knowledge');
+            return this.actor.findKnowledgeSkill(this.category, this.skill);
+        }
+    }
+    get attributeField() {
+        return this.actor.findAttribute(this.attribute);
+    }
+    get limitField() {
+        return this.actor.findLimitFromAttribute(this.attribute);
+    }
+    getData(options) {
+        const data = super.getData(options);
+        data.skill = this.skill;
+        data.attribute = this.attribute;
+        data.enableAttributeOption = true;
+        console.log(data);
+        return data;
+    }
+    changeAttribute(attributeId) {
+        var _a, _b, _c, _d;
+        if ((_a = this.attributeField) === null || _a === void 0 ? void 0 : _a.label) {
+            this.removePart(this.attributeField.label);
+        }
+        this.attribute = attributeId;
+        if ((_b = this.attributeField) === null || _b === void 0 ? void 0 : _b.label) {
+            this.addPart(this.attributeField.label, this.attributeField.value);
+        }
+        this.limit = (_d = (_c = this.limitField) === null || _c === void 0 ? void 0 : _c.value) !== null && _d !== void 0 ? _d : 0;
+    }
+    changeSkill(skillId) {
+        var _a, _b, _c, _d, _e;
+        if ((_a = this.attributeField) === null || _a === void 0 ? void 0 : _a.label) {
+            this.removePart((_b = this.attributeField) === null || _b === void 0 ? void 0 : _b.label);
+        }
+        if ((_c = this.skillField) === null || _c === void 0 ? void 0 : _c.label) {
+            this.removePart(this.skillField.label);
+        }
+        this.skill = skillId;
+        if ((_d = this.skillField) === null || _d === void 0 ? void 0 : _d.label) {
+            this.addPart(this.skillField.label, this.skillField.value);
+        }
+        if ((_e = this.attributeField) === null || _e === void 0 ? void 0 : _e.label) {
+            this.addPart(this.attributeField.label, this.attributeField.value);
+        }
+    }
+    activateListeners(html) {
+        super.activateListeners(html);
+        $(html)
+            .find('[name="skill"]')
+            .on('change', (event) => {
+            const newSkill = event.currentTarget.value;
+            this.changeSkill(newSkill);
+            this.render();
+        });
+        $(html)
+            .find('[name="attribute"]')
+            .on('change', (event) => {
+            const newAttribute = event.currentTarget.value;
+            this.changeAttribute(newAttribute);
+            this.render();
+        });
+    }
+}
+exports.SR5ActorSkillRollDialog = SR5ActorSkillRollDialog;
+},{"./SR5ActorRollDialog":38}],40:[function(require,module,exports){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -7559,14 +7663,14 @@ class SR5RollDialog extends Application {
     constructor(options) {
         super();
         // handle extended tests
-        this.m_extended = false;
-        this.m_parts = [];
-        this.m_limit = 0;
-        this.m_situational = 0;
+        this.extended = false;
+        this.parts = [];
+        this.limit = 0;
+        this.situational = 0;
         // add parts from options
         if (options === null || options === void 0 ? void 0 : options.parts) {
             // map ModList to new config method
-            this.m_parts = Object.entries(options.parts).map(([key, value]) => {
+            this.parts = Object.entries(options.parts).map(([key, value]) => {
                 return {
                     key,
                     value,
@@ -7575,20 +7679,8 @@ class SR5RollDialog extends Application {
         }
         // add extended from options
         if (options === null || options === void 0 ? void 0 : options.extended) {
-            this.m_extended = options.extended;
+            this.extended = options.extended;
         }
-    }
-    get extended() {
-        return this.m_extended;
-    }
-    get limit() {
-        return this.m_limit;
-    }
-    get parts() {
-        return this.m_parts;
-    }
-    get situational() {
-        return this.m_situational;
     }
     get count() {
         return this.parts.reduce((total, current) => {
@@ -7601,13 +7693,14 @@ class SR5RollDialog extends Application {
      */
     getData(options) {
         const data = super.getData(options);
-        data.enableExtended = true;
-        data.extended = this.m_extended;
-        data.parts = this.m_parts;
-        data.limit = this.m_limit;
+        data.enableExtendedOption = true;
+        data.extended = this.extended;
+        data.parts = this.parts;
+        data.limit = this.limit;
         data.dicePool = this.count;
         if (this.situational)
             data.situational = this.situational;
+        data.config = CONFIG.SR5;
         return data;
     }
     static get defaultOptions() {
@@ -7629,7 +7722,7 @@ class SR5RollDialog extends Application {
         $(html)
             .find('[name=extended]')
             .on('change', (event) => {
-            this.m_extended = event.currentTarget.checked;
+            this.extended = event.currentTarget.checked;
             this.render();
         });
         $(html)
@@ -7639,7 +7732,7 @@ class SR5RollDialog extends Application {
             const evaluated = eval(value);
             const num = Number(evaluated);
             if (num) {
-                this.m_situational = num;
+                this.situational = num;
                 this.addUniquePart('SR5.SituationalModifier', num);
             }
             this.render();
@@ -7658,8 +7751,8 @@ class SR5RollDialog extends Application {
             parts: this.parts,
             testName: 'SR5.Roll',
             limit: {
-                base: this.m_limit,
-                value: this.m_limit,
+                base: this.limit,
+                value: this.limit,
                 label: 'SR5.Limit',
             },
         };
@@ -7667,7 +7760,7 @@ class SR5RollDialog extends Application {
     incrementExtended() {
         var _a;
         if (this.hasPartKey('SR5.ExtendedTest')) {
-            const extendedPart = (_a = this.m_parts.find((part) => part.key === 'SR5.ExtendedTest')) !== null && _a !== void 0 ? _a : { key: 'SR5.ExtendedTest', value: 0 };
+            const extendedPart = (_a = this.parts.find((part) => part.key === 'SR5.ExtendedTest')) !== null && _a !== void 0 ? _a : { key: 'SR5.ExtendedTest', value: 0 };
             extendedPart.value -= 1;
             this.updatePart('SR5.ExtendedTest', extendedPart.value);
         }
@@ -7680,10 +7773,9 @@ class SR5RollDialog extends Application {
             event.preventDefault();
             const roll = this.getRoll();
             const templateData = this.getRollTemplateData();
-            console.log(templateData);
             yield roll.toMessage(templateData);
             // if an extended test, don't close and keep around the -1 modifiers
-            if (this.m_extended) {
+            if (this.extended) {
                 this.incrementExtended();
             }
             else {
@@ -7692,10 +7784,10 @@ class SR5RollDialog extends Application {
         });
     }
     hasPartKey(key) {
-        return this.m_parts.reduce((running, current) => running || current.key === key, false);
+        return this.parts.reduce((running, current) => running || current.key === key, false);
     }
     addPart(key, value) {
-        this.m_parts.push({
+        this.parts.push({
             key,
             value,
         });
@@ -7710,13 +7802,13 @@ class SR5RollDialog extends Application {
         }
     }
     updatePart(key, value) {
-        const index = this.m_parts.findIndex((part) => part.key === key);
+        const index = this.parts.findIndex((part) => part.key === key);
         if (index >= 0)
-            this.m_parts[index].value = value;
+            this.parts[index].value = value;
         this.render();
     }
     removePart(key) {
-        this.m_parts = this.parts.filter((p) => p.key !== key);
+        this.parts = this.parts.filter((p) => p.key !== key);
         this.render();
     }
     togglePart(key, value) {
@@ -7732,7 +7824,7 @@ class SR5RollDialog extends Application {
     }
 }
 exports.SR5RollDialog = SR5RollDialog;
-},{"../roll/SR5Roll":40}],40:[function(require,module,exports){
+},{"../roll/SR5Roll":41}],41:[function(require,module,exports){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -7884,7 +7976,7 @@ class SR5Roll extends Roll {
     }
 }
 exports.SR5Roll = SR5Roll;
-},{"../chat":25}],41:[function(require,module,exports){
+},{"../chat":25}],42:[function(require,module,exports){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -8082,7 +8174,7 @@ class ShadowrunRoller {
     }
 }
 exports.ShadowrunRoller = ShadowrunRoller;
-},{"../helpers":29,"../roll/SR5Roll":40}],42:[function(require,module,exports){
+},{"../helpers":29,"../roll/SR5Roll":41}],43:[function(require,module,exports){
 "use strict";
 // game settings for shadowrun 5e
 Object.defineProperty(exports, "__esModule", { value: true });
@@ -8142,7 +8234,7 @@ exports.registerSystemSettings = () => {
         default: '0',
     });
 };
-},{"./migrator/VersionMigration":35}],43:[function(require,module,exports){
+},{"./migrator/VersionMigration":35}],44:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 class Template extends MeasuredTemplate {

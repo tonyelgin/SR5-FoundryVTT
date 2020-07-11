@@ -380,6 +380,23 @@ export class SR5Actor extends Actor {
         return this.data.data.skills.active[skillName];
     }
 
+    findLanguageSkill(skillId?: string): SkillField | undefined {
+        if (skillId === undefined) return undefined;
+        console.log(skillId);
+        const skill =  this.data.data.skills.language.value[skillId];
+        skill.attribute = 'intuition';
+        skill.label = skill.name;
+        return skill;
+    }
+
+    findKnowledgeSkill(category: string, skillId?: string): SkillField | undefined {
+        if (skillId === undefined || category === '') return undefined;
+        const skill = this.data.data.skills.knowledge[category].value[skillId];
+        skill.label = skill.name;
+        skill.attribute = this.data.data.skills.knowledge[category].attribute;
+        return skill;
+    }
+
     findAttribute(attributeName?: string): AttributeField | undefined {
         if (attributeName === undefined) return undefined;
         return this.data.data.attributes[attributeName];

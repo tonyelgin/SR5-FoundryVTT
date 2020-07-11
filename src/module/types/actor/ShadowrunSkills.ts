@@ -4,6 +4,8 @@ declare namespace Shadowrun {
         [name: string]: SkillField;
     };
 
+    export type SkillTypes = 'active' | 'language' | 'knowledge';
+
     export type RemovableSkills = {
         [name: string]: SkillField & RemovableField;
     };

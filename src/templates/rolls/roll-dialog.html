@@ -5,18 +5,38 @@
         <input style='flex: 1' type='text' name='prompt-dice-pool' size='3' maxlength='3' value='{{promptDicePool}}' data-dtype="Number" />
     </div>
     {{/if}}
+    {{#if enableSkillOption}}
+    <div class="form-group">
+        <label>{{localize 'SR5.Skill'}}</label>
+        <select class="display" name="skill">
+            {{#select skill}} {{#each config.activeSkills as |skill id|}}
+            <option value="{{id}}">{{localize skill}}</option>
+            {{/each}} {{/select}}
+        </select>
+    </div>
+    {{/if}}
+    {{#if enableAttributeOption}}
+    <div class="form-group">
+        <label>{{localize 'SR5.Attribute'}}</label>
+        <select class="display" name="attribute">
+            {{#select attribute}} {{#each config.attributes as |att id|}}
+            <option value="{{id}}">{{localize att}}</option>
+            {{/each}} {{/select}}
+        </select>
+    </div>
+    {{/if}}
     <div class="form-group">
         <label>{{localize "SR5.SituationalModifier"}}</label>
-        <input class="display" style="flex: 1;" type="text" name="situational" size="3" maxlength="10" value="{{situational}}" data-dtype="Number" placeholder="+/- mod" />
+        <input class="display flex1" type="text" name="situational" size="3" maxlength="10" value="{{situational}}" data-dtype="Number" placeholder="+/- mod" />
     </div>
     {{#if limit}}
     <div class="form-group">
         <label>{{localize 'SR5.Limit'}}</label>
-        <input style="flex: 1;" type="text" name="limit" size="3" maxlength="3" value="{{limit}}" data-dtype="Number" />
+        <input class="display flex1" type="text" name="limit" size="3" maxlength="3" value="{{limit}}" data-dtype="Number" />
     </div>
     {{/if}}
 
-    {{#if enableWound}}
+    {{#if enableWoundOption}}
     {{#if woundValue}}
     <div class="form-group">
         <label>{{localize 'SR5.WoundModifier'}} ({{woundValue}})</label>
@@ -25,7 +45,7 @@
     {{/if}}
     {{/if}}
 
-    {{#if enableEnvironmental}}
+    {{#if enableEnvironmentalOption}}
     <div class="form-group">
         <label>{{localize 'SR5.EnvironmentModifier'}}</label>
         <select style="flex: 2;" name="environmental">
@@ -39,12 +59,12 @@
         </select>
     </div>
     {{/if}}
-    {{#if enableExtended}}
+    {{#if enableExtendedOption}}
     <div class="form-group">
         <label>{{localize 'SR5.ExtendedTest'}}</label>
         <input name="extended" type="checkbox"  {{checked extended}}/>
     </div>
-    {{#if enablePushTheLimit}}
+    {{#if enablePushTheLimitOption}}
     <div class="form-group">
         <label>{{localize 'SR5.PushTheLimit'}} (+{{edge.max}})</label>
         <input name="push-the-limit" type="checkbox"  {{checked pushTheLimit}}/>

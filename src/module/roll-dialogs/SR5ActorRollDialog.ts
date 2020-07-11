@@ -9,28 +9,16 @@ export type SR5ActorRollDialogOptions = SR5RollDialogOptions & {
 };
 
 export class SR5ActorRollDialog extends SR5RollDialog {
-    private readonly m_actor: SR5Actor;
-    private m_pushTheLimit: boolean = false;
-    private m_wound: boolean = true;
-
-    get actor() {
-        return this.m_actor;
-    }
-
-    get pushTheLimit() {
-        return this.m_pushTheLimit;
-    }
-
-    get wound() {
-        return this.m_wound;
-    }
+    readonly actor: SR5Actor;
+    protected pushTheLimit: boolean;
+    protected wound: boolean;
 
     constructor(options: SR5ActorRollDialogOptions) {
         super(options);
-        this.m_actor = options.actor;
-        this.m_wound = options.wound ?? true;
-        if (this.wound && this.m_actor.getWoundModifier() !== 0) {
-            this.addUniquePart('SR5.WoundModifier', this.m_actor.getWoundModifier());
+        this.actor = options.actor;
+        this.wound = options.wound ?? true;
+        if (this.wound && this.actor.getWoundModifier() !== 0) {
+            this.addUniquePart('SR5.WoundModifier', this.actor.getWoundModifier());
         }
     }
 
@@ -40,13 +28,13 @@ export class SR5ActorRollDialog extends SR5RollDialog {
         data.actor = this.actor;
 
         // edge
-        data.enableEdge = true;
+        data.enableEdgeOption = true;
         data.edge = this.actor.getEdge();
-        data.enablePushTheLimit = true;
+        data.enablePushTheLimitOption = true;
         data.pushTheLimit = this.pushTheLimit;
 
         // wounds
-        data.enableWound = true;
+        data.enableWoundOption = true;
         data.woundValue = this.actor.getWoundModifier();
         data.wound = this.wound;
 
@@ -55,7 +43,7 @@ export class SR5ActorRollDialog extends SR5RollDialog {
 
     getRoll(): SR5Roll {
         // add push the limit to parts list
-        if (this.m_pushTheLimit && !this.hasPartKey('SR5.PushTheLimit')) {
+        if (this.pushTheLimit && !this.hasPartKey('SR5.PushTheLimit')) {
             this.addPart('SR5.PushTheLimit', this.actor.getEdge().max);
         }
 
@@ -82,18 +70,19 @@ export class SR5ActorRollDialog extends SR5RollDialog {
         $(html)
             .find('[name="push-the-limit"]')
             .on('change', (event: any) => {
-                this.m_pushTheLimit = event.currentTarget.checked;
-                if (this.m_pushTheLimit) {
+                this.pushTheLimit = event.currentTarget.checked;
+                if (this.pushTheLimit) {
                     this.addUniquePart('SR5.PushTheLimit', this.actor.getEdge().max);
                 } else {
                     this.removePart('SR5.PushTheLimit');
                 }
             });
+
         $(html)
             .find('[name="wound"]')
             .on('change', (event: any) => {
-                this.m_wound = event.currentTarget.checked;
-                if (this.m_wound) {
+                this.wound = event.currentTarget.checked;
+                if (this.wound) {
                     this.addUniquePart('SR5.WoundModifier', this.actor.getWoundModifier());
                 } else {
                     this.removePart('SR5.WoundModifier');

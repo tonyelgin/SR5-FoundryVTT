@@ -9,6 +9,7 @@ import Skills = Shadowrun.Skills;
 import { SR5Actor } from './SR5Actor';
 import MatrixAttribute = Shadowrun.MatrixAttribute;
 import { SR5ActorRollDialog } from '../roll-dialogs/SR5ActorRollDialog';
+import { SR5ActorSkillRollDialog } from '../roll-dialogs/SR5ActorSkillRollDialog';
 
 /**
  * Extend the basic ActorSheet with some very simple modifications
@@ -540,19 +541,19 @@ export class SR5ActorSheet extends ActorSheet {
         event.preventDefault();
         const skill = event.currentTarget.dataset.skill;
         const category = event.currentTarget.dataset.category;
-        return this.actor.rollKnowledgeSkill(category, skill, { event: event });
+        return new SR5ActorSkillRollDialog({ skill, actor: this.actor, skillType: 'knowledge', category }).render(true);
     }
 
     async _onRollLanguageSkill(event) {
         event.preventDefault();
         const skill = event.currentTarget.dataset.skill;
-        return this.actor.rollLanguageSkill(skill, { event: event });
+        return new SR5ActorSkillRollDialog({ skill, actor: this.actor, skillType: 'language' }).render(true);
     }
 
     async _onRollActiveSkill(event) {
         event.preventDefault();
         const skill = event.currentTarget.dataset.skill;
-        return this.actor.rollActiveSkill(skill, { event: event });
+        return new SR5ActorSkillRollDialog({ skill, actor: this.actor }).render(true);
     }
 
     async _onRollAttribute(event) {
