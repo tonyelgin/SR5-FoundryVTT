@@ -7460,9 +7460,15 @@ const SR5RollDialog_1 = require("./SR5RollDialog");
 const SR5Roll_1 = require("../roll/SR5Roll");
 class SR5ActorRollDialog extends SR5RollDialog_1.SR5RollDialog {
     constructor(options) {
+        var _a;
         super(options);
         this.m_pushTheLimit = false;
+        this.m_wound = true;
         this.m_actor = options.actor;
+        this.m_wound = (_a = options.wound) !== null && _a !== void 0 ? _a : true;
+        if (this.wound && this.m_actor.getWoundModifier() !== 0) {
+            this.addUniquePart('SR5.WoundModifier', this.m_actor.getWoundModifier());
+        }
     }
     get actor() {
         return this.m_actor;
@@ -7470,14 +7476,29 @@ class SR5ActorRollDialog extends SR5RollDialog_1.SR5RollDialog {
     get pushTheLimit() {
         return this.m_pushTheLimit;
     }
+    get wound() {
+        return this.m_wound;
+    }
     getData(options) {
         const data = super.getData(options);
-        data.actor = this.m_actor;
-        data.enableEdgeOption = true;
-        data.edge = this.m_actor.getEdge();
+        // actor
+        data.actor = this.actor;
+        // edge
+        data.enableEdge = true;
+        data.edge = this.actor.getEdge();
+        data.enablePushTheLimit = true;
+        data.pushTheLimit = this.pushTheLimit;
+        // wounds
+        data.enableWound = true;
+        data.woundValue = this.actor.getWoundModifier();
+        data.wound = this.wound;
         return data;
     }
     getRoll() {
+        // add push the limit to parts list
+        if (this.m_pushTheLimit && !this.hasPartKey('SR5.PushTheLimit')) {
+            this.addPart('SR5.PushTheLimit', this.actor.getEdge().max);
+        }
         return new SR5Roll_1.SR5Roll(this.count, this.limit, this.pushTheLimit);
     }
     getTestName() {
@@ -7497,11 +7518,25 @@ class SR5ActorRollDialog extends SR5RollDialog_1.SR5RollDialog {
         super.activateListeners(html);
         $(html)
             .find('[name="push-the-limit"]')
-            .on('click', (event) => {
-            this.m_pushTheLimit = true;
-            // add push the limit to parts list
-            this.addPart('SR5.PushTheLimit', this.actor.getEdge().max);
-            return this.rollTest(event);
+            .on('change', (event) => {
+            this.m_pushTheLimit = event.currentTarget.checked;
+            if (this.m_pushTheLimit) {
+                this.addUniquePart('SR5.PushTheLimit', this.actor.getEdge().max);
+            }
+            else {
+                this.removePart('SR5.PushTheLimit');
+            }
+        });
+        $(html)
+            .find('[name="wound"]')
+            .on('change', (event) => {
+            this.m_wound = event.currentTarget.checked;
+            if (this.m_wound) {
+                this.addUniquePart('SR5.WoundModifier', this.actor.getWoundModifier());
+            }
+            else {
+                this.removePart('SR5.WoundModifier');
+            }
         });
     }
 }
@@ -7527,6 +7562,7 @@ class SR5RollDialog extends Application {
         this.m_extended = false;
         this.m_parts = [];
         this.m_limit = 0;
+        this.m_situational = 0;
         // add parts from options
         if (options === null || options === void 0 ? void 0 : options.parts) {
             // map ModList to new config method
@@ -7551,6 +7587,9 @@ class SR5RollDialog extends Application {
     get parts() {
         return this.m_parts;
     }
+    get situational() {
+        return this.m_situational;
+    }
     get count() {
         return this.parts.reduce((total, current) => {
             return total + current.value;
@@ -7562,10 +7601,13 @@ class SR5RollDialog extends Application {
      */
     getData(options) {
         const data = super.getData(options);
-        data.enableExtendedOption = true;
+        data.enableExtended = true;
         data.extended = this.m_extended;
         data.parts = this.m_parts;
         data.limit = this.m_limit;
+        data.dicePool = this.count;
+        if (this.situational)
+            data.situational = this.situational;
         return data;
     }
     static get defaultOptions() {
@@ -7586,11 +7628,23 @@ class SR5RollDialog extends Application {
         super.activateListeners(html);
         $(html)
             .find('[name=extended]')
-            .on('change', (event) => console.log(event));
+            .on('change', (event) => {
+            this.m_extended = event.currentTarget.checked;
+            this.render();
+        });
         $(html)
-            .find('[name="wounds"]')
-            .on('change', (event) => console.log(event));
-        $(html).find('[name="roll-test"]').on('click', this.rollTest.bind(this));
+            .find('[name="situational"]')
+            .on('change', (event) => {
+            const value = event.currentTarget.value;
+            const evaluated = eval(value);
+            const num = Number(evaluated);
+            if (num) {
+                this.m_situational = num;
+                this.addUniquePart('SR5.SituationalModifier', num);
+            }
+            this.render();
+        });
+        $(html).find('[name="test-roll"]').on('click', this.rollTest.bind(this));
     }
     getRoll() {
         return new SR5Roll_1.SR5Roll(this.count, this.limit);
@@ -7601,25 +7655,77 @@ class SR5RollDialog extends Application {
                 name: 'SR5.Roll',
                 img: '',
             },
-            parts: this.m_parts,
+            parts: this.parts,
             testName: 'SR5.Roll',
+            limit: {
+                base: this.m_limit,
+                value: this.m_limit,
+                label: 'SR5.Limit',
+            },
         };
+    }
+    incrementExtended() {
+        var _a;
+        if (this.hasPartKey('SR5.ExtendedTest')) {
+            const extendedPart = (_a = this.m_parts.find((part) => part.key === 'SR5.ExtendedTest')) !== null && _a !== void 0 ? _a : { key: 'SR5.ExtendedTest', value: 0 };
+            extendedPart.value -= 1;
+            this.updatePart('SR5.ExtendedTest', extendedPart.value);
+        }
+        else {
+            this.addPart('SR5.ExtendedTest', -1);
+        }
     }
     rollTest(event) {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log(event);
-            console.log(this.count);
             event.preventDefault();
             const roll = this.getRoll();
-            yield roll.toMessage(this.getRollTemplateData());
-            yield this.close();
+            const templateData = this.getRollTemplateData();
+            console.log(templateData);
+            yield roll.toMessage(templateData);
+            // if an extended test, don't close and keep around the -1 modifiers
+            if (this.m_extended) {
+                this.incrementExtended();
+            }
+            else {
+                yield this.close();
+            }
         });
+    }
+    hasPartKey(key) {
+        return this.m_parts.reduce((running, current) => running || current.key === key, false);
     }
     addPart(key, value) {
         this.m_parts.push({
             key,
             value,
         });
+        this.render();
+    }
+    addUniquePart(key, value) {
+        if (this.hasPartKey(key)) {
+            this.updatePart(key, value);
+        }
+        else {
+            this.addPart(key, value);
+        }
+    }
+    updatePart(key, value) {
+        const index = this.m_parts.findIndex((part) => part.key === key);
+        if (index >= 0)
+            this.m_parts[index].value = value;
+        this.render();
+    }
+    removePart(key) {
+        this.m_parts = this.parts.filter((p) => p.key !== key);
+        this.render();
+    }
+    togglePart(key, value) {
+        if (this.hasPartKey(key)) {
+            this.removePart(key);
+        }
+        else {
+            this.addPart(key, value);
+        }
     }
     get template() {
         return 'systems/shadowrun5e/dist/templates/rolls/roll-dialog.html';

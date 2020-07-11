@@ -14,6 +14,7 @@ export class SR5RollDialog extends Application {
     private m_extended: boolean = false;
     private m_parts: KeyValuePair[] = [];
     private m_limit: number = 0;
+    private m_situational: number = 0;
 
     get extended() {
         return this.m_extended;
@@ -25,6 +26,10 @@ export class SR5RollDialog extends Application {
 
     get parts(): Shadowrun.KeyValuePair[] {
         return this.m_parts;
+    }
+
+    get situational(): number {
+        return this.m_situational;
     }
 
     get count(): number {
@@ -39,10 +44,12 @@ export class SR5RollDialog extends Application {
      */
     getData(options?: any): any {
         const data = super.getData(options);
-        data.enableExtendedOption = true;
+        data.enableExtended = true;
         data.extended = this.m_extended;
         data.parts = this.m_parts;
         data.limit = this.m_limit;
+        data.dicePool = this.count;
+        if (this.situational) data.situational = this.situational;
         return data;
     }
 
@@ -84,13 +91,24 @@ export class SR5RollDialog extends Application {
         super.activateListeners(html);
         $(html)
             .find('[name=extended]')
-            .on('change', (event) => console.log(event));
+            .on('change', (event: any) => {
+                this.m_extended = event.currentTarget.checked;
+                this.render();
+            });
 
         $(html)
-            .find('[name="wounds"]')
-            .on('change', (event) => console.log(event));
-
-        $(html).find('[name="roll-test"]').on('click', this.rollTest.bind(this));
+            .find('[name="situational"]')
+            .on('change', (event: any) => {
+                const value = event.currentTarget.value;
+                const evaluated = eval(value);
+                const num = Number(evaluated);
+                if (num) {
+                    this.m_situational = num;
+                    this.addUniquePart('SR5.SituationalModifier', num);
+                }
+                this.render();
+            });
+        $(html).find('[name="test-roll"]').on('click', this.rollTest.bind(this));
     }
 
     getRoll(): SR5Roll {
@@ -103,18 +121,41 @@ export class SR5RollDialog extends Application {
                 name: 'SR5.Roll',
                 img: '',
             },
-            parts: this.m_parts,
+            parts: this.parts,
             testName: 'SR5.Roll',
+            limit: {
+                base: this.m_limit,
+                value: this.m_limit,
+                label: 'SR5.Limit',
+            },
         };
     }
 
+    incrementExtended() {
+        if (this.hasPartKey('SR5.ExtendedTest')) {
+            const extendedPart = this.m_parts.find((part) => part.key === 'SR5.ExtendedTest') ?? { key: 'SR5.ExtendedTest', value: 0 };
+            extendedPart.value -= 1;
+            this.updatePart('SR5.ExtendedTest', extendedPart.value);
+        } else {
+            this.addPart('SR5.ExtendedTest', -1);
+        }
+    }
+
     async rollTest(event) {
-        console.log(event);
-        console.log(this.count);
         event.preventDefault();
         const roll = this.getRoll();
-        await roll.toMessage(this.getRollTemplateData());
-        await this.close();
+        const templateData = this.getRollTemplateData();
+        await roll.toMessage(templateData);
+        // if an extended test, don't close and keep around the -1 modifiers
+        if (this.m_extended) {
+            this.incrementExtended();
+        } else {
+            await this.close();
+        }
+    }
+
+    hasPartKey(key: string): boolean {
+        return this.m_parts.reduce((running, current) => running || current.key === key, false);
     }
 
     addPart(key: string, value: number): void {
@@ -122,6 +163,34 @@ export class SR5RollDialog extends Application {
             key,
             value,
         });
+        this.render();
+    }
+
+    addUniquePart(key: string, value: number): void {
+        if (this.hasPartKey(key)) {
+            this.updatePart(key, value);
+        } else {
+            this.addPart(key, value);
+        }
+    }
+
+    updatePart(key: string, value: number) {
+        const index = this.m_parts.findIndex((part) => part.key === key);
+        if (index >= 0) this.m_parts[index].value = value;
+        this.render();
+    }
+
+    removePart(key: string) {
+        this.m_parts = this.parts.filter((p) => p.key !== key);
+        this.render();
+    }
+
+    togglePart(key: string, value: number) {
+        if (this.hasPartKey(key)) {
+            this.removePart(key);
+        } else {
+            this.addPart(key, value);
+        }
     }
 
     get template(): string {
