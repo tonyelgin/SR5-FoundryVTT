@@ -846,14 +846,7 @@ export class SR5Actor extends Actor {
     }
 
     promptRoll(options?: ActorRollOptions) {
-        return ShadowrunRoller.advancedRoll({
-            event: options?.event,
-            parts: {},
-            actor: this,
-            dialogOptions: {
-                prompt: true,
-            },
-        });
+        return ShadowrunRoller.promptRoll();
     }
 
     rollAttributesTest(rollId, options?: ActorRollOptions) {

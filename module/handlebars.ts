@@ -30,6 +30,7 @@ export const preloadHandlebarsTemplates = async () => {
         'systems/shadowrun5e/templates/item/parts/modification.html',
         'systems/shadowrun5e/templates/item/parts/program.html',
         'systems/shadowrun5e/templates/rolls/parts/parts-list.html',
+        'systems/shadowrun5e/templates/rolls/parts/roll-dialog-parts.html',
     ];
 
     return loadTemplates(templatePaths);

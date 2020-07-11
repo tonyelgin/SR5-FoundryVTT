@@ -83,7 +83,6 @@ export class SR5Roll extends Roll {
         // This *works* but something bugs me about it...
         // I have a vague nagging in the back of my head that it may leak.
         Object.assign(this, result);
-        this._rolled = true;
         return this;
     }
 

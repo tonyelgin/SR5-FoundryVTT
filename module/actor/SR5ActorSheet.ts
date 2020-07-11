@@ -8,6 +8,7 @@ import SR5SheetFilters = Shadowrun.SR5SheetFilters;
 import Skills = Shadowrun.Skills;
 import { SR5Actor } from './SR5Actor';
 import MatrixAttribute = Shadowrun.MatrixAttribute;
+import { SR5RollDialog } from '../overhaul/SR5RollDialog';
 
 /**
  * Extend the basic ActorSheet with some very simple modifications
@@ -194,7 +195,7 @@ export class SR5ActorSheet extends ActorSheet {
                 else if (Object.keys(inventory).includes(item.type)) arr[0].push(item);
                 return arr;
             },
-            [[], [], [], [], [], [], [], [], [], []]
+            [[], [], [], [], [], [], [], [], [], []],
         );
 
         const sortByName = (i1, i2) => {
@@ -210,7 +211,7 @@ export class SR5ActorSheet extends ActorSheet {
             if (left.name > right.name) return 1;
             if (left.name < right.name) return -1;
             return 0;
-        }
+        };
         actions.sort(sortByName);
         adept_powers.sort(sortByName);
         complex_forms.sort(sortByName);
@@ -455,13 +456,13 @@ export class SR5ActorSheet extends ActorSheet {
                 // if clicking the equipped, toggle it
                 for (let ite of this.actor.items.filter((i) => i.type === 'device')) {
                     newItems.push({
-                        _id: ite._id,
+                        '_id': ite._id,
                         'data.technology.equipped': ite._id === iid ? !itemData.technology.equipped : false,
                     });
                 }
             } else {
                 newItems.push({
-                    _id: iid,
+                    '_id': iid,
                     'data.technology.equipped': !itemData.technology.equipped,
                 });
             }
@@ -478,7 +479,14 @@ export class SR5ActorSheet extends ActorSheet {
 
     async _onRollPrompt(event) {
         event.preventDefault();
-        await this.actor.promptRoll({ event: event });
+        const dialog = new SR5RollDialog({
+            parts: {
+                'SR5.Base': 5,
+                'SR5.Specialization': 2,
+            },
+        });
+        dialog.render(true);
+        // await this.actor.promptRoll({ event: event });
     }
 
     async _onRollItem(event) {
