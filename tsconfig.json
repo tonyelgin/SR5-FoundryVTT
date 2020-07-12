@@ -1,9 +1,13 @@
 {
     "compilerOptions": {
+      "module": "commonjs",
+      "experimentalDecorators": true,
       "target": "es6",
       "strictNullChecks": true,
       "types": [
-        "foundry-pc-types"
+        "foundry-pc-types",
+        "@types/mocha",
+        "@types/chai"
       ]
     }
   }

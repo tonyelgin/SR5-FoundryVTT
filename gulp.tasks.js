@@ -21,6 +21,7 @@ const source = require('vinyl-source-stream');
 const buffer = require('vinyl-buffer');
 const logger = require('gulplog');
 const sourcemaps = require('gulp-sourcemaps');
+const mocha = require('gulp-mocha');
 
 // Config
 const distName = 'dist';
@@ -135,9 +136,22 @@ async function buildSass() {
         .pipe(gulp.dest(destFolder));
 }
 
+/**
+ * TEST
+ */
+async function test() {
+    gulp.src('src/module/**/*.spec.ts', { read: false }).pipe(
+        mocha({
+            reporter: 'spec',
+            require: ['ts-node/register'],
+        }),
+    );
+}
+
 exports.clean = cleanDist;
 exports.sass = buildSass;
 exports.assets = copyAssets;
 exports.build = gulp.series(copyAssets, buildSass, buildJS);
+exports.test = test;
 exports.watch = gulp.series(exports.build, watch);
 exports.rebuild = gulp.series(cleanDist, exports.build);

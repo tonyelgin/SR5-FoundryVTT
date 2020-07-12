@@ -1,10 +1,10 @@
 {
     "devDependencies": {
-        "@babel/core": "^7.0.0",
-        "@babel/plugin-proposal-class-properties": "^7.0.0",
-        "@babel/plugin-transform-runtime": "^7.10.1",
-        "@babel/preset-env": "^7.0.0",
-        "@babel/preset-typescript": "^7.10.1",
+        "@babel/core": "^7.10.4",
+        "@babel/plugin-proposal-class-properties": "^7.10.4",
+        "@babel/plugin-transform-runtime": "^7.10.4",
+        "@babel/preset-env": "^7.10.4",
+        "@babel/preset-typescript": "^7.10.4",
         "babel-core": "7.0.0-bridge.0",
         "babelify": "^10.0.0",
         "browserify": "^16.5.1",
@@ -17,11 +17,19 @@
         "gulplog": "^1.0.0",
         "lodash.assign": "^4.2.0",
         "node-sass": "^4.14.1",
-        "tsify": "^4.0.1",
-        "typescript": "^3.9.3",
+        "ts-node": "^8.10.2",
+        "tsify": "^4.0.2",
+        "typescript": "^3.9.6",
         "vinyl-buffer": "^1.0.1",
         "vinyl-source-stream": "^2.0.0",
         "watchify": "^3.11.1",
         "xml2js": "^0.4.23"
+    },
+    "dependencies": {
+        "@types/chai": "^4.2.11",
+        "@types/mocha": "^7.0.2",
+        "chai": "^4.2.0",
+        "gulp-mocha": "^7.0.2",
+        "mocha": "^8.0.1"
     }
 }
