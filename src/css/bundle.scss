@@ -327,6 +327,10 @@ select.display {
             justify-content: space-between;
             align-items: center;
             align-content: center;
+            &.pixel-fix {
+                padding: 3px 4px;
+                margin: 3px;
+            }
             padding: 0.1em 0.25em;
             margin: 0.1em;
             margin-right: $groove-width;

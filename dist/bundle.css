@@ -698,6 +698,9 @@ select.display {
     margin-right: 1px;
     margin-left: 1px;
     border-bottom: 1px solid grey; }
+    .sr5 .inventory .item.pixel-fix {
+      padding: 3px 4px;
+      margin: 3px; }
     .sr5 .inventory .item .has-desc:hover {
       text-shadow: -1px -1px 0 darkblue, 1px -1px 0 darkblue, -1px 1px 0 darkblue, 1px 1px 0 darkblue;
       cursor: pointer;

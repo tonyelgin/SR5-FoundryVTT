@@ -80,35 +80,16 @@
             </div>
             <div class="scroll-area left light-border-right">
                 {{#each data.skills.active as |skill sid|}}
-                <div class="item">
-                    <div class="item-left">
-                        <div class="item-text item-name skill-roll roll" data-skill="{{sid}}">
-                            {{localizeOb sid ../config.activeSkills}}
-                        </div>
-                    </div>
-                    <div class="item-right">
-                        <div class="item-text skill-spec-item">
-                            <input
-                                class="display text"
-                                type="text"
-                                disabled
-                                value="{{skill.specs}}"
-                            />
-                        </div>
-                        <div class="item-text rtg">
-                            <input
-                                class="display"
-                                type="text"
-                                value="{{skill.value}}"
-                                disabled
-                                data-dtype="Number"
-                            />
-                        </div>
-                        <div class="item-text item-icons rtg">
-                            <i class="skill-edit roll fas fa-edit" data-skill="{{sid}}"></i>
-                        </div>
-                    </div>
-                </div>
+                {{> "systems/shadowrun5e/dist/templates/actor/parts/skills/skill-line.html"
+                    skillId=sid
+                    skillValue=skill.value
+                    skillName=(localizeOb sid ../config.activeSkills)
+                    specializations=skill.specs
+                    category="active"
+                    specRollClass="skill-spec-roll"
+                    editClass="skill-edit"
+                    rollClass="skill-roll"
+                }}
                 {{/each}}
             </div>
         </div>
@@ -134,31 +115,17 @@
                 </div>
             </div>
             {{#each data.skills.language.value as |skill sid|}}
-            <div class="item">
-                <div class="item-left">
-                    <div class="item-text item-name language-skill roll" data-skill="{{sid}}">
-                        {{skill.name}}
-                    </div>
-                </div>
-                <div class="item-right">
-                    <div class="item-text skill-spec-item">
-                        <input class="display text" type="text" disabled value="{{skill.specs}}" />
-                    </div>
-                    <div class="item-text rtg">
-                        <input
-                            class="display"
-                            type="text"
-                            value="{{skill.value}}"
-                            disabled
-                            data-dtype="Number"
-                        />
-                    </div>
-                    <div class="item-text item-icons rtg">
-                        <i class="language-skill-edit roll fas fa-edit" data-skill="{{sid}}"></i>
-                        <i class="remove-language roll fas fa-trash" data-skill="{{sid}}"></i>
-                    </div>
-                </div>
-            </div>
+            {{> "systems/shadowrun5e/dist/templates/actor/parts/skills/skill-line.html"
+                skillId=sid
+                skillValue=skill.value
+                skillName=skill.name
+                specializations=skill.specs
+                category="language"
+                specRollClass="language-spec-roll"
+                rollClass="language-skill"
+                editClass="language-skill-edit"
+                deleteClass="remove-language"
+            }}
             {{/each}} {{#each data.skills.knowledge as |cat cid|}}
             <div class="item item-section" data-category="{{cid}}">
                 <div class="item-left">
@@ -181,43 +148,17 @@
                 </div>
             </div>
             {{#each cat.value as |skill sid|}}
-            <div class="item">
-                <div class="item-left">
-                    <div
-                        class="item-text item-name roll knowledge-skill"
-                        data-skill="{{sid}}"
-                        data-category="{{cid}}"
-                    >
-                        {{skill.name}}
-                    </div>
-                </div>
-                <div class="item-right">
-                    <div class="item-text skill-spec-item">
-                        <input class="display text" type="text" disabled value="{{skill.specs}}" />
-                    </div>
-                    <div class="item-text rtg">
-                        <input
-                            class="display"
-                            type="text"
-                            value="{{skill.value}}"
-                            disabled
-                            data-dtype="Number"
-                        />
-                    </div>
-                    <div class="item-text item-icons rtg">
-                        <i
-                            class="knowledge-skill-edit roll fas fa-edit"
-                            data-skill="{{sid}}"
-                            data-category="{{cid}}"
-                        ></i>
-                        <i
-                            class="remove-knowledge roll fas fa-trash"
-                            data-skill="{{sid}}"
-                            data-category="{{cid}}"
-                        ></i>
-                    </div>
-                </div>
-            </div>
+            {{> "systems/shadowrun5e/dist/templates/actor/parts/skills/skill-line.html"
+                skillId=sid
+                skillValue=skill.value
+                skillName=skill.name
+                specializations=skill.specs
+                category=cid
+                specRollClass="knowledge-spec-roll"
+                rollClass="knowledge-skill"
+                editClass="knowledge-skill-edit"
+                deleteClass="remove-knowledge"
+            }}
             {{/each}} {{/each}}
         </div>
     </div>

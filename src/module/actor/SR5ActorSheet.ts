@@ -280,6 +280,13 @@ export class SR5ActorSheet extends ActorSheet {
         html.find('.track-roll').click(this._onRollTrack.bind(this));
         html.find('.attribute-roll').click(this._onRollAttribute.bind(this));
         html.find('.skill-roll').click(this._onRollActiveSkill.bind(this));
+        // TODO add spec shortcut rolls for Language and Knowledge
+        html.find('.skill-spec-roll').on('click', (event) => {
+            event.preventDefault();
+            const skill = event.currentTarget.dataset.skill;
+            const specialization = event.currentTarget.dataset.specialization;
+            return new SR5ActorSkillRollDialog({ skill, specialization, actor: this.actor }).render(true);
+        });
         html.find('.defense-roll').click(this._onRollDefense.bind(this));
         html.find('.attribute-only-roll').click(this._onRollAttributesOnly.bind(this));
         html.find('.soak-roll').click(this._onRollSoak.bind(this));

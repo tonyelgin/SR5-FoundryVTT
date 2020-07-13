@@ -2355,6 +2355,13 @@ class SR5ActorSheet extends ActorSheet {
         html.find('.track-roll').click(this._onRollTrack.bind(this));
         html.find('.attribute-roll').click(this._onRollAttribute.bind(this));
         html.find('.skill-roll').click(this._onRollActiveSkill.bind(this));
+        // TODO add spec shortcut rolls for Language and Knowledge
+        html.find('.skill-spec-roll').on('click', (event) => {
+            event.preventDefault();
+            const skill = event.currentTarget.dataset.skill;
+            const specialization = event.currentTarget.dataset.specialization;
+            return new SR5ActorSkillRollDialog_1.SR5ActorSkillRollDialog({ skill, specialization, actor: this.actor }).render(true);
+        });
         html.find('.defense-roll').click(this._onRollDefense.bind(this));
         html.find('.attribute-only-roll').click(this._onRollAttributesOnly.bind(this));
         html.find('.soak-roll').click(this._onRollSoak.bind(this));
@@ -4627,6 +4634,7 @@ exports.preloadHandlebarsTemplates = () => __awaiter(void 0, void 0, void 0, fun
         'systems/shadowrun5e/dist/templates/actor/parts/actor-config.html',
         'systems/shadowrun5e/dist/templates/actor/parts/actor-bio.html',
         'systems/shadowrun5e/dist/templates/actor/parts/actor-social.html',
+        'systems/shadowrun5e/dist/templates/actor/parts/skills/skill-line.html',
         'systems/shadowrun5e/dist/templates/item/parts/description.html',
         'systems/shadowrun5e/dist/templates/item/parts/technology.html',
         'systems/shadowrun5e/dist/templates/item/parts/header.html',
@@ -7564,6 +7572,9 @@ class SR5ActorSkillRollDialog extends SR5ActorRollDialog_1.SR5ActorRollDialog {
         if ((_c = this.skillField) === null || _c === void 0 ? void 0 : _c.label) {
             this.addPart(this.skillField.label, this.skillField.value);
             this.attribute = this.skillField.attribute;
+            if (this.specialization && this.skillField.specs.includes(this.specialization)) {
+                this.addPart(this.specialization, 2);
+            }
         }
         if ((_d = this.attributeField) === null || _d === void 0 ? void 0 : _d.label) {
             this.addPart(this.attributeField.label, this.attributeField.value);
@@ -7673,10 +7684,8 @@ class SR5ActorSkillRollDialog extends SR5ActorRollDialog_1.SR5ActorRollDialog {
             .find('[name="specialization"]')
             .on('change', (event) => {
             const spec = event.currentTarget.value;
-            if (spec) {
-                this.changeSpec(spec);
-                this.render();
-            }
+            this.changeSpec(spec);
+            this.render();
         });
     }
 }

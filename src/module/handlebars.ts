@@ -10,6 +10,8 @@ export const preloadHandlebarsTemplates = async () => {
         'systems/shadowrun5e/dist/templates/actor/parts/actor-config.html',
         'systems/shadowrun5e/dist/templates/actor/parts/actor-bio.html',
         'systems/shadowrun5e/dist/templates/actor/parts/actor-social.html',
+        'systems/shadowrun5e/dist/templates/actor/parts/skills/skill-line.html',
+
         'systems/shadowrun5e/dist/templates/item/parts/description.html',
         'systems/shadowrun5e/dist/templates/item/parts/technology.html',
         'systems/shadowrun5e/dist/templates/item/parts/header.html',
@@ -29,6 +31,7 @@ export const preloadHandlebarsTemplates = async () => {
         'systems/shadowrun5e/dist/templates/item/parts/ammo.html',
         'systems/shadowrun5e/dist/templates/item/parts/modification.html',
         'systems/shadowrun5e/dist/templates/item/parts/program.html',
+
         'systems/shadowrun5e/dist/templates/rolls/parts/parts-list.html',
         'systems/shadowrun5e/dist/templates/rolls/parts/roll-dialog-parts.html',
     ];
