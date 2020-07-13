@@ -7906,9 +7906,9 @@ class SR5Roll extends Roll {
             throw new DiceError('Must request least one die be rolled.');
         }
         super(SR5Roll.ToFormula(count, limit, explode));
-        this.m_Count = count;
-        this.m_Limit = limit;
-        this.m_Explode = explode;
+        this._count = count;
+        this._limit = limit;
+        this._explode = explode;
     }
     /**
      * Build a formula for a Shadowrun dice roll.
@@ -7947,7 +7947,7 @@ class SR5Roll extends Roll {
         return this;
     }
     reroll() {
-        return new SR5Roll(this.m_Count, this.m_Limit, this.m_Explode).roll();
+        return new SR5Roll(this._count, this._limit, this._explode).roll();
     }
     // Override type...
     get dice() {
