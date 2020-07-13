@@ -2080,7 +2080,7 @@ class SR5Actor extends Actor {
     }
 }
 exports.SR5Actor = SR5Actor;
-},{"../helpers":29,"../rolls/ShadowrunRoller":42}],17:[function(require,module,exports){
+},{"../helpers":29,"../rolls/ShadowrunRoller":43}],17:[function(require,module,exports){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -4221,7 +4221,7 @@ exports.addRollListeners = (app, html) => {
     if ((item === null || item === void 0 ? void 0 : item.hasRoll) && app.isRoll)
         $(html).find('.card-description').hide();
 };
-},{"./actor/SR5Actor":16,"./item/SR5Item":31,"./template":44}],26:[function(require,module,exports){
+},{"./actor/SR5Actor":16,"./item/SR5Item":31,"./template":45}],26:[function(require,module,exports){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -6203,7 +6203,7 @@ class SR5Item extends Item {
     }
 }
 exports.SR5Item = SR5Item;
-},{"../apps/dialogs/ShadowrunItemDialog":19,"../chat":25,"../helpers":29,"../rolls/ShadowrunRoller":42,"../template":44,"./ChatData":30}],32:[function(require,module,exports){
+},{"../apps/dialogs/ShadowrunItemDialog":19,"../chat":25,"../helpers":29,"../rolls/ShadowrunRoller":43,"../template":45,"./ChatData":30}],32:[function(require,module,exports){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -6660,7 +6660,7 @@ function rollItemMacro(itemName) {
     return item.rollTest(event);
 }
 handlebars_1.registerHandlebarHelpers();
-},{"./actor/SR5Actor":16,"./actor/SR5ActorSheet":17,"./apps/gmtools/OverwatchScoreTracker":20,"./canvas":24,"./chat":25,"./combat":26,"./config":27,"./handlebars":28,"./helpers":29,"./item/SR5Item":31,"./item/SR5ItemSheet":32,"./migrator/Migrator":34,"./rolls/ShadowrunRoller":42,"./settings":43}],34:[function(require,module,exports){
+},{"./actor/SR5Actor":16,"./actor/SR5ActorSheet":17,"./apps/gmtools/OverwatchScoreTracker":20,"./canvas":24,"./chat":25,"./combat":26,"./config":27,"./handlebars":28,"./helpers":29,"./item/SR5Item":31,"./item/SR5ItemSheet":32,"./migrator/Migrator":34,"./rolls/ShadowrunRoller":43,"./settings":44}],34:[function(require,module,exports){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -7521,7 +7521,7 @@ class SR5ActorRollDialog extends SR5RollDialog_1.SR5RollDialog {
         this.actor = options.actor;
         this.wound = (_a = options.wound) !== null && _a !== void 0 ? _a : true;
         if (this.wound && this.actor.getWoundModifier() !== 0) {
-            this.addUniquePart('SR5.WoundModifier', this.actor.getWoundModifier());
+            this.parts.set('SR5.WoundModifier', this.actor.getWoundModifier());
         }
     }
     getData(options) {
@@ -7541,10 +7541,10 @@ class SR5ActorRollDialog extends SR5RollDialog_1.SR5RollDialog {
     }
     getRoll() {
         // add push the limit to parts list
-        if (this.pushTheLimit && !this.hasPartKey('SR5.PushTheLimit')) {
-            this.addPart('SR5.PushTheLimit', this.actor.getEdge().max);
+        if (this.pushTheLimit) {
+            this.parts.set('SR5.PushTheLimit', this.actor.getEdge().max);
         }
-        return new SR5Roll_1.SR5Roll(this.count, this.limit, this.pushTheLimit);
+        return new SR5Roll_1.SR5Roll(this.parts.sum(), this.limit, this.pushTheLimit);
     }
     getTestName() {
         return 'Unknown Test';
@@ -7566,10 +7566,7 @@ class SR5ActorRollDialog extends SR5RollDialog_1.SR5RollDialog {
             .on('change', (event) => {
             this.pushTheLimit = event.currentTarget.checked;
             if (this.pushTheLimit) {
-                this.addUniquePart('SR5.PushTheLimit', this.actor.getEdge().max);
-            }
-            else {
-                this.removePart('SR5.PushTheLimit');
+                this.parts.set('SR5.PushTheLimit', this.actor.getEdge().max);
             }
         });
         $(html)
@@ -7577,10 +7574,7 @@ class SR5ActorRollDialog extends SR5RollDialog_1.SR5RollDialog {
             .on('change', (event) => {
             this.wound = event.currentTarget.checked;
             if (this.wound) {
-                this.addUniquePart('SR5.WoundModifier', this.actor.getWoundModifier());
-            }
-            else {
-                this.removePart('SR5.WoundModifier');
+                this.parts.set('SR5.WoundModifier', this.actor.getWoundModifier());
             }
         });
     }
@@ -7599,11 +7593,11 @@ class SR5ActorSkillRollDialog extends SR5ActorRollDialog_1.SR5ActorRollDialog {
         this.category = options.category;
         this.skill = options.skill;
         if ((_b = this.skillField) === null || _b === void 0 ? void 0 : _b.label) {
-            this.addPart(this.skillField.label, this.skillField.value);
+            this.parts.set(this.skillField.label, this.skillField.value);
             this.attribute = this.skillField.attribute;
         }
         if ((_c = this.attributeField) === null || _c === void 0 ? void 0 : _c.label) {
-            this.addPart(this.attributeField.label, this.attributeField.value);
+            this.parts.set(this.attributeField.label, this.attributeField.value);
         }
         this.limit = (_e = (_d = this.limitField) === null || _d === void 0 ? void 0 : _d.value) !== null && _e !== void 0 ? _e : 0;
     }
@@ -7636,10 +7630,10 @@ class SR5ActorSkillRollDialog extends SR5ActorRollDialog_1.SR5ActorRollDialog {
         const oldAtt = this.attributeField;
         this.attribute = attributeId;
         if (oldAtt === null || oldAtt === void 0 ? void 0 : oldAtt.label) {
-            this.removePart(oldAtt.label);
+            this.parts.remove(oldAtt.label);
         }
         if ((_a = this.attributeField) === null || _a === void 0 ? void 0 : _a.label) {
-            this.addPart(this.attributeField.label, this.attributeField.value);
+            this.parts.set(this.attributeField.label, this.attributeField.value);
         }
         this.limit = (_c = (_b = this.limitField) === null || _b === void 0 ? void 0 : _b.value) !== null && _c !== void 0 ? _c : 0;
     }
@@ -7651,26 +7645,27 @@ class SR5ActorSkillRollDialog extends SR5ActorRollDialog_1.SR5ActorRollDialog {
         if ((_a = this.skillField) === null || _a === void 0 ? void 0 : _a.label) {
             this.attribute = this.skillField.attribute;
         }
-        this.removePart('SR5.Defaulting');
+        this.parts.remove('SR5.Defaulting');
         // remove old parts
         if (oldAtt === null || oldAtt === void 0 ? void 0 : oldAtt.label) {
-            this.removePart(oldAtt === null || oldAtt === void 0 ? void 0 : oldAtt.label);
+            this.parts.remove(oldAtt.label);
         }
         if (oldSkill === null || oldSkill === void 0 ? void 0 : oldSkill.label) {
-            this.removePart(oldSkill.label);
+            this.parts.remove(oldSkill.label);
         }
         if ((_b = this.skillField) === null || _b === void 0 ? void 0 : _b.label) {
             // add the defaulting key if at 0, otherwise add the skill to parts
+            //TODO: Bad habit
             if (this.skillField.value === 0) {
-                this.addPart('SR5.Defaulting', -1);
+                this.parts.set('SR5.Defaulting', -1);
             }
             else {
-                this.addPart(this.skillField.label, this.skillField.value);
+                this.parts.set(this.skillField.label, this.skillField.value);
             }
         }
         // add attribute to parts
         if ((_c = this.attributeField) === null || _c === void 0 ? void 0 : _c.label) {
-            this.addPart(this.attributeField.label, this.attributeField.value);
+            this.parts.set(this.attributeField.label, this.attributeField.value);
         }
     }
     activateListeners(html) {
@@ -7706,33 +7701,38 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SR5RollDialog = void 0;
 const SR5Roll_1 = require("../roll/SR5Roll");
+const SR5RollParts_1 = require("../roll/SR5RollParts");
 class SR5RollDialog extends Application {
     constructor(options) {
         super();
-        // handle extended tests
         this.extended = false;
-        this.parts = [];
         this.limit = 0;
         this.situational = 0;
         // add parts from options
         if (options === null || options === void 0 ? void 0 : options.parts) {
             // map ModList to new config method
-            this.parts = Object.entries(options.parts).map(([key, value]) => {
-                return {
-                    key,
-                    value,
-                };
-            });
+            this.parts = new SR5RollParts_1.SR5RollParts(duplicate(options.parts));
+        }
+        else {
+            this.parts = new SR5RollParts_1.SR5RollParts();
         }
         // add extended from options
         if (options === null || options === void 0 ? void 0 : options.extended) {
             this.extended = options.extended;
         }
     }
-    get count() {
-        return this.parts.reduce((total, current) => {
-            return total + current.value;
-        }, 0);
+    static get defaultOptions() {
+        return mergeObject(super.defaultOptions, {
+            baseApplication: 'SR5RollDialog',
+            width: 400,
+            height: 'auto',
+            minimizable: false,
+            resizable: false,
+            classes: ['sr5', 'roll-dialog'],
+        });
+    }
+    get template() {
+        return 'systems/shadowrun5e/dist/templates/rolls/roll-dialog.html';
     }
     /**
      * @Override
@@ -7742,23 +7742,13 @@ class SR5RollDialog extends Application {
         const data = super.getData(options);
         data.enableExtendedOption = true;
         data.extended = this.extended;
-        data.parts = this.parts;
+        data.parts = this.parts.pairs();
         data.limit = this.limit;
-        data.dicePool = this.count;
+        data.dicePool = this.parts.sum();
         if (this.situational)
             data.situational = this.situational;
         data.config = CONFIG.SR5;
         return data;
-    }
-    static get defaultOptions() {
-        return mergeObject(super.defaultOptions, {
-            baseApplication: 'SR5RollDialog',
-            width: 400,
-            height: 300,
-            minimizable: false,
-            resizable: false,
-            classes: ['sr5', 'roll-dialog'],
-        });
     }
     /**
      * @Override
@@ -7780,14 +7770,14 @@ class SR5RollDialog extends Application {
             const num = Number(evaluated);
             if (num) {
                 this.situational = num;
-                this.addUniquePart('SR5.SituationalModifier', num);
+                this.parts.set('SR5.SituationalModifier', num);
             }
             this.render();
         });
         $(html).find('[name="test-roll"]').on('click', this.rollTest.bind(this));
     }
     getRoll() {
-        return new SR5Roll_1.SR5Roll(this.count, this.limit);
+        return new SR5Roll_1.SR5Roll(this.parts.sum(), this.limit);
     }
     getRollTemplateData() {
         return {
@@ -7795,7 +7785,7 @@ class SR5RollDialog extends Application {
                 name: 'SR5.Roll',
                 img: '',
             },
-            parts: this.parts,
+            parts: this.parts.pairs(),
             testName: 'SR5.Roll',
             limit: {
                 base: this.limit,
@@ -7805,15 +7795,7 @@ class SR5RollDialog extends Application {
         };
     }
     incrementExtended() {
-        var _a;
-        if (this.hasPartKey('SR5.ExtendedTest')) {
-            const extendedPart = (_a = this.parts.find((part) => part.key === 'SR5.ExtendedTest')) !== null && _a !== void 0 ? _a : { key: 'SR5.ExtendedTest', value: 0 };
-            extendedPart.value -= 1;
-            this.updatePart('SR5.ExtendedTest', extendedPart.value);
-        }
-        else {
-            this.addPart('SR5.ExtendedTest', -1);
-        }
+        this.parts.increment('SR5.ExtendedTest', -1);
     }
     rollTest(event) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -7830,45 +7812,9 @@ class SR5RollDialog extends Application {
             }
         });
     }
-    hasPartKey(key) {
-        return this.parts.reduce((running, current) => running || current.key === key, false);
-    }
-    addPart(key, value) {
-        this.parts.push({
-            key,
-            value,
-        });
-    }
-    addUniquePart(key, value) {
-        if (this.hasPartKey(key)) {
-            this.updatePart(key, value);
-        }
-        else {
-            this.addPart(key, value);
-        }
-    }
-    updatePart(key, value) {
-        const index = this.parts.findIndex((part) => part.key === key);
-        if (index >= 0)
-            this.parts[index].value = value;
-    }
-    removePart(key) {
-        this.parts = this.parts.filter((p) => p.key !== key);
-    }
-    togglePart(key, value) {
-        if (this.hasPartKey(key)) {
-            this.removePart(key);
-        }
-        else {
-            this.addPart(key, value);
-        }
-    }
-    get template() {
-        return 'systems/shadowrun5e/dist/templates/rolls/roll-dialog.html';
-    }
 }
 exports.SR5RollDialog = SR5RollDialog;
-},{"../roll/SR5Roll":41}],41:[function(require,module,exports){
+},{"../roll/SR5Roll":41,"../roll/SR5RollParts":42}],41:[function(require,module,exports){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -7935,6 +7881,7 @@ class SR5Roll extends Roll {
      */
     static Roll(count, limit = -1, explode = false) {
         if (count <= 0) {
+            //TODO: I18n.
             throw new DiceError('Must request least one die be rolled.');
         }
         return new SR5Roll(count, limit, explode).roll();
@@ -7959,7 +7906,7 @@ class SR5Roll extends Roll {
     get hits() {
         // Could also return undefined, null, 0, etc...
         if (!this._rolled)
-            return NaN;
+            return Number.NaN;
         return this.total;
     }
     /**
@@ -7968,7 +7915,7 @@ class SR5Roll extends Roll {
     get glitches() {
         // Could also return undefined, null, 0, etc...
         if (!this._rolled)
-            return NaN;
+            return Number.NaN;
         return this.dice[0].rolls.filter((die) => die.roll === 1).length;
     }
     /**
@@ -8007,6 +7954,7 @@ class SR5Roll extends Roll {
     }
     toJSON() {
         const data = super.toJSON();
+        // Required for Dice-So-Nice support
         data.class = 'Roll';
         return data;
     }
@@ -8021,6 +7969,138 @@ class SR5Roll extends Roll {
 }
 exports.SR5Roll = SR5Roll;
 },{"../chat":25}],42:[function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.SR5RollParts = void 0;
+class SR5RollParts {
+    constructor(parts) {
+        if (parts === undefined) {
+            parts = {};
+        }
+        this._parts = parts;
+    }
+    /**
+     * Merge another parts list into this list.
+     * @param other
+     */
+    merge(other) {
+        for (const key of Object.keys(other)) {
+            this._parts[key] = other[key];
+        }
+        return this;
+    }
+    /**
+     * All keys of this object.
+     */
+    keys() {
+        return Object.keys(this._parts);
+    }
+    /**
+     * Return all parts in this parts list as {key, value} pairs.
+     */
+    pairs() {
+        const array = [];
+        for (const [key, value] of Object.entries(this._parts)) {
+            array.push({
+                key,
+                value,
+            });
+        }
+        console.warn(array);
+        return array;
+    }
+    /**
+     * Return all parts in this parts list as [key, value] pairs.
+     */
+    asArray() {
+        return Object.entries(this._parts);
+    }
+    /**
+     * Sets the key and value in this list, overwrites existing values.
+     * @param key
+     * @param value
+     */
+    set(key, value) {
+        this._parts[key] = value;
+    }
+    /**
+     * Remove a specified part. Returns true if a part was removed.
+     * @param key
+     */
+    remove(key) {
+        if (this.has(key)) {
+            delete this._parts[key];
+            return true;
+        }
+        return false;
+    }
+    /**
+     * Try to add the key and value to this list. Returns true if it is inserted, or false if it already exists.
+     * @param key
+     * @param value
+     */
+    add(key, value) {
+        if (this._parts.hasOwnProperty(key)) {
+            return false;
+        }
+        this._parts[key] = value;
+        return true;
+    }
+    /**
+     * Increments a part by an amount. If the part does not exist, this functions as {@see set}.
+     * @param key
+     * @param amount
+     */
+    increment(key, amount) {
+        if (this.has(key)) {
+            amount = this.get(key) + amount;
+        }
+        this.set(key, amount);
+    }
+    /**
+     * Returns true if the parts list has the specified key.
+     * @param key
+     */
+    has(key) {
+        return this._parts.hasOwnProperty(key);
+    }
+    /**
+     * Get a part by its key. Throws if the key does not exist.
+     * @param key
+     */
+    get(key) {
+        if (this._parts.hasOwnProperty(key)) {
+            return this._parts[key];
+        }
+        //TODO: I18n.
+        throw new Error(`${key} does not exist in parts list.`);
+    }
+    /**
+     * Tries to get a part, returns {@param except} if it is not found.
+     * @param key
+     * @param except
+     */
+    tryGet(key, except = 0) {
+        try {
+            return this.get(key);
+        }
+        catch (error) {
+            return except;
+        }
+    }
+    /**
+     * Get the total of this parts list.
+     */
+    sum() {
+        let sum = 0;
+        for (const key of this.keys()) {
+            sum += this._parts[key];
+        }
+        return sum;
+    }
+}
+exports.SR5RollParts = SR5RollParts;
+},{}],43:[function(require,module,exports){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -8218,7 +8298,7 @@ class ShadowrunRoller {
     }
 }
 exports.ShadowrunRoller = ShadowrunRoller;
-},{"../helpers":29,"../roll/SR5Roll":41}],43:[function(require,module,exports){
+},{"../helpers":29,"../roll/SR5Roll":41}],44:[function(require,module,exports){
 "use strict";
 // game settings for shadowrun 5e
 Object.defineProperty(exports, "__esModule", { value: true });
@@ -8271,7 +8351,7 @@ exports.registerSystemSettings = () => {
         default: '0',
     });
 };
-},{"./migrator/VersionMigration":35}],44:[function(require,module,exports){
+},{"./migrator/VersionMigration":35}],45:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 class Template extends MeasuredTemplate {

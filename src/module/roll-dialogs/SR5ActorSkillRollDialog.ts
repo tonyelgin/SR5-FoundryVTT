@@ -42,11 +42,11 @@ export class SR5ActorSkillRollDialog extends SR5ActorRollDialog {
         this.category = options.category;
         this.skill = options.skill;
         if (this.skillField?.label) {
-            this.addPart(this.skillField.label, this.skillField.value);
+            this.parts.set(this.skillField.label, this.skillField.value);
             this.attribute = this.skillField.attribute;
         }
         if (this.attributeField?.label) {
-            this.addPart(this.attributeField.label, this.attributeField.value);
+            this.parts.set(this.attributeField.label, this.attributeField.value);
         }
         this.limit = this.limitField?.value ?? 0;
     }
@@ -65,11 +65,11 @@ export class SR5ActorSkillRollDialog extends SR5ActorRollDialog {
         this.attribute = attributeId;
 
         if (oldAtt?.label) {
-            this.removePart(oldAtt.label);
+            this.parts.remove(oldAtt.label);
         }
 
         if (this.attributeField?.label) {
-            this.addPart(this.attributeField.label, this.attributeField.value);
+            this.parts.set(this.attributeField.label, this.attributeField.value);
         }
         this.limit = this.limitField?.value ?? 0;
     }
@@ -82,28 +82,29 @@ export class SR5ActorSkillRollDialog extends SR5ActorRollDialog {
         if (this.skillField?.label) {
             this.attribute = this.skillField.attribute;
         }
-        this.removePart('SR5.Defaulting');
+        this.parts.remove('SR5.Defaulting');
 
         // remove old parts
         if (oldAtt?.label) {
-            this.removePart(oldAtt?.label);
+            this.parts.remove(oldAtt.label);
         }
         if (oldSkill?.label) {
-            this.removePart(oldSkill.label);
+            this.parts.remove(oldSkill.label);
         }
 
         if (this.skillField?.label) {
             // add the defaulting key if at 0, otherwise add the skill to parts
+            //TODO: Bad habit
             if (this.skillField.value === 0) {
-                this.addPart('SR5.Defaulting', -1);
+                this.parts.set('SR5.Defaulting', -1);
             } else {
-                this.addPart(this.skillField.label, this.skillField.value);
+                this.parts.set(this.skillField.label, this.skillField.value);
             }
         }
 
         // add attribute to parts
         if (this.attributeField?.label) {
-            this.addPart(this.attributeField.label, this.attributeField.value);
+            this.parts.set(this.attributeField.label, this.attributeField.value);
         }
     }
 

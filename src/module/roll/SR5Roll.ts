@@ -46,6 +46,7 @@ export class SR5Roll extends Roll {
      */
     public static Roll(count: number, limit: number = -1, explode: boolean = false): SR5Roll {
         if (count <= 0) {
+            //TODO: I18n.
             throw new DiceError('Must request least one die be rolled.');
         }
 
@@ -66,6 +67,8 @@ export class SR5Roll extends Roll {
      * If the roll should explode or not
      */
     protected _explode: boolean;
+
+    public templateData: TemplateData | undefined;
 
     constructor(count: number, limit: number = -1, explode: boolean = false) {
         if (count <= 0) {
@@ -100,7 +103,7 @@ export class SR5Roll extends Roll {
      */
     get hits(): number {
         // Could also return undefined, null, 0, etc...
-        if (!this._rolled) return NaN;
+        if (!this._rolled) return Number.NaN;
         return this.total;
     }
 
@@ -109,7 +112,7 @@ export class SR5Roll extends Roll {
      */
     get glitches(): number {
         // Could also return undefined, null, 0, etc...
-        if (!this._rolled) return NaN;
+        if (!this._rolled) return Number.NaN;
         return this.dice[0].rolls.filter((die) => die.roll === 1).length;
     }
 
@@ -148,6 +151,7 @@ export class SR5Roll extends Roll {
 
     toJSON(): any {
         const data = super.toJSON();
+        // Required for Dice-So-Nice support
         data.class = 'Roll';
         return data;
     }
@@ -161,6 +165,4 @@ export class SR5Roll extends Roll {
     render(chatOptions?: object): Promise<JQuery | HTMLElement> {
         return super.render(chatOptions);
     }
-
-    public templateData: TemplateData | undefined;
 }
