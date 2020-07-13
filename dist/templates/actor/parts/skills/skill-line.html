@@ -1,0 +1,27 @@
+{{!-- TODO cleanup this pixel-fix thing, for some reason formatting got weird once put into the template --}}
+<div class="item pixel-fix" data-skill="{{skillId}}" data-category="{{category}}">
+    <div class="item-left">
+        <div class="item-text item-name {{rollClass}} roll" data-skill="{{skillId}}" data-category="{{category}}">
+            {{skillName}}
+        </div>
+    </div>
+    <div class="item-right">
+        <div class="item-text skill-spec-item flexrow center" style="white-space: nowrap">
+            {{#each specializations as |spec index|}}
+            {{#ifgt index 0}}|{{/ifgt}}
+            <div class="roll {{../specRollClass}} flex0" style="width: auto" data-skill="{{../skillId}}" data-category="{{../category}}" data-specialization="{{spec}}">
+                {{spec}}
+            </div>
+            {{/each}}
+        </div>
+        <div class="item-text rtg">
+            {{skillValue}}
+        </div>
+        <div class="item-text item-icons rtg">
+            <i class="{{editClass}} roll fas fa-edit" data-skill="{{skillId}}" data-category="{{category}}"></i>
+            {{#if (isDefined deleteClass)}}
+            <i class="{{deleteClass}} roll fas fa-trash" data-skill="{{skillId}}" data-category="{{category}}"></i>
+            {{/if}}
+        </div>
+    </div>
+</div>
