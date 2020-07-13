@@ -11,10 +11,12 @@ export type SR5ActorSkillRollDialogOptions = SR5ActorRollDialogOptions & {
     attribute?: string;
     limit?: string;
     category?: KnowledgeSkillCategory;
+    specialization?: string;
 };
 
 export class SR5ActorSkillRollDialog extends SR5ActorRollDialog {
     readonly skillType: SkillTypes;
+    protected specialization: string;
     protected skill: string;
     protected category?: string;
     get skillField(): SkillField | undefined {
@@ -39,6 +41,7 @@ export class SR5ActorSkillRollDialog extends SR5ActorRollDialog {
     constructor(options: SR5ActorSkillRollDialogOptions) {
         super(options);
         this.skillType = options.skillType ?? 'active';
+        this.specialization = options.specialization ?? '';
         this.category = options.category;
         this.skill = options.skill;
         if (this.skillField?.label) {
@@ -56,11 +59,17 @@ export class SR5ActorSkillRollDialog extends SR5ActorRollDialog {
         data.skill = this.skill;
         data.attribute = this.attribute;
         data.enableAttributeOption = true;
+        const skillSpecs = this.skillField?.specs ?? [];
+        if (skillSpecs.length > 0) {
+            data.enableSpecializationOption = true;
+            data.specialization = this.specialization;
+            data.skillSpecializations = skillSpecs;
+        }
 
         return data;
     }
 
-    changeAttribute(attributeId) {
+    changeAttribute(attributeId: string) {
         const oldAtt = this.attributeField;
         this.attribute = attributeId;
 
@@ -72,6 +81,17 @@ export class SR5ActorSkillRollDialog extends SR5ActorRollDialog {
             this.addPart(this.attributeField.label, this.attributeField.value);
         }
         this.limit = this.limitField?.value ?? 0;
+    }
+
+    changeSpec(specialization: string) {
+        const oldSpec = this.specialization;
+        if (oldSpec) {
+            this.removePart(oldSpec);
+        }
+        this.specialization = specialization;
+        if (this.specialization) {
+            this.addPart(this.specialization, 2);
+        }
     }
 
     changeSkill(skillId) {
@@ -123,6 +143,16 @@ export class SR5ActorSkillRollDialog extends SR5ActorRollDialog {
                 const newAttribute = event.currentTarget.value;
                 this.changeAttribute(newAttribute);
                 this.render();
+            });
+
+        $(html)
+            .find('[name="specialization"]')
+            .on('change', (event: any) => {
+                const spec = event.currentTarget.value;
+                if (spec) {
+                    this.changeSpec(spec);
+                    this.render();
+                }
             });
     }
 }

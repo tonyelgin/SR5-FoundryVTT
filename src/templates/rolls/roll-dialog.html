@@ -15,6 +15,17 @@
         </select>
     </div>
     {{/if}}
+    {{#if enableSpecializationOption}}
+    <div class="form-group">
+        <label>{{localize 'SR5.Specialization'}}</label>
+        <select class="display" name="specialization">
+            <option value="">{{localize 'SR5.None'}}</option>
+            {{#select specialization}} {{#each skillSpecializations as |spec id|}}
+            <option value="{{spec}}">{{spec}}</option>
+            {{/each}} {{/select}}
+        </select>
+    </div>
+    {{/if}}
     {{#if enableAttributeOption}}
     <div class="form-group">
         <label>{{localize 'SR5.Attribute'}}</label>

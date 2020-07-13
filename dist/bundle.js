@@ -7555,19 +7555,20 @@ exports.SR5ActorSkillRollDialog = void 0;
 const SR5ActorRollDialog_1 = require("./SR5ActorRollDialog");
 class SR5ActorSkillRollDialog extends SR5ActorRollDialog_1.SR5ActorRollDialog {
     constructor(options) {
-        var _a, _b, _c, _d, _e;
+        var _a, _b, _c, _d, _e, _f;
         super(options);
         this.skillType = (_a = options.skillType) !== null && _a !== void 0 ? _a : 'active';
+        this.specialization = (_b = options.specialization) !== null && _b !== void 0 ? _b : '';
         this.category = options.category;
         this.skill = options.skill;
-        if ((_b = this.skillField) === null || _b === void 0 ? void 0 : _b.label) {
+        if ((_c = this.skillField) === null || _c === void 0 ? void 0 : _c.label) {
             this.addPart(this.skillField.label, this.skillField.value);
             this.attribute = this.skillField.attribute;
         }
-        if ((_c = this.attributeField) === null || _c === void 0 ? void 0 : _c.label) {
+        if ((_d = this.attributeField) === null || _d === void 0 ? void 0 : _d.label) {
             this.addPart(this.attributeField.label, this.attributeField.value);
         }
-        this.limit = (_e = (_d = this.limitField) === null || _d === void 0 ? void 0 : _d.value) !== null && _e !== void 0 ? _e : 0;
+        this.limit = (_f = (_e = this.limitField) === null || _e === void 0 ? void 0 : _e.value) !== null && _f !== void 0 ? _f : 0;
     }
     get skillField() {
         if (this.skillType === 'active') {
@@ -7587,11 +7588,17 @@ class SR5ActorSkillRollDialog extends SR5ActorRollDialog_1.SR5ActorRollDialog {
         return this.actor.findLimitFromAttribute(this.attribute);
     }
     getData(options) {
+        var _a, _b;
         const data = super.getData(options);
         data.skill = this.skill;
         data.attribute = this.attribute;
         data.enableAttributeOption = true;
-        data.enableSkillOption = true;
+        const skillSpecs = (_b = (_a = this.skillField) === null || _a === void 0 ? void 0 : _a.specs) !== null && _b !== void 0 ? _b : [];
+        if (skillSpecs.length > 0) {
+            data.enableSpecializationOption = true;
+            data.specialization = this.specialization;
+            data.skillSpecializations = skillSpecs;
+        }
         return data;
     }
     changeAttribute(attributeId) {
@@ -7605,6 +7612,16 @@ class SR5ActorSkillRollDialog extends SR5ActorRollDialog_1.SR5ActorRollDialog {
             this.addPart(this.attributeField.label, this.attributeField.value);
         }
         this.limit = (_c = (_b = this.limitField) === null || _b === void 0 ? void 0 : _b.value) !== null && _c !== void 0 ? _c : 0;
+    }
+    changeSpec(specialization) {
+        const oldSpec = this.specialization;
+        if (oldSpec) {
+            this.removePart(oldSpec);
+        }
+        this.specialization = specialization;
+        if (this.specialization) {
+            this.addPart(this.specialization, 2);
+        }
     }
     changeSkill(skillId) {
         var _a, _b, _c;
@@ -7651,6 +7668,15 @@ class SR5ActorSkillRollDialog extends SR5ActorRollDialog_1.SR5ActorRollDialog {
             const newAttribute = event.currentTarget.value;
             this.changeAttribute(newAttribute);
             this.render();
+        });
+        $(html)
+            .find('[name="specialization"]')
+            .on('change', (event) => {
+            const spec = event.currentTarget.value;
+            if (spec) {
+                this.changeSpec(spec);
+                this.render();
+            }
         });
     }
 }
