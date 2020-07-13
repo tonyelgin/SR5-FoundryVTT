@@ -5,7 +5,7 @@ import { TemplateData } from '../chat';
 
 export type SR5ActorRollDialogOptions = SR5RollDialogOptions & {
     actor: SR5Actor;
-    wound?: boolean
+    wound?: boolean;
 };
 
 export class SR5ActorRollDialog extends SR5RollDialog {
@@ -18,7 +18,7 @@ export class SR5ActorRollDialog extends SR5RollDialog {
         this.actor = options.actor;
         this.wound = options.wound ?? true;
         if (this.wound && this.actor.getWoundModifier() !== 0) {
-            this.addUniquePart('SR5.WoundModifier', this.actor.getWoundModifier());
+            this.parts.set('SR5.WoundModifier', this.actor.getWoundModifier());
         }
     }
 
@@ -43,11 +43,11 @@ export class SR5ActorRollDialog extends SR5RollDialog {
 
     getRoll(): SR5Roll {
         // add push the limit to parts list
-        if (this.pushTheLimit && !this.hasPartKey('SR5.PushTheLimit')) {
-            this.addPart('SR5.PushTheLimit', this.actor.getEdge().max);
+        if (this.pushTheLimit) {
+            this.parts.set('SR5.PushTheLimit', this.actor.getEdge().max);
         }
 
-        return new SR5Roll(this.count, this.limit, this.pushTheLimit);
+        return new SR5Roll(this.parts.sum(), this.limit, this.pushTheLimit);
     }
 
     getTestName(): string {
@@ -72,9 +72,7 @@ export class SR5ActorRollDialog extends SR5RollDialog {
             .on('change', (event: any) => {
                 this.pushTheLimit = event.currentTarget.checked;
                 if (this.pushTheLimit) {
-                    this.addUniquePart('SR5.PushTheLimit', this.actor.getEdge().max);
-                } else {
-                    this.removePart('SR5.PushTheLimit');
+                    this.parts.set('SR5.PushTheLimit', this.actor.getEdge().max);
                 }
             });
 
@@ -83,9 +81,7 @@ export class SR5ActorRollDialog extends SR5RollDialog {
             .on('change', (event: any) => {
                 this.wound = event.currentTarget.checked;
                 if (this.wound) {
-                    this.addUniquePart('SR5.WoundModifier', this.actor.getWoundModifier());
-                } else {
-                    this.removePart('SR5.WoundModifier');
+                    this.parts.set('SR5.WoundModifier', this.actor.getWoundModifier());
                 }
             });
     }

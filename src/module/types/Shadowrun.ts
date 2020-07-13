@@ -41,9 +41,7 @@ declare namespace Shadowrun {
     /**
      * A list of mods to apply to a value.
      */
-    export type ModList<TType> = {
-        [name: string]: TType;
-    };
+    export type ModList<TType> = Record<string, TType>;
     /**
      * A value that is modifiable, having a base and current value, along with associated mod list.
      */
@@ -69,8 +67,8 @@ declare namespace Shadowrun {
         bonus: KeyValuePair[];
     };
 
-    type KeyValuePair = {
-        key: string;
-        value: number;
+    type KeyValuePair<TKey = string, TValue = number> = {
+        key: TKey;
+        value: TValue;
     };
 }
