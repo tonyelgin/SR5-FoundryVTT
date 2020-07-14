@@ -210,7 +210,7 @@ export class SR5ActorSheet extends ActorSheet {
             if (left.name > right.name) return 1;
             if (left.name < right.name) return -1;
             return 0;
-        }
+        };
         actions.sort(sortByName);
         adept_powers.sort(sortByName);
         complex_forms.sort(sortByName);
@@ -275,29 +275,29 @@ export class SR5ActorSheet extends ActorSheet {
         });
 
         html.find('#filter-skills').on('input', this._onFilterSkills.bind(this));
-        html.find('.track-roll').click(this._onRollTrack.bind(this));
-        html.find('.attribute-roll').click(this._onRollAttribute.bind(this));
-        html.find('.skill-roll').click(this._onRollActiveSkill.bind(this));
-        html.find('.defense-roll').click(this._onRollDefense.bind(this));
-        html.find('.attribute-only-roll').click(this._onRollAttributesOnly.bind(this));
-        html.find('.soak-roll').click(this._onRollSoak.bind(this));
-        html.find('.drain-roll').click(this._onRollDrain.bind(this));
-        html.find('.fade-roll').click(this._onRollFade.bind(this));
-        html.find('.item-roll').click(this._onRollItem.bind(this));
+        // html.find('.track-roll').click(this._onRollTrack.bind(this));
+        // html.find('.attribute-roll').click(this._onRollAttribute.bind(this));
+        // html.find('.skill-roll').click(this._onRollActiveSkill.bind(this));
+        // html.find('.defense-roll').click(this._onRollDefense.bind(this));
+        // html.find('.attribute-only-roll').click(this._onRollAttributesOnly.bind(this));
+        // html.find('.soak-roll').click(this._onRollSoak.bind(this));
+        // html.find('.drain-roll').click(this._onRollDrain.bind(this));
+        // html.find('.fade-roll').click(this._onRollFade.bind(this));
+        // html.find('.item-roll').click(this._onRollItem.bind(this));
         // $(html).find('.item-roll').on('contextmenu', () => console.log('TEST'));
         html.find('.item-equip-toggle').click(this._onEquipItem.bind(this));
         html.find('.item-qty').change(this._onChangeQty.bind(this));
         html.find('.item-rtg').change(this._onChangeRtg.bind(this));
         html.find('.item-create').click(this._onItemCreate.bind(this));
-        html.find('.matrix-roll').click(this._onRollMatrixAttribute.bind(this));
+        // html.find('.matrix-roll').click(this._onRollMatrixAttribute.bind(this));
         html.find('.matrix-att-selector').change(this._onMatrixAttributeSelected.bind(this));
-        html.find('.basic-roll').click(this._onRollPrompt.bind(this));
-        html.find('.armor-roll').click(this._onRollArmor.bind(this));
+        // html.find('.basic-roll').click(this._onRollPrompt.bind(this));
+        // html.find('.armor-roll').click(this._onRollArmor.bind(this));
         html.find('.add-knowledge').click(this._onAddKnowledgeSkill.bind(this));
-        html.find('.knowledge-skill').click(this._onRollKnowledgeSkill.bind(this));
+        // html.find('.knowledge-skill').click(this._onRollKnowledgeSkill.bind(this));
         html.find('.remove-knowledge').click(this._onRemoveKnowledgeSkill.bind(this));
         html.find('.add-language').click(this._onAddLanguageSkill.bind(this));
-        html.find('.language-skill').click(this._onRollLanguageSkill.bind(this));
+        // html.find('.language-skill').click(this._onRollLanguageSkill.bind(this));
         html.find('.remove-language').click(this._onRemoveLanguageSkill.bind(this));
         html.find('.import-character').click(this._onShowImportCharacter.bind(this));
         html.find('.reload-ammo').click(this._onReloadAmmo.bind(this));
@@ -468,88 +468,6 @@ export class SR5ActorSheet extends ActorSheet {
             await this.actor.updateEmbeddedEntity('OwnedItem', newItems);
             this.actor.render();
         }
-    }
-
-    async _onRollTrack(event) {
-        event.preventDefault();
-        let track = event.currentTarget.closest('.attribute').dataset.track;
-        await this.actor.rollNaturalRecovery(track, event);
-    }
-
-    async _onRollPrompt(event) {
-        event.preventDefault();
-        await this.actor.promptRoll({ event: event });
-    }
-
-    async _onRollItem(event) {
-        event.preventDefault();
-        const iid = event.currentTarget.closest('.item').dataset.itemId;
-        const item = this.actor.getOwnedItem(iid);
-        if (item) {
-            await item.postCard(event);
-        }
-    }
-
-    async _onRollFade(event) {
-        event.preventDefault();
-        this.actor.rollFade({ event: event });
-    }
-
-    async _onRollDrain(event) {
-        event.preventDefault();
-        this.actor.rollDrain({ event: event });
-    }
-
-    async _onRollArmor(event) {
-        event.preventDefault();
-        return this.actor.rollArmor({ event: event });
-    }
-
-    async _onRollDefense(event) {
-        event.preventDefault();
-        return this.actor.rollDefense({ event: event });
-    }
-
-    async _onRollMatrixAttribute(event) {
-        event.preventDefault();
-        const attr = event.currentTarget.dataset.attribute;
-        return this.actor.rollMatrixAttribute(attr, { event: event });
-    }
-
-    async _onRollSoak(event: MouseEvent) {
-        event.preventDefault();
-        return this.actor.rollSoak({ event: event });
-    }
-
-    async _onRollAttributesOnly(event) {
-        event.preventDefault();
-        const roll = event.currentTarget.dataset.roll;
-        return this.actor.rollAttributesTest(roll, { event: event });
-    }
-
-    async _onRollKnowledgeSkill(event) {
-        event.preventDefault();
-        const skill = event.currentTarget.dataset.skill;
-        const category = event.currentTarget.dataset.category;
-        return this.actor.rollKnowledgeSkill(category, skill, { event: event });
-    }
-
-    async _onRollLanguageSkill(event) {
-        event.preventDefault();
-        const skill = event.currentTarget.dataset.skill;
-        return this.actor.rollLanguageSkill(skill, { event: event });
-    }
-
-    async _onRollActiveSkill(event) {
-        event.preventDefault();
-        const skill = event.currentTarget.dataset.skill;
-        return this.actor.rollActiveSkill(skill, { event: event });
-    }
-
-    async _onRollAttribute(event) {
-        event.preventDefault();
-        const attr = event.currentTarget.dataset.attribute;
-        return this.actor.rollAttribute(attr, { event: event });
     }
 
     /**

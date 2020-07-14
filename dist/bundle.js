@@ -952,7 +952,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SR5Actor = void 0;
-const ShadowrunRoller_1 = require("../rolls/ShadowrunRoller");
 const helpers_1 = require("../helpers");
 const constants_1 = require("../constants");
 class SR5Actor extends Actor {
@@ -1389,535 +1388,6 @@ class SR5Actor extends Actor {
         updateData[dataString] = value;
         this.update(updateData);
     }
-    rollFade(options = {}, incoming = -1) {
-        const wil = this.data.data.attributes.willpower;
-        const res = this.data.data.attributes.resonance;
-        const data = this.data.data;
-        const parts = {};
-        parts[wil.label] = wil.value;
-        parts[res.label] = res.value;
-        if (data.modifiers.fade)
-            parts['SR5.Bonus'] = data.modifiers.fade;
-        let title = `${game.i18n.localize('SR5.Resist')} ${game.i18n.localize('SR5.Fade')}`;
-        const incomingDrain = {
-            label: 'SR5.Fade',
-            value: incoming,
-        };
-        return ShadowrunRoller_1.ShadowrunRoller.advancedRoll({
-            event: options.event,
-            parts,
-            actor: this,
-            title: title,
-            wounds: false,
-            incomingDrain,
-        });
-    }
-    rollDrain(options = {}, incoming = -1) {
-        const wil = this.data.data.attributes.willpower;
-        const drainAtt = this.data.data.attributes[this.data.data.magic.attribute];
-        const parts = {};
-        parts[wil.label] = wil.value;
-        parts[drainAtt.label] = drainAtt.value;
-        if (this.data.data.modifiers.drain)
-            parts['SR5.Bonus'] = this.data.data.modifiers.drain;
-        let title = `${game.i18n.localize('SR5.Resist')} ${game.i18n.localize('SR5.Drain')}`;
-        const incomingDrain = {
-            label: 'SR5.Drain',
-            value: incoming,
-        };
-        return ShadowrunRoller_1.ShadowrunRoller.advancedRoll({
-            event: options.event,
-            parts,
-            actor: this,
-            title: title,
-            wounds: false,
-            incomingDrain,
-        });
-    }
-    rollArmor(options = {}, parts = {}) {
-        this._addArmorParts(parts);
-        return ShadowrunRoller_1.ShadowrunRoller.advancedRoll({
-            event: options.event,
-            actor: this,
-            parts,
-            title: game.i18n.localize('SR5.Armor'),
-            wounds: false,
-        });
-    }
-    rollDefense(options = {}, parts = {}) {
-        var _a, _b, _c, _d;
-        this._addDefenseParts(parts);
-        // full defense is always added
-        const activeDefenses = {
-            full_defense: {
-                label: 'SR5.FullDefense',
-                value: (_a = this.getFullDefenseAttribute()) === null || _a === void 0 ? void 0 : _a.value,
-                initMod: -10,
-            },
-        };
-        // if we have a melee attack
-        if ((_b = options.incomingAttack) === null || _b === void 0 ? void 0 : _b.reach) {
-            activeDefenses['dodge'] = {
-                label: 'SR5.Dodge',
-                value: (_c = this.findActiveSkill('gymnastics')) === null || _c === void 0 ? void 0 : _c.value,
-                initMod: -5,
-            };
-            activeDefenses['block'] = {
-                label: 'SR5.Block',
-                value: (_d = this.findActiveSkill('unarmed_combat')) === null || _d === void 0 ? void 0 : _d.value,
-                initMod: -5,
-            };
-            const equippedMeleeWeapons = this.getEquippedWeapons().filter((w) => w.isMeleeWeapon());
-            let defenseReach = 0;
-            equippedMeleeWeapons.forEach((weapon) => {
-                var _a;
-                activeDefenses[`parry-${weapon.name}`] = {
-                    label: 'SR5.Parry',
-                    weapon: weapon.name,
-                    value: (_a = this.findActiveSkill(weapon.getActionSkill())) === null || _a === void 0 ? void 0 : _a.value,
-                    init: -5,
-                };
-                defenseReach = Math.max(defenseReach, weapon.getReach());
-            });
-            const incomingReach = options.incomingAttack.reach;
-            const netReach = defenseReach - incomingReach;
-            if (netReach !== 0) {
-                parts['SR5.Reach'] = netReach;
-            }
-        }
-        let dialogData = {
-            parts,
-            cover: options.cover,
-            activeDefenses,
-        };
-        let template = 'systems/shadowrun5e/dist/templates/rolls/roll-defense.html';
-        let cancel = true;
-        const incomingAttack = options.incomingAttack;
-        const event = options.event;
-        return new Promise((resolve) => {
-            renderTemplate(template, dialogData).then((dlg) => {
-                new Dialog({
-                    title: game.i18n.localize('SR5.Defense'),
-                    content: dlg,
-                    buttons: {
-                        continue: {
-                            label: game.i18n.localize('SR5.Continue'),
-                            callback: () => (cancel = false),
-                        },
-                    },
-                    default: 'normal',
-                    close: (html) => __awaiter(this, void 0, void 0, function* () {
-                        if (cancel)
-                            return;
-                        let cover = helpers_1.Helpers.parseInputToNumber($(html).find('[name=cover]').val());
-                        let special = helpers_1.Helpers.parseInputToString($(html).find('[name=activeDefense]').val());
-                        if (special) {
-                            // TODO subtract initiative score when Foundry updates to 0.7.0
-                            const defense = activeDefenses[special];
-                            parts[defense.label] = defense.value;
-                        }
-                        if (cover)
-                            parts['SR5.Cover'] = cover;
-                        resolve(ShadowrunRoller_1.ShadowrunRoller.advancedRoll({
-                            event: event,
-                            actor: this,
-                            parts,
-                            title: game.i18n.localize('SR5.DefenseTest'),
-                            incomingAttack,
-                        }).then((roll) => __awaiter(this, void 0, void 0, function* () {
-                            if (incomingAttack && roll) {
-                                let defenderHits = roll.total;
-                                let attackerHits = incomingAttack.hits || 0;
-                                let netHits = attackerHits - defenderHits;
-                                if (netHits >= 0) {
-                                    const damage = incomingAttack.damage;
-                                    damage.mod['SR5.NetHits'] = netHits;
-                                    damage.value = damage.base + helpers_1.Helpers.totalMods(damage.mod);
-                                    const soakRollOptions = {
-                                        event: event,
-                                        damage: incomingAttack.damage,
-                                    };
-                                    yield this.rollSoak(soakRollOptions);
-                                }
-                            }
-                        })));
-                    }),
-                }).render(true);
-            });
-        });
-    }
-    rollSoak(options, parts = {}) {
-        this._addSoakParts(parts);
-        let dialogData = {
-            damage: options === null || options === void 0 ? void 0 : options.damage,
-            parts,
-            elementTypes: CONFIG.SR5.elementTypes,
-        };
-        let id = '';
-        let cancel = true;
-        let template = 'systems/shadowrun5e/dist/templates/rolls/roll-soak.html';
-        return new Promise((resolve) => {
-            renderTemplate(template, dialogData).then((dlg) => {
-                new Dialog({
-                    title: 'SR5.DamageResistanceTest',
-                    content: dlg,
-                    buttons: {
-                        continue: {
-                            label: game.i18n.localize('SR5.Continue'),
-                            callback: () => {
-                                id = 'default';
-                                cancel = false;
-                            },
-                        },
-                    },
-                    close: (html) => __awaiter(this, void 0, void 0, function* () {
-                        if (cancel)
-                            return;
-                        const armor = this.getArmor();
-                        const armorId = helpers_1.Helpers.parseInputToString($(html).find('[name=element]').val());
-                        console.log(armorId);
-                        console.log(armor);
-                        const bonusArmor = armor[armorId] || 0;
-                        console.log(bonusArmor);
-                        if (bonusArmor)
-                            parts[CONFIG.SR5.elementTypes[armorId]] = bonusArmor;
-                        const ap = helpers_1.Helpers.parseInputToNumber($(html).find('[name=ap]').val());
-                        if (ap) {
-                            let armorVal = armor.value + bonusArmor;
-                            // don't take more AP than armor
-                            parts['SR5.AP'] = Math.max(ap, -armorVal);
-                        }
-                        let title = game.i18n.localize('SR5.SoakTest');
-                        resolve(ShadowrunRoller_1.ShadowrunRoller.advancedRoll({
-                            event: options === null || options === void 0 ? void 0 : options.event,
-                            actor: this,
-                            soak: options === null || options === void 0 ? void 0 : options.damage,
-                            parts,
-                            title: title,
-                            wounds: false,
-                        }));
-                    }),
-                }).render(true);
-            });
-        });
-    }
-    rollSingleAttribute(attId, options) {
-        const attr = this.data.data.attributes[attId];
-        const parts = {};
-        parts[attr.label] = attr.value;
-        this._addMatrixParts(parts, attr);
-        this._addGlobalParts(parts);
-        return ShadowrunRoller_1.ShadowrunRoller.advancedRoll({
-            event: options === null || options === void 0 ? void 0 : options.event,
-            actor: this,
-            parts,
-            title: helpers_1.Helpers.label(attId),
-        });
-    }
-    rollTwoAttributes([id1, id2], options) {
-        const attr1 = this.data.data.attributes[id1];
-        const attr2 = this.data.data.attributes[id2];
-        const label1 = helpers_1.Helpers.label(id1);
-        const label2 = helpers_1.Helpers.label(id2);
-        const parts = {};
-        parts[attr1.label] = attr1.value;
-        parts[attr2.label] = attr2.value;
-        this._addMatrixParts(parts, [attr1, attr2]);
-        this._addGlobalParts(parts);
-        return ShadowrunRoller_1.ShadowrunRoller.advancedRoll({
-            event: options === null || options === void 0 ? void 0 : options.event,
-            actor: this,
-            parts,
-            title: `${label1} + ${label2}`,
-        });
-    }
-    rollNaturalRecovery(track, options) {
-        let id1 = 'body';
-        let id2 = 'willpower';
-        let title = 'Natural Recover';
-        if (track === 'physical') {
-            id2 = 'body';
-            title += ' - Physical - 1 Day';
-        }
-        else {
-            title += ' - Stun - 1 Hour';
-        }
-        let att1 = this.data.data.attributes[id1];
-        let att2 = this.data.data.attributes[id2];
-        const parts = {};
-        parts[att1.label] = att1.value;
-        parts[att2.label] = att2.value;
-        return ShadowrunRoller_1.ShadowrunRoller.advancedRoll({
-            event: options === null || options === void 0 ? void 0 : options.event,
-            actor: this,
-            parts,
-            title: title,
-            extended: true,
-            after: (roll) => __awaiter(this, void 0, void 0, function* () {
-                if (!roll)
-                    return;
-                let hits = roll.total;
-                let current = this.data.data.track[track].value;
-                current = Math.max(current - hits, 0);
-                let key = `data.track.${track}.value`;
-                let u = {};
-                u[key] = current;
-                yield this.update(u);
-            }),
-        });
-    }
-    rollMatrixAttribute(attr, options) {
-        return __awaiter(this, void 0, void 0, function* () {
-            let matrix_att = this.data.data.matrix[attr];
-            let title = game.i18n.localize(CONFIG.SR5.matrixAttributes[attr]);
-            const parts = {};
-            parts[CONFIG.SR5.matrixAttributes[attr]] = matrix_att.value;
-            if (options && options.event && options.event[CONFIG.SR5.kbmod.SPEC])
-                parts['SR5.Specialization'] = 2;
-            if (helpers_1.Helpers.hasModifiers(options === null || options === void 0 ? void 0 : options.event)) {
-                return ShadowrunRoller_1.ShadowrunRoller.advancedRoll({
-                    event: options === null || options === void 0 ? void 0 : options.event,
-                    actor: this,
-                    parts,
-                    title: title,
-                });
-            }
-            const attributes = helpers_1.Helpers.filter(this.data.data.attributes, ([, value]) => value.value > 0);
-            const attribute = 'willpower';
-            let dialogData = {
-                attribute: attribute,
-                attributes: attributes,
-            };
-            const buttons = {
-                roll: {
-                    label: 'Continue',
-                    callback: () => (cancel = false),
-                },
-            };
-            let cancel = true;
-            renderTemplate('systems/shadowrun5e/dist/templates/rolls/matrix-roll.html', dialogData).then((dlg) => {
-                new Dialog({
-                    title: `${title} Test`,
-                    content: dlg,
-                    buttons: buttons,
-                    close: (html) => __awaiter(this, void 0, void 0, function* () {
-                        if (cancel)
-                            return;
-                        const newAtt = helpers_1.Helpers.parseInputToString($(html).find('[name=attribute]').val());
-                        let att = undefined;
-                        if (newAtt) {
-                            att = this.data.data.attributes[newAtt];
-                            title += ` + ${game.i18n.localize(CONFIG.SR5.attributes[newAtt])}`;
-                        }
-                        if (att !== undefined) {
-                            if (att.value && att.label)
-                                parts[att.label] = att.value;
-                            this._addMatrixParts(parts, true);
-                            this._addGlobalParts(parts);
-                            return ShadowrunRoller_1.ShadowrunRoller.advancedRoll({
-                                event: options === null || options === void 0 ? void 0 : options.event,
-                                actor: this,
-                                parts,
-                                title: title,
-                            });
-                        }
-                    }),
-                }).render(true);
-            });
-        });
-    }
-    promptRoll(options) {
-        return ShadowrunRoller_1.ShadowrunRoller.advancedRoll({
-            event: options === null || options === void 0 ? void 0 : options.event,
-            parts: {},
-            actor: this,
-            dialogOptions: {
-                prompt: true,
-            },
-        });
-    }
-    rollAttributesTest(rollId, options) {
-        const title = game.i18n.localize(CONFIG.SR5.attributeRolls[rollId]);
-        const atts = this.data.data.attributes;
-        const modifiers = this.data.data.modifiers;
-        const parts = {};
-        if (rollId === 'composure') {
-            parts[atts.charisma.label] = atts.charisma.value;
-            parts[atts.willpower.label] = atts.willpower.value;
-            if (modifiers.composure)
-                parts['SR5.Bonus'] = modifiers.composure;
-        }
-        else if (rollId === 'judge_intentions') {
-            parts[atts.charisma.label] = atts.charisma.value;
-            parts[atts.intuition.label] = atts.intuition.value;
-            if (modifiers.judge_intentions)
-                parts['SR5.Bonus'] = modifiers.judge_intentions;
-        }
-        else if (rollId === 'lift_carry') {
-            parts[atts.strength.label] = atts.strength.value;
-            parts[atts.body.label] = atts.body.value;
-            if (modifiers.lift_carry)
-                parts['SR5.Bonus'] = modifiers.lift_carry;
-        }
-        else if (rollId === 'memory') {
-            parts[atts.willpower.label] = atts.willpower.value;
-            parts[atts.logic.label] = atts.logic.value;
-            if (modifiers.memory)
-                parts['SR5.Bonus'] = modifiers.memory;
-        }
-        return ShadowrunRoller_1.ShadowrunRoller.advancedRoll({
-            event: options === null || options === void 0 ? void 0 : options.event,
-            actor: this,
-            parts,
-            title: `${title} Test`,
-        });
-    }
-    rollSkill(skill, options) {
-        var _a;
-        let att = this.data.data.attributes[skill.attribute];
-        let title = skill.label;
-        if (options === null || options === void 0 ? void 0 : options.attribute)
-            att = this.data.data.attributes[options.attribute];
-        let limit = this.data.data.limits[att.limit];
-        const parts = {};
-        parts[skill.label] = skill.value;
-        if ((options === null || options === void 0 ? void 0 : options.event) && helpers_1.Helpers.hasModifiers(options === null || options === void 0 ? void 0 : options.event)) {
-            parts[att.label] = att.value;
-            if (options.event[CONFIG.SR5.kbmod.SPEC])
-                parts['SR5.Specialization'] = 2;
-            this._addMatrixParts(parts, [att, skill]);
-            this._addGlobalParts(parts);
-            return ShadowrunRoller_1.ShadowrunRoller.advancedRoll({
-                event: options.event,
-                actor: this,
-                parts,
-                limit,
-                title: `${title} Test`,
-            });
-        }
-        let dialogData = {
-            attribute: skill.attribute,
-            attributes: helpers_1.Helpers.filter(this.data.data.attributes, ([, value]) => value.value > 0),
-            limit: att.limit,
-            limits: this.data.data.limits,
-        };
-        let cancel = true;
-        let spec = '';
-        let buttons = {
-            roll: {
-                label: 'Normal',
-                callback: () => (cancel = false),
-            },
-        };
-        // add specializations to dialog as buttons
-        if ((_a = skill.specs) === null || _a === void 0 ? void 0 : _a.length) {
-            skill.specs.forEach((s) => (buttons[s] = {
-                label: s,
-                callback: () => {
-                    cancel = false;
-                    spec = s;
-                },
-            }));
-        }
-        renderTemplate('systems/shadowrun5e/dist/templates/rolls/skill-roll.html', dialogData).then((dlg) => {
-            new Dialog({
-                title: `${title} Test`,
-                content: dlg,
-                buttons,
-                close: (html) => __awaiter(this, void 0, void 0, function* () {
-                    if (cancel)
-                        return;
-                    const newAtt = helpers_1.Helpers.parseInputToString($(html).find('[name="attribute"]').val());
-                    const newLimit = helpers_1.Helpers.parseInputToString($(html).find('[name="attribute.limit"]').val());
-                    att = this.data.data.attributes[newAtt];
-                    title += ` + ${game.i18n.localize(CONFIG.SR5.attributes[newAtt])}`;
-                    limit = this.data.data.limits[newLimit];
-                    parts[att.label] = att.value;
-                    if (skill.value === 0)
-                        parts['SR5.Defaulting'] = -1;
-                    if (spec)
-                        parts['SR5.Specialization'] = 2;
-                    this._addMatrixParts(parts, [att, skill]);
-                    this._addGlobalParts(parts);
-                    return ShadowrunRoller_1.ShadowrunRoller.advancedRoll({
-                        event: options === null || options === void 0 ? void 0 : options.event,
-                        actor: this,
-                        parts,
-                        limit,
-                        title: `${title} Test`,
-                    });
-                }),
-            }).render(true);
-        });
-    }
-    rollKnowledgeSkill(catId, skillId, options) {
-        const category = this.data.data.skills.knowledge[catId];
-        const skill = duplicate(category.value[skillId]);
-        skill.attribute = category.attribute;
-        skill.label = skill.name;
-        return this.rollSkill(skill, options);
-    }
-    rollLanguageSkill(skillId, options) {
-        const skill = duplicate(this.data.data.skills.language.value[skillId]);
-        skill.attribute = 'intuition';
-        skill.label = skill.name;
-        return this.rollSkill(skill, options);
-    }
-    rollActiveSkill(skillId, options) {
-        const skill = this.data.data.skills.active[skillId];
-        skill.label = game.i18n.localize(CONFIG.SR5.activeSkills[skillId]);
-        return this.rollSkill(skill, options);
-    }
-    rollAttribute(attId, options) {
-        let title = game.i18n.localize(CONFIG.SR5.attributes[attId]);
-        const att = this.data.data.attributes[attId];
-        const atts = this.data.data.attributes;
-        const parts = {};
-        parts[att.label] = att.label === 'SR5.AttrEdge' ? this.getEdge().max : att.value;
-        let dialogData = {
-            attribute: att,
-            attributes: atts,
-        };
-        let cancel = true;
-        renderTemplate('systems/shadowrun5e/dist/templates/rolls/single-attribute.html', dialogData).then((dlg) => {
-            new Dialog({
-                title: `${title} Attribute Test`,
-                content: dlg,
-                buttons: {
-                    roll: {
-                        label: 'Continue',
-                        callback: () => (cancel = false),
-                    },
-                },
-                default: 'roll',
-                close: (html) => __awaiter(this, void 0, void 0, function* () {
-                    if (cancel)
-                        return;
-                    const att2Id = helpers_1.Helpers.parseInputToString($(html).find('[name=attribute2]').val());
-                    let att2 = undefined;
-                    if (att2Id !== 'none') {
-                        att2 = atts[att2Id];
-                        if (att2 === null || att2 === void 0 ? void 0 : att2.label) {
-                            parts[att2.label] = att2.label === 'SR5.AttrEdge' ? this.getEdge().max : att2.value;
-                            const att2IdLabel = game.i18n.localize(CONFIG.SR5.attributes[att2Id]);
-                            title += ` + ${att2IdLabel}`;
-                        }
-                    }
-                    if (att2Id === 'default') {
-                        parts['SR5.Defaulting'] = -1;
-                    }
-                    this._addMatrixParts(parts, [att, att2]);
-                    this._addGlobalParts(parts);
-                    return ShadowrunRoller_1.ShadowrunRoller.advancedRoll({
-                        event: options === null || options === void 0 ? void 0 : options.event,
-                        title: `${title} Test`,
-                        actor: this,
-                        parts,
-                    });
-                }),
-            }).render(true);
-        });
-    }
     _addMatrixParts(parts, atts) {
         if (helpers_1.Helpers.isMatrix(atts)) {
             const m = this.data.data.matrix;
@@ -1962,94 +1432,6 @@ class SR5Actor extends Actor {
         }
         this._addArmorParts(parts);
     }
-    static pushTheLimit(li) {
-        return __awaiter(this, void 0, void 0, function* () {
-            let msg = game.messages.get(li.data().messageId);
-            if (msg.getFlag(constants_1.SYSTEM_NAME, 'customRoll')) {
-                let actor = msg.user.character;
-                if (!actor) {
-                    // get controlled tokens
-                    const tokens = canvas.tokens.controlled;
-                    console.log(tokens);
-                    if (tokens.length > 0) {
-                        for (let token of tokens) {
-                            if (token.actor.owner) {
-                                actor = token.actor;
-                                break;
-                            }
-                        }
-                    }
-                }
-                if (actor) {
-                    const parts = {};
-                    parts['SR5.PushTheLimit'] = actor.getEdge().max;
-                    ShadowrunRoller_1.ShadowrunRoller.basicRoll({
-                        title: ` - ${game.i18n.localize('SR5.PushTheLimit')}`,
-                        parts: parts,
-                        actor: actor,
-                    }).then(() => {
-                        actor.update({
-                            'data.attributes.edge.value': actor.getEdge().value - 1,
-                        });
-                    });
-                }
-                else {
-                    // @ts-ignore
-                    ui.notifications.warn(game.i18n.localize('SR5.SelectTokenMessage'));
-                }
-            }
-        });
-    }
-    static secondChance(li) {
-        var _a;
-        return __awaiter(this, void 0, void 0, function* () {
-            let msg = game.messages.get(li.data().messageId);
-            // @ts-ignore
-            let roll = JSON.parse((_a = msg.data) === null || _a === void 0 ? void 0 : _a.roll);
-            let formula = roll.formula;
-            let hits = roll.total;
-            let re = /(\d+)d6/;
-            let matches = formula.match(re);
-            if (matches && matches[1]) {
-                let match = matches[1];
-                let pool = parseInt(match.replace('d6', ''));
-                if (!isNaN(pool) && !isNaN(hits)) {
-                    let actor = msg.user.character;
-                    if (!actor) {
-                        // get controlled tokens
-                        const tokens = canvas.tokens.controlled;
-                        console.log(tokens);
-                        if (tokens.length > 0) {
-                            for (let token of tokens) {
-                                if (token.actor.owner) {
-                                    actor = token.actor;
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                    if (actor) {
-                        const parts = {};
-                        parts['SR5.OriginalDicePool'] = pool;
-                        parts['SR5.Successes'] = -hits;
-                        return ShadowrunRoller_1.ShadowrunRoller.basicRoll({
-                            title: ` - Second Chance`,
-                            parts,
-                            actor: actor,
-                        }).then(() => {
-                            actor.update({
-                                'data.attributes.edge.value': actor.getEdge().value - 1,
-                            });
-                        });
-                    }
-                    else {
-                        // @ts-ignore
-                        ui.notifications.warn(game.i18n.localize('SR5.SelectTokenMessage'));
-                    }
-                }
-            }
-        });
-    }
     /**
      * Override setFlag to remove the 'SR5.' from keys in modlists, otherwise it handles them as embedded keys
      * @param scope
@@ -2071,7 +1453,7 @@ class SR5Actor extends Actor {
     }
 }
 exports.SR5Actor = SR5Actor;
-},{"../constants":28,"../helpers":30,"../rolls/ShadowrunRoller":39}],17:[function(require,module,exports){
+},{"../constants":26,"../helpers":28}],17:[function(require,module,exports){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -2342,29 +1724,29 @@ class SR5ActorSheet extends ActorSheet {
             }
         });
         html.find('#filter-skills').on('input', this._onFilterSkills.bind(this));
-        html.find('.track-roll').click(this._onRollTrack.bind(this));
-        html.find('.attribute-roll').click(this._onRollAttribute.bind(this));
-        html.find('.skill-roll').click(this._onRollActiveSkill.bind(this));
-        html.find('.defense-roll').click(this._onRollDefense.bind(this));
-        html.find('.attribute-only-roll').click(this._onRollAttributesOnly.bind(this));
-        html.find('.soak-roll').click(this._onRollSoak.bind(this));
-        html.find('.drain-roll').click(this._onRollDrain.bind(this));
-        html.find('.fade-roll').click(this._onRollFade.bind(this));
-        html.find('.item-roll').click(this._onRollItem.bind(this));
+        // html.find('.track-roll').click(this._onRollTrack.bind(this));
+        // html.find('.attribute-roll').click(this._onRollAttribute.bind(this));
+        // html.find('.skill-roll').click(this._onRollActiveSkill.bind(this));
+        // html.find('.defense-roll').click(this._onRollDefense.bind(this));
+        // html.find('.attribute-only-roll').click(this._onRollAttributesOnly.bind(this));
+        // html.find('.soak-roll').click(this._onRollSoak.bind(this));
+        // html.find('.drain-roll').click(this._onRollDrain.bind(this));
+        // html.find('.fade-roll').click(this._onRollFade.bind(this));
+        // html.find('.item-roll').click(this._onRollItem.bind(this));
         // $(html).find('.item-roll').on('contextmenu', () => console.log('TEST'));
         html.find('.item-equip-toggle').click(this._onEquipItem.bind(this));
         html.find('.item-qty').change(this._onChangeQty.bind(this));
         html.find('.item-rtg').change(this._onChangeRtg.bind(this));
         html.find('.item-create').click(this._onItemCreate.bind(this));
-        html.find('.matrix-roll').click(this._onRollMatrixAttribute.bind(this));
+        // html.find('.matrix-roll').click(this._onRollMatrixAttribute.bind(this));
         html.find('.matrix-att-selector').change(this._onMatrixAttributeSelected.bind(this));
-        html.find('.basic-roll').click(this._onRollPrompt.bind(this));
-        html.find('.armor-roll').click(this._onRollArmor.bind(this));
+        // html.find('.basic-roll').click(this._onRollPrompt.bind(this));
+        // html.find('.armor-roll').click(this._onRollArmor.bind(this));
         html.find('.add-knowledge').click(this._onAddKnowledgeSkill.bind(this));
-        html.find('.knowledge-skill').click(this._onRollKnowledgeSkill.bind(this));
+        // html.find('.knowledge-skill').click(this._onRollKnowledgeSkill.bind(this));
         html.find('.remove-knowledge').click(this._onRemoveKnowledgeSkill.bind(this));
         html.find('.add-language').click(this._onAddLanguageSkill.bind(this));
-        html.find('.language-skill').click(this._onRollLanguageSkill.bind(this));
+        // html.find('.language-skill').click(this._onRollLanguageSkill.bind(this));
         html.find('.remove-language').click(this._onRemoveLanguageSkill.bind(this));
         html.find('.import-character').click(this._onShowImportCharacter.bind(this));
         html.find('.reload-ammo').click(this._onReloadAmmo.bind(this));
@@ -2546,102 +1928,6 @@ class SR5ActorSheet extends ActorSheet {
             }
         });
     }
-    _onRollTrack(event) {
-        return __awaiter(this, void 0, void 0, function* () {
-            event.preventDefault();
-            let track = event.currentTarget.closest('.attribute').dataset.track;
-            yield this.actor.rollNaturalRecovery(track, event);
-        });
-    }
-    _onRollPrompt(event) {
-        return __awaiter(this, void 0, void 0, function* () {
-            event.preventDefault();
-            yield this.actor.promptRoll({ event: event });
-        });
-    }
-    _onRollItem(event) {
-        return __awaiter(this, void 0, void 0, function* () {
-            event.preventDefault();
-            const iid = event.currentTarget.closest('.item').dataset.itemId;
-            const item = this.actor.getOwnedItem(iid);
-            if (item) {
-                yield item.postCard(event);
-            }
-        });
-    }
-    _onRollFade(event) {
-        return __awaiter(this, void 0, void 0, function* () {
-            event.preventDefault();
-            this.actor.rollFade({ event: event });
-        });
-    }
-    _onRollDrain(event) {
-        return __awaiter(this, void 0, void 0, function* () {
-            event.preventDefault();
-            this.actor.rollDrain({ event: event });
-        });
-    }
-    _onRollArmor(event) {
-        return __awaiter(this, void 0, void 0, function* () {
-            event.preventDefault();
-            return this.actor.rollArmor({ event: event });
-        });
-    }
-    _onRollDefense(event) {
-        return __awaiter(this, void 0, void 0, function* () {
-            event.preventDefault();
-            return this.actor.rollDefense({ event: event });
-        });
-    }
-    _onRollMatrixAttribute(event) {
-        return __awaiter(this, void 0, void 0, function* () {
-            event.preventDefault();
-            const attr = event.currentTarget.dataset.attribute;
-            return this.actor.rollMatrixAttribute(attr, { event: event });
-        });
-    }
-    _onRollSoak(event) {
-        return __awaiter(this, void 0, void 0, function* () {
-            event.preventDefault();
-            return this.actor.rollSoak({ event: event });
-        });
-    }
-    _onRollAttributesOnly(event) {
-        return __awaiter(this, void 0, void 0, function* () {
-            event.preventDefault();
-            const roll = event.currentTarget.dataset.roll;
-            return this.actor.rollAttributesTest(roll, { event: event });
-        });
-    }
-    _onRollKnowledgeSkill(event) {
-        return __awaiter(this, void 0, void 0, function* () {
-            event.preventDefault();
-            const skill = event.currentTarget.dataset.skill;
-            const category = event.currentTarget.dataset.category;
-            return this.actor.rollKnowledgeSkill(category, skill, { event: event });
-        });
-    }
-    _onRollLanguageSkill(event) {
-        return __awaiter(this, void 0, void 0, function* () {
-            event.preventDefault();
-            const skill = event.currentTarget.dataset.skill;
-            return this.actor.rollLanguageSkill(skill, { event: event });
-        });
-    }
-    _onRollActiveSkill(event) {
-        return __awaiter(this, void 0, void 0, function* () {
-            event.preventDefault();
-            const skill = event.currentTarget.dataset.skill;
-            return this.actor.rollActiveSkill(skill, { event: event });
-        });
-    }
-    _onRollAttribute(event) {
-        return __awaiter(this, void 0, void 0, function* () {
-            event.preventDefault();
-            const attr = event.currentTarget.dataset.attribute;
-            return this.actor.rollAttribute(attr, { event: event });
-        });
-    }
     /**
      * @private
      */
@@ -2717,7 +2003,7 @@ class SR5ActorSheet extends ActorSheet {
     }
 }
 exports.SR5ActorSheet = SR5ActorSheet;
-},{"../apps/chummer-import-form":18,"../apps/skills/KnowledgeSkillEditForm":21,"../apps/skills/LanguageSkillEditForm":22,"../apps/skills/SkillEditForm":23,"../helpers":30}],18:[function(require,module,exports){
+},{"../apps/chummer-import-form":18,"../apps/skills/KnowledgeSkillEditForm":20,"../apps/skills/LanguageSkillEditForm":21,"../apps/skills/SkillEditForm":22,"../helpers":28}],18:[function(require,module,exports){
 "use strict";
 
 var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
@@ -3517,196 +2803,6 @@ exports.ChummerImportForm = ChummerImportForm;
 
 },{"@babel/runtime/helpers/asyncToGenerator":2,"@babel/runtime/helpers/classCallCheck":3,"@babel/runtime/helpers/createClass":4,"@babel/runtime/helpers/get":6,"@babel/runtime/helpers/getPrototypeOf":7,"@babel/runtime/helpers/inherits":8,"@babel/runtime/helpers/interopRequireDefault":9,"@babel/runtime/helpers/possibleConstructorReturn":10,"@babel/runtime/regenerator":14}],19:[function(require,module,exports){
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.ShadowrunItemDialog = void 0;
-const helpers_1 = require("../../helpers");
-class ShadowrunItemDialog extends Dialog {
-    static fromItem(item, event) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const dialogData = {
-                title: item.name,
-                buttons: {},
-            };
-            if (event)
-                dialogData['event'] = event;
-            const templateData = {};
-            let templatePath = '';
-            if (item.isRangedWeapon()) {
-                ShadowrunItemDialog.addRangedWeaponData(templateData, dialogData, item);
-                templatePath = 'systems/shadowrun5e/dist/templates/rolls/range-weapon-roll.html';
-            }
-            else if (item.isSpell()) {
-                ShadowrunItemDialog.addSpellData(templateData, dialogData, item);
-                templatePath = 'systems/shadowrun5e/dist/templates/rolls/roll-spell.html';
-            }
-            else if (item.isComplexForm()) {
-                ShadowrunItemDialog.addComplexFormData(templateData, dialogData, item);
-                templatePath = 'systems/shadowrun5e/dist/templates/rolls/roll-complex-form.html';
-            }
-            if (templatePath) {
-                const dialog = yield renderTemplate(templatePath, templateData);
-                return mergeObject(dialogData, {
-                    content: dialog,
-                });
-            }
-            return undefined;
-        });
-    }
-    /*
-    static get defaultOptions() {
-        const options = super.defaultOptions;
-        return mergeObject(options, {
-            classes: ['sr5', 'sheet'],
-        });
-    }
-     */
-    static addComplexFormData(templateData, dialogData, item) {
-        var _a;
-        const fade = item.getFade();
-        const title = `${helpers_1.Helpers.label(item.name)} Level`;
-        const level = ((_a = item.getLastComplexFormLevel()) === null || _a === void 0 ? void 0 : _a.value) || 2 - fade;
-        templateData['fade'] = fade >= 0 ? `+${fade}` : fade;
-        templateData['level'] = level;
-        templateData['title'] = title;
-        let cancel = true;
-        dialogData.buttons = {
-            roll: {
-                label: 'Continue',
-                icon: '<i class="fas fa-dice-six"></i>',
-                callback: () => (cancel = false),
-            },
-        };
-        dialogData.close = (html) => __awaiter(this, void 0, void 0, function* () {
-            if (cancel)
-                return false;
-            const level = helpers_1.Helpers.parseInputToNumber($(html).find('[name=level]').val());
-            yield item.setLastComplexFormLevel({ value: level });
-            return true;
-        });
-    }
-    static addSpellData(templateData, dialogData, item) {
-        var _a;
-        const title = `${helpers_1.Helpers.label(item.name)} Force`;
-        const drain = item.getDrain();
-        const force = ((_a = item.getLastSpellForce()) === null || _a === void 0 ? void 0 : _a.value) || 2 - drain;
-        templateData['drain'] = drain >= 0 ? `+${drain}` : `${drain}`;
-        templateData['force'] = force;
-        templateData['title'] = title;
-        dialogData.title = title;
-        let cancel = true;
-        let reckless = false;
-        dialogData.buttons = {
-            normal: {
-                label: game.i18n.localize('SR5.NormalSpellButton'),
-                callback: () => (cancel = false),
-            },
-            reckless: {
-                label: game.i18n.localize('SR5.RecklessSpellButton'),
-                callback: () => {
-                    reckless = true;
-                    cancel = false;
-                },
-            },
-        };
-        dialogData.default = 'normal';
-        dialogData.close = (html) => __awaiter(this, void 0, void 0, function* () {
-            if (cancel)
-                return false;
-            const force = helpers_1.Helpers.parseInputToNumber($(html).find('[name=force]').val());
-            yield item.setLastSpellForce({ value: force, reckless });
-            return true;
-        });
-    }
-    static addRangedWeaponData(templateData, dialogData, item) {
-        let title = dialogData.title || item.name;
-        const itemData = item.data.data;
-        const fireModes = {};
-        const { modes, ranges } = itemData.range;
-        const { ammo } = itemData;
-        if (modes.single_shot) {
-            fireModes['1'] = 'SS';
-        }
-        if (modes.semi_auto) {
-            fireModes['1'] = 'SA';
-            fireModes['3'] = 'SB';
-        }
-        if (modes.burst_fire) {
-            fireModes['3'] = `${modes.semi_auto ? 'SB/' : ''}BF`;
-            fireModes['6'] = 'LB';
-        }
-        if (modes.full_auto) {
-            fireModes['6'] = `${modes.burst_fire ? 'LB/' : ''}FA(s)`;
-            fireModes['10'] = 'FA(c)';
-            fireModes['20'] = game.i18n.localize('SR5.Suppressing');
-        }
-        const templateRanges = this._getRangeWeaponTemplateData(ranges);
-        const fireMode = item.getLastFireMode();
-        const rc = item.getRecoilCompensation(true);
-        templateData['fireModes'] = fireModes;
-        templateData['fireMode'] = fireMode === null || fireMode === void 0 ? void 0 : fireMode.value;
-        templateData['rc'] = rc;
-        templateData['ammo'] = ammo;
-        templateData['title'] = title;
-        templateData['ranges'] = templateRanges;
-        templateData['targetRange'] = item.getLastFireRangeMod();
-        let cancel = true;
-        dialogData.buttons = {
-            continue: {
-                label: game.i18n.localize('SR5.Continue'),
-                callback: () => (cancel = false),
-            },
-        };
-        dialogData.close = (html) => __awaiter(this, void 0, void 0, function* () {
-            if (cancel)
-                return false;
-            const fireMode = helpers_1.Helpers.parseInputToNumber($(html).find('[name="fireMode"]').val());
-            const range = helpers_1.Helpers.parseInputToNumber($(html).find('[name="range"]').val());
-            if (range) {
-                yield item.setLastFireRangeMod({ value: range });
-            }
-            if (fireMode) {
-                const fireModeString = fireModes[fireMode];
-                const defenseModifier = helpers_1.Helpers.mapRoundsToDefenseDesc(fireMode);
-                const fireModeData = {
-                    label: fireModeString,
-                    value: fireMode,
-                    defense: defenseModifier,
-                };
-                yield item.setLastFireMode(fireModeData);
-            }
-            return true;
-        });
-    }
-    static _getRangeWeaponTemplateData(ranges) {
-        const lookup = {
-            short: 0,
-            medium: -1,
-            long: -3,
-            extreme: -6,
-        };
-        const newRanges = {};
-        for (const [key, value] of Object.entries(ranges)) {
-            newRanges[key] = {
-                distance: value,
-                label: CONFIG.SR5.weaponRanges[key],
-                modifier: lookup[key],
-            };
-        }
-        return newRanges;
-    }
-}
-exports.ShadowrunItemDialog = ShadowrunItemDialog;
-},{"../../helpers":30}],20:[function(require,module,exports){
-"use strict";
 
 var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
 
@@ -3868,7 +2964,7 @@ var OverwatchScoreTracker = /*#__PURE__*/function (_Application) {
 exports.OverwatchScoreTracker = OverwatchScoreTracker;
 (0, _defineProperty2["default"])(OverwatchScoreTracker, "MatrixOverwatchDiceCount", '2d6');
 
-},{"@babel/runtime/helpers/classCallCheck":3,"@babel/runtime/helpers/createClass":4,"@babel/runtime/helpers/defineProperty":5,"@babel/runtime/helpers/get":6,"@babel/runtime/helpers/getPrototypeOf":7,"@babel/runtime/helpers/inherits":8,"@babel/runtime/helpers/interopRequireDefault":9,"@babel/runtime/helpers/possibleConstructorReturn":10}],21:[function(require,module,exports){
+},{"@babel/runtime/helpers/classCallCheck":3,"@babel/runtime/helpers/createClass":4,"@babel/runtime/helpers/defineProperty":5,"@babel/runtime/helpers/get":6,"@babel/runtime/helpers/getPrototypeOf":7,"@babel/runtime/helpers/inherits":8,"@babel/runtime/helpers/interopRequireDefault":9,"@babel/runtime/helpers/possibleConstructorReturn":10}],20:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.KnowledgeSkillEditForm = void 0;
@@ -3883,7 +2979,7 @@ class KnowledgeSkillEditForm extends LanguageSkillEditForm_1.LanguageSkillEditFo
     }
 }
 exports.KnowledgeSkillEditForm = KnowledgeSkillEditForm;
-},{"./LanguageSkillEditForm":22}],22:[function(require,module,exports){
+},{"./LanguageSkillEditForm":21}],21:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.LanguageSkillEditForm = void 0;
@@ -3906,7 +3002,7 @@ class LanguageSkillEditForm extends SkillEditForm_1.SkillEditForm {
     }
 }
 exports.LanguageSkillEditForm = LanguageSkillEditForm;
-},{"./SkillEditForm":23}],23:[function(require,module,exports){
+},{"./SkillEditForm":22}],22:[function(require,module,exports){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -4063,7 +3159,7 @@ class SkillEditForm extends BaseEntitySheet {
     }
 }
 exports.SkillEditForm = SkillEditForm;
-},{}],24:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.measureDistance = void 0;
@@ -4099,110 +3195,7 @@ exports.measureDistance = function (p0, p1, { gridSpaces = true } = {}) {
     }
     return (nStraight + nDiagonal) * canvas.scene.data.gridDistance;
 };
-},{"./constants":28}],25:[function(require,module,exports){
-"use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.addRollListeners = exports.addChatMessageContextOptions = exports.createChatData = void 0;
-const SR5Actor_1 = require("./actor/SR5Actor");
-const SR5Item_1 = require("./item/SR5Item");
-const template_1 = require("./template");
-const constants_1 = require("./constants");
-exports.createChatData = (templateData, roll) => __awaiter(void 0, void 0, void 0, function* () {
-    const template = `systems/shadowrun5e/dist/templates/rolls/roll-card.html`;
-    const html = yield renderTemplate(template, templateData);
-    const actor = templateData.actor;
-    const chatData = {
-        user: game.user._id,
-        type: roll ? CONST.CHAT_MESSAGE_TYPES.ROLL : CONST.CHAT_MESSAGE_TYPES.OTHER,
-        content: html,
-        roll: roll ? JSON.stringify(roll) : undefined,
-        speaker: {
-            actor: actor === null || actor === void 0 ? void 0 : actor._id,
-            token: actor === null || actor === void 0 ? void 0 : actor.token,
-            alias: actor === null || actor === void 0 ? void 0 : actor.name,
-        },
-        flags: {
-            shadowrun5e: {
-                customRoll: true,
-            },
-        },
-    };
-    if (roll) {
-        chatData['sound'] = CONFIG.sounds.dice;
-    }
-    const rollMode = game.settings.get('core', 'rollMode');
-    if (['gmroll', 'blindroll'].includes(rollMode))
-        chatData['whisper'] = ChatMessage.getWhisperIDs('GM');
-    if (rollMode === 'blindroll')
-        chatData['blind'] = true;
-    return chatData;
-});
-exports.addChatMessageContextOptions = (html, options) => {
-    const canRoll = (li) => {
-        const msg = game.messages.get(li.data().messageId);
-        return msg.getFlag(constants_1.SYSTEM_NAME, 'customRoll');
-    };
-    options.push({
-        name: 'Push the Limit',
-        callback: (li) => SR5Actor_1.SR5Actor.pushTheLimit(li),
-        condition: canRoll,
-        icon: '<i class="fas fa-meteor"></i>',
-    }, {
-        name: 'Second Chance',
-        callback: (li) => SR5Actor_1.SR5Actor.secondChance(li),
-        condition: canRoll,
-        icon: '<i class="fas fa-dice-d6"></i>',
-    });
-    return options;
-};
-exports.addRollListeners = (app, html) => {
-    if (!app.getFlag(constants_1.SYSTEM_NAME, 'customRoll'))
-        return;
-    const item = SR5Item_1.SR5Item.getItemFromMessage(html);
-    html.on('click', '.test-roll', (event) => __awaiter(void 0, void 0, void 0, function* () {
-        event.preventDefault();
-        if (item) {
-            const roll = yield item.rollTest(event, { hideRollMessage: true });
-            if (roll && roll.templateData) {
-                const template = `systems/shadowrun5e/dist/templates/rolls/roll-card.html`;
-                const html = yield renderTemplate(template, roll.templateData);
-                const data = {};
-                data['content'] = html;
-                yield app.update(data);
-            }
-        }
-    }));
-    html.on('click', '.test', (event) => __awaiter(void 0, void 0, void 0, function* () {
-        event.preventDefault();
-        const type = event.currentTarget.dataset.action;
-        if (item) {
-            yield item.rollExtraTest(type, event);
-        }
-    }));
-    html.on('click', '.place-template', (event) => {
-        event.preventDefault();
-        if (item) {
-            const template = template_1.default.fromItem(item);
-            template === null || template === void 0 ? void 0 : template.drawPreview(event);
-        }
-    });
-    html.on('click', '.card-title', (event) => {
-        event.preventDefault();
-        $(event.currentTarget).siblings('.card-description').toggle();
-    });
-    if ((item === null || item === void 0 ? void 0 : item.hasRoll) && app.isRoll)
-        $(html).find('.card-description').hide();
-};
-},{"./actor/SR5Actor":16,"./constants":28,"./item/SR5Item":32,"./template":41}],26:[function(require,module,exports){
+},{"./constants":26}],24:[function(require,module,exports){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -4301,7 +3294,7 @@ exports.shadowrunCombatUpdate = (changes, options) => __awaiter(void 0, void 0, 
         yield combat.update({ turn: 0 });
     }
 });
-},{"./constants":28}],27:[function(require,module,exports){
+},{"./constants":26}],25:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SR5 = void 0;
@@ -4586,12 +3579,12 @@ exports.SR5['programTypes'] = {
     hacking_program: 'SR5.HackingProgram',
     agent: 'SR5.Agent',
 };
-},{}],28:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SYSTEM_NAME = void 0;
 exports.SYSTEM_NAME = 'shadowrun5e';
-},{}],29:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -4742,7 +3735,7 @@ exports.registerHandlebarHelpers = () => {
         return value !== undefined;
     });
 };
-},{"./helpers":30}],30:[function(require,module,exports){
+},{"./helpers":28}],28:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Helpers = void 0;
@@ -4941,7 +3934,7 @@ class Helpers {
     }
 }
 exports.Helpers = Helpers;
-},{}],31:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ChatData = void 0;
@@ -5225,7 +4218,7 @@ exports.ChatData = {
         }
     },
 };
-},{"../helpers":30}],32:[function(require,module,exports){
+},{"../helpers":28}],30:[function(require,module,exports){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -5239,11 +4232,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SR5Item = void 0;
 const helpers_1 = require("../helpers");
-const ShadowrunItemDialog_1 = require("../apps/dialogs/ShadowrunItemDialog");
 const ChatData_1 = require("./ChatData");
-const ShadowrunRoller_1 = require("../rolls/ShadowrunRoller");
-const template_1 = require("../template");
-const chat_1 = require("../chat");
 const constants_1 = require("../constants");
 class SR5Item extends Item {
     constructor() {
@@ -5451,63 +4440,6 @@ class SR5Item extends Item {
         this.labels = labels;
         item['properties'] = this.getChatData().properties;
     }
-    postCard(event) {
-        return __awaiter(this, void 0, void 0, function* () {
-            // we won't work if we don't have an actor
-            if (!this.actor)
-                return;
-            const postOnly = (event === null || event === void 0 ? void 0 : event.shiftKey) || !this.hasRoll;
-            const post = (bonus = {}) => {
-                // if only post, don't roll and post a card version -- otherwise roll
-                const onComplete = postOnly
-                    ? () => {
-                        const { token } = this.actor;
-                        const attack = this.getAttackData(0);
-                        // don't include any hits
-                        attack === null || attack === void 0 ? true : delete attack.hits;
-                        // generate chat data
-                        chat_1.createChatData(Object.assign({ header: {
-                                name: this.name,
-                                img: this.img,
-                            }, testName: this.getRollName(), actor: this.actor, tokenId: token ? `${token.scene._id}.${token.id}` : undefined, description: this.getChatData(), item: this, previewTemplate: this.hasTemplate, attack }, bonus)).then((chatData) => {
-                            // create the message
-                            return ChatMessage.create(chatData, { displaySheet: false });
-                        });
-                    }
-                    : () => this.rollTest(event);
-                if (!postOnly && this.hasTemplate) {
-                    // onComplete is called when template is finished
-                    const template = template_1.default.fromItem(this, onComplete);
-                    if (template) {
-                        template.drawPreview();
-                    }
-                }
-                else {
-                    onComplete();
-                }
-            };
-            // prompt user if needed
-            const dialogData = yield ShadowrunItemDialog_1.ShadowrunItemDialog.fromItem(this, event);
-            if (dialogData) {
-                // keep track of old close function
-                const oldClose = dialogData.close;
-                // call post() after dialog closes
-                dialogData.close = (html) => __awaiter(this, void 0, void 0, function* () {
-                    if (oldClose) {
-                        // the oldClose we put on the dialog will return a boolean
-                        const ret = (yield oldClose(html));
-                        if (!ret)
-                            return;
-                    }
-                    post();
-                });
-                return new Dialog(dialogData).render(true);
-            }
-            else {
-                post();
-            }
-        });
-    }
     getChatData(htmlOptions) {
         const data = duplicate(this.data.data);
         const { labels } = this;
@@ -5681,100 +4613,6 @@ class SR5Item extends Item {
         const { licenses } = data.data;
         licenses.splice(index, 1);
         this.update(data);
-    }
-    rollOpposedTest(target, ev) {
-        var _a;
-        return __awaiter(this, void 0, void 0, function* () {
-            const itemData = this.data.data;
-            const options = {
-                event: ev,
-                fireModeDefense: 0,
-                cover: false,
-            };
-            const lastAttack = this.getLastAttack();
-            const parts = this.getOpposedTestMod();
-            const { opposed } = itemData.action;
-            if (opposed.type === 'defense') {
-                if (lastAttack) {
-                    options['incomingAttack'] = lastAttack;
-                    options.cover = true;
-                    if ((_a = lastAttack.fireMode) === null || _a === void 0 ? void 0 : _a.defense) {
-                        options.fireModeDefense = +lastAttack.fireMode.defense;
-                    }
-                }
-                return target.rollDefense(options, parts);
-            }
-            else if (opposed.type === 'soak') {
-                options['damage'] = lastAttack === null || lastAttack === void 0 ? void 0 : lastAttack.damage;
-                options['attackerHits'] = lastAttack === null || lastAttack === void 0 ? void 0 : lastAttack.hits;
-                return target.rollSoak(options, parts);
-            }
-            else if (opposed.type === 'armor') {
-                return target.rollArmor(options);
-            }
-            else {
-                if (opposed.skill && opposed.attribute) {
-                    return target.rollSkill(opposed.skill, Object.assign(Object.assign({}, options), { attribute: opposed.attribute }));
-                }
-                else if (opposed.attribute && opposed.attribute2) {
-                    return target.rollTwoAttributes([opposed.attribute, opposed.attribute2], options);
-                }
-                else if (opposed.attribute) {
-                    return target.rollSingleAttribute(opposed.attribute, options);
-                }
-            }
-        });
-    }
-    rollExtraTest(type, event) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const targets = SR5Item.getTargets();
-            if (type === 'opposed') {
-                for (const t of targets) {
-                    yield this.rollOpposedTest(t, event);
-                }
-            }
-        });
-    }
-    /**
-     * Rolls a test using the latest stored data on the item (force, fireMode, level)
-     * @param event - mouse event
-     * @param options - any additional roll options to pass along - note that currently the Item will overwrite -- WIP
-     */
-    rollTest(event, options) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const promise = ShadowrunRoller_1.ShadowrunRoller.itemRoll(event, this, options);
-            // handle promise when it resolves for our own stuff
-            promise.then((roll) => __awaiter(this, void 0, void 0, function* () {
-                var _a, _b;
-                // complex form handles fade
-                if (this.isComplexForm()) {
-                    const totalFade = Math.max(this.getFade() + this.getLastComplexFormLevel().value, 2);
-                    yield this.actor.rollFade({ event }, totalFade);
-                } // spells handle drain, force, and attack data
-                else if (this.isSpell()) {
-                    if (this.isCombatSpell() && roll) {
-                        const attackData = this.getAttackData(roll.total);
-                        if (attackData) {
-                            yield this.setLastAttack(attackData);
-                        }
-                    }
-                    const forceData = this.getLastSpellForce();
-                    const drain = Math.max(this.getDrain() + forceData.value + (forceData.reckless ? 3 : 0), 2);
-                    yield ((_a = this.actor) === null || _a === void 0 ? void 0 : _a.rollDrain({ event }, drain));
-                } // weapons handle ammo and attack data
-                else if (this.data.type === 'weapon') {
-                    const attackData = this.getAttackData((roll === null || roll === void 0 ? void 0 : roll.total) || 0);
-                    if (attackData) {
-                        yield this.setLastAttack(attackData);
-                    }
-                    if (this.hasAmmo) {
-                        const fireMode = ((_b = this.getLastFireMode()) === null || _b === void 0 ? void 0 : _b.value) || 1;
-                        yield this.useAmmo(fireMode);
-                    }
-                }
-            }));
-            return promise;
-        });
     }
     static getItemFromMessage(html) {
         const card = html.find('.chat-card');
@@ -6190,7 +5028,7 @@ class SR5Item extends Item {
     }
 }
 exports.SR5Item = SR5Item;
-},{"../apps/dialogs/ShadowrunItemDialog":19,"../chat":25,"../constants":28,"../helpers":30,"../rolls/ShadowrunRoller":39,"../template":41,"./ChatData":31}],33:[function(require,module,exports){
+},{"../constants":26,"../helpers":28,"./ChatData":29}],31:[function(require,module,exports){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -6502,7 +5340,7 @@ class SR5ItemSheet extends ItemSheet {
     }
 }
 exports.SR5ItemSheet = SR5ItemSheet;
-},{"../helpers":30}],34:[function(require,module,exports){
+},{"../helpers":28}],32:[function(require,module,exports){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -6523,10 +5361,8 @@ const helpers_1 = require("./helpers");
 const settings_1 = require("./settings");
 const combat_1 = require("./combat");
 const canvas_1 = require("./canvas");
-const chat = require("./chat");
 const OverwatchScoreTracker_1 = require("./apps/gmtools/OverwatchScoreTracker");
 const handlebars_1 = require("./handlebars");
-const ShadowrunRoller_1 = require("./rolls/ShadowrunRoller");
 const Migrator_1 = require("./migrator/Migrator");
 const constants_1 = require("./constants");
 /* -------------------------------------------- */
@@ -6537,7 +5373,6 @@ Hooks.once('init', function () {
     // Create a shadowrun5e namespace within the game global
     game['shadowrun5e'] = {
         SR5Actor: SR5Actor_1.SR5Actor,
-        ShadowrunRoller: ShadowrunRoller_1.ShadowrunRoller,
         SR5Item: SR5Item_1.SR5Item,
         rollItemMacro,
     };
@@ -6574,10 +5409,6 @@ Hooks.on('ready', function () {
     }
 });
 Hooks.on('preUpdateCombat', combat_1.preCombatUpdate);
-Hooks.on('renderChatMessage', (app, html) => {
-    chat.addRollListeners(app, html);
-});
-Hooks.on('getChatLogEntryContext', chat.addChatMessageContextOptions);
 /* -------------------------------------------- */
 /*  Hotbar Macros                               */
 /* -------------------------------------------- */
@@ -6648,7 +5479,7 @@ function rollItemMacro(itemName) {
     return item.rollTest(event);
 }
 handlebars_1.registerHandlebarHelpers();
-},{"./actor/SR5Actor":16,"./actor/SR5ActorSheet":17,"./apps/gmtools/OverwatchScoreTracker":20,"./canvas":24,"./chat":25,"./combat":26,"./config":27,"./constants":28,"./handlebars":29,"./helpers":30,"./item/SR5Item":32,"./item/SR5ItemSheet":33,"./migrator/Migrator":35,"./rolls/ShadowrunRoller":39,"./settings":40}],35:[function(require,module,exports){
+},{"./actor/SR5Actor":16,"./actor/SR5ActorSheet":17,"./apps/gmtools/OverwatchScoreTracker":19,"./canvas":23,"./combat":24,"./config":25,"./constants":26,"./handlebars":27,"./helpers":28,"./item/SR5Item":30,"./item/SR5ItemSheet":31,"./migrator/Migrator":33,"./settings":37}],33:[function(require,module,exports){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -6788,7 +5619,7 @@ Migrator.s_Versions = [
     { versionNumber: LegacyMigration_1.LegacyMigration.TargetVersion, migration: new LegacyMigration_1.LegacyMigration() },
     { versionNumber: Version0_6_5_1.Version0_6_5.TargetVersion, migration: new Version0_6_5_1.Version0_6_5() },
 ];
-},{"./VersionMigration":36,"./versions/LegacyMigration":37,"./versions/Version0_6_5":38}],36:[function(require,module,exports){
+},{"./VersionMigration":34,"./versions/LegacyMigration":35,"./versions/Version0_6_5":36}],34:[function(require,module,exports){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -7217,7 +6048,7 @@ exports.VersionMigration = VersionMigration;
 VersionMigration.MODULE_NAME = 'shadowrun5e';
 VersionMigration.KEY_DATA_VERSION = 'systemMigrationVersion';
 VersionMigration.NO_VERSION = '0';
-},{}],37:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -7446,7 +6277,7 @@ class LegacyMigration extends VersionMigration_1.VersionMigration {
     }
 }
 exports.LegacyMigration = LegacyMigration;
-},{"../VersionMigration":36}],38:[function(require,module,exports){
+},{"../VersionMigration":34}],36:[function(require,module,exports){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -7496,249 +6327,7 @@ class Version0_6_5 extends VersionMigration_1.VersionMigration {
     }
 }
 exports.Version0_6_5 = Version0_6_5;
-},{"../VersionMigration":36}],39:[function(require,module,exports){
-"use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-var __rest = (this && this.__rest) || function (s, e) {
-    var t = {};
-    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
-        t[p] = s[p];
-    if (s != null && typeof Object.getOwnPropertySymbols === "function")
-        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
-            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
-                t[p[i]] = s[p[i]];
-        }
-    return t;
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.ShadowrunRoller = exports.ShadowrunRoll = void 0;
-const helpers_1 = require("../helpers");
-const chat_1 = require("../chat");
-const constants_1 = require("../constants");
-class ShadowrunRoll extends Roll {
-    toJSON() {
-        const data = super.toJSON();
-        data.class = 'Roll';
-        return data;
-    }
-}
-exports.ShadowrunRoll = ShadowrunRoll;
-class ShadowrunRoller {
-    static itemRoll(event, item, options) {
-        var _a;
-        const parts = item.getRollPartsList();
-        let limit = item.getLimit();
-        let title = item.getRollName();
-        const rollData = Object.assign(Object.assign({}, options), { event: event, dialogOptions: {
-                environmental: true,
-            }, parts, actor: item.actor, item,
-            limit,
-            title, name: item.name, img: item.img, previewTemplate: item.hasTemplate });
-        rollData['attack'] = item.getAttackData(0);
-        rollData['blast'] = item.getBlastData();
-        if (item.hasOpposedRoll) {
-            rollData['tests'] = [
-                {
-                    label: item.getOpposedTestName(),
-                    type: 'opposed',
-                },
-            ];
-        }
-        if (item.isMeleeWeapon()) {
-            rollData['reach'] = item.getReach();
-        }
-        if (item.isRangedWeapon()) {
-            rollData['fireMode'] = (_a = item.getLastFireMode()) === null || _a === void 0 ? void 0 : _a.label;
-            if (rollData.dialogOptions) {
-                rollData.dialogOptions.environmental = item.getLastFireRangeMod().value;
-            }
-        }
-        rollData.description = item.getChatData();
-        return ShadowrunRoller.advancedRoll(rollData);
-    }
-    static shadowrunFormula({ parts, limit, explode }) {
-        const count = helpers_1.Helpers.totalMods(parts);
-        if (count <= 0) {
-            // @ts-ignore
-            ui.notifications.error(game.i18n.localize('SR5.RollOneDie'));
-            return '0d6cs>=5';
-        }
-        let formula = `${count}d6`;
-        if (explode) {
-            formula += 'x6';
-        }
-        if (limit === null || limit === void 0 ? void 0 : limit.value) {
-            formula += `kh${limit.value}`;
-        }
-        formula += 'cs>=5';
-        return formula;
-    }
-    static basicRoll(_a) {
-        var { parts = {}, limit, explodeSixes, title, actor, img = actor === null || actor === void 0 ? void 0 : actor.img, name = actor === null || actor === void 0 ? void 0 : actor.name, hideRollMessage } = _a, props = __rest(_a, ["parts", "limit", "explodeSixes", "title", "actor", "img", "name", "hideRollMessage"]);
-        return __awaiter(this, void 0, void 0, function* () {
-            let roll;
-            const rollMode = game.settings.get('core', 'rollMode');
-            if (Object.keys(parts).length > 0) {
-                const formula = this.shadowrunFormula({ parts, limit, explode: explodeSixes });
-                if (!formula)
-                    return;
-                roll = new ShadowrunRoll(formula);
-                roll.roll();
-                if (game.settings.get(constants_1.SYSTEM_NAME, 'displayDefaultRollCard')) {
-                    yield roll.toMessage({
-                        speaker: ChatMessage.getSpeaker({ actor: actor }),
-                        flavor: title,
-                        rollMode: rollMode,
-                    });
-                }
-            }
-            // start of custom message
-            const dice = roll === null || roll === void 0 ? void 0 : roll.parts[0].rolls;
-            const token = actor === null || actor === void 0 ? void 0 : actor.token;
-            const templateData = Object.assign({ actor: actor, header: {
-                    name: name || '',
-                    img: img || '',
-                }, tokenId: token ? `${token.scene._id}.${token.id}` : undefined, dice,
-                limit, testName: title, dicePool: helpers_1.Helpers.totalMods(parts), parts, hits: roll === null || roll === void 0 ? void 0 : roll.total }, props);
-            roll.templateData = templateData;
-            if (!hideRollMessage) {
-                const chatData = yield chat_1.createChatData(templateData, roll);
-                ChatMessage.create(chatData, { displaySheet: false }).then((message) => {
-                    console.log(message);
-                });
-            }
-            return roll;
-        });
-    }
-    /**
-     * Prompt a roll for the user
-     */
-    static promptRoll() {
-        const lastRoll = game.user.getFlag(constants_1.SYSTEM_NAME, 'lastRollPromptValue') || 0;
-        const parts = {
-            'SR5.LastRoll': lastRoll,
-        };
-        return ShadowrunRoller.advancedRoll({ parts, dialogOptions: { prompt: true } });
-    }
-    /**
-     * Start an advanced roll
-     * - Prompts the user for modifiers
-     * @param props
-     */
-    static advancedRoll(props) {
-        // destructure what we need to use from props
-        // any value pulled out needs to be updated back in props if changed
-        const { title, actor, parts = {}, limit, extended, wounds = true, after, dialogOptions } = props;
-        // remove limits if game settings is set
-        if (!game.settings.get(constants_1.SYSTEM_NAME, 'applyLimits')) {
-            delete props.limit;
-        }
-        // TODO create "fast roll" option
-        let dialogData = {
-            options: dialogOptions,
-            extended,
-            dice_pool: helpers_1.Helpers.totalMods(parts),
-            parts,
-            limit: limit === null || limit === void 0 ? void 0 : limit.value,
-            wounds,
-            woundValue: actor === null || actor === void 0 ? void 0 : actor.getWoundModifier(),
-        };
-        let template = 'systems/shadowrun5e/dist/templates/rolls/roll-dialog.html';
-        let edge = false;
-        let cancel = true;
-        const buttons = {
-            roll: {
-                label: game.i18n.localize('SR5.Roll'),
-                icon: '<i class="fas fa-dice-six"></i>',
-                callback: () => (cancel = false),
-            },
-        };
-        if (actor) {
-            buttons['edge'] = {
-                label: `${game.i18n.localize('SR5.PushTheLimit')} (+${actor.getEdge().max})`,
-                icon: '<i class="fas fa-bomb"></i>',
-                callback: () => {
-                    edge = true;
-                    cancel = false;
-                },
-            };
-        }
-        return new Promise((resolve) => {
-            renderTemplate(template, dialogData).then((dlg) => {
-                new Dialog({
-                    title: title,
-                    content: dlg,
-                    buttons,
-                    default: 'roll',
-                    close: (html) => __awaiter(this, void 0, void 0, function* () {
-                        if (cancel)
-                            return;
-                        // get the actual dice_pool from the difference of initial parts and value in the dialog
-                        const dicePoolValue = helpers_1.Helpers.parseInputToNumber($(html).find('[name="dice_pool"]').val());
-                        if ((dialogOptions === null || dialogOptions === void 0 ? void 0 : dialogOptions.prompt) && dicePoolValue > 0) {
-                            for (const key in parts) {
-                                delete parts[key];
-                            }
-                            yield game.user.setFlag(constants_1.SYSTEM_NAME, 'lastRollPromptValue', dicePoolValue);
-                            parts['SR5.Base'] = dicePoolValue;
-                        }
-                        const limitValue = helpers_1.Helpers.parseInputToNumber($(html).find('[name="limit"]').val());
-                        if (limit && limit.value !== limitValue) {
-                            limit.value = limitValue;
-                            limit.base = limitValue;
-                            limit.label = 'SR5.Override';
-                        }
-                        const woundValue = helpers_1.Helpers.parseInputToNumber($(html).find('[name="wounds"]').val());
-                        const situationMod = helpers_1.Helpers.parseInputToNumber($(html).find('[name="dp_mod"]').val());
-                        const environmentMod = helpers_1.Helpers.parseInputToNumber($(html).find('[name="options.environmental"]').val());
-                        if (wounds && woundValue !== 0) {
-                            parts['SR5.Wounds'] = woundValue;
-                            props.wounds = true;
-                        }
-                        if (situationMod)
-                            parts['SR5.SituationalModifier'] = situationMod;
-                        if (environmentMod) {
-                            parts['SR5.EnvironmentModifier'] = environmentMod;
-                            if (!props.dialogOptions)
-                                props.dialogOptions = {};
-                            props.dialogOptions.environmental = true;
-                        }
-                        const extendedString = helpers_1.Helpers.parseInputToString($(html).find('[name="extended"]').val());
-                        const extended = extendedString === 'true';
-                        if (edge && actor) {
-                            props.explodeSixes = true;
-                            parts['SR5.PushTheLimit'] = actor.getEdge().max;
-                            yield actor.update({
-                                'data.attributes.edge.value': actor.data.data.attributes.edge.value - 1,
-                            });
-                        }
-                        props.parts = parts;
-                        const r = this.basicRoll(Object.assign({}, props));
-                        if (extended && r) {
-                            const currentExtended = parts['SR5.Extended'] || 0;
-                            parts['SR5.Extended'] = currentExtended - 1;
-                            // add a bit of a delay to roll again
-                            setTimeout(() => this.advancedRoll(props), 400);
-                        }
-                        resolve(r);
-                        if (after && r)
-                            r.then((roll) => after(roll));
-                    }),
-                }).render(true);
-            });
-        });
-    }
-}
-exports.ShadowrunRoller = ShadowrunRoller;
-},{"../chat":25,"../constants":28,"../helpers":30}],40:[function(require,module,exports){
+},{"../VersionMigration":34}],37:[function(require,module,exports){
 "use strict";
 // game settings for shadowrun 5e
 Object.defineProperty(exports, "__esModule", { value: true });
@@ -7792,106 +6381,6 @@ exports.registerSystemSettings = () => {
         default: '0',
     });
 };
-},{"./constants":28,"./migrator/VersionMigration":36}],41:[function(require,module,exports){
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-class Template extends MeasuredTemplate {
-    static fromItem(item, onComplete) {
-        const templateShape = 'circle';
-        const templateData = {
-            t: templateShape,
-            user: game.user._id,
-            direction: 0,
-            x: 0,
-            y: 0,
-            // @ts-ignore
-            fillColor: game.user.color,
-        };
-        const blast = item.getBlastData();
-        templateData['distance'] = blast === null || blast === void 0 ? void 0 : blast.radius;
-        templateData['dropoff'] = blast === null || blast === void 0 ? void 0 : blast.dropoff;
-        // @ts-ignore
-        const template = new this(templateData);
-        template.item = item;
-        template.onComplete = onComplete;
-        return template;
-    }
-    drawPreview(event) {
-        var _a, _b;
-        const initialLayer = canvas.activeLayer;
-        // @ts-ignore
-        this.draw();
-        // @ts-ignore
-        this.layer.activate();
-        // @ts-ignore
-        this.layer.preview.addChild(this);
-        this.activatePreviewListeners(initialLayer);
-        if (this.item && this.item.actor) {
-            (_b = (_a = this.item.actor) === null || _a === void 0 ? void 0 : _a.sheet) === null || _b === void 0 ? void 0 : _b.minimize();
-        }
-    }
-    activatePreviewListeners(initialLayer) {
-        const handlers = {};
-        let moveTime = 0;
-        // Update placement (mouse-move)
-        handlers['mm'] = (event) => {
-            event.stopPropagation();
-            let now = Date.now(); // Apply a 20ms throttle
-            if (now - moveTime <= 20)
-                return;
-            const center = event.data.getLocalPosition(this.layer);
-            const snapped = canvas.grid.getSnappedPosition(center.x, center.y, 2);
-            this.data.x = snapped.x;
-            this.data.y = snapped.y;
-            // @ts-ignore
-            this.refresh();
-            moveTime = now;
-        };
-        // Cancel the workflow (right-click)
-        handlers['rc'] = () => {
-            var _a, _b;
-            this.layer.preview.removeChildren();
-            canvas.stage.off('mousemove', handlers['mm']);
-            canvas.stage.off('mousedown', handlers['lc']);
-            canvas.app.view.oncontextmenu = null;
-            canvas.app.view.onwheel = null;
-            initialLayer.activate();
-            if (this.item && this.item.actor) {
-                // @ts-ignore
-                (_b = (_a = this.item.actor) === null || _a === void 0 ? void 0 : _a.sheet) === null || _b === void 0 ? void 0 : _b.maximize();
-            }
-            if (this.onComplete)
-                this.onComplete();
-        };
-        // Confirm the workflow (left-click)
-        handlers['lc'] = (event) => {
-            handlers['rc'](event);
-            // Confirm final snapped position
-            const destination = canvas.grid.getSnappedPosition(this.x, this.y, 2);
-            this.data.x = destination.x;
-            this.data.y = destination.y;
-            // Create the template
-            canvas.scene.createEmbeddedEntity('MeasuredTemplate', this.data);
-        };
-        // Rotate the template by 3 degree increments (mouse-wheel)
-        handlers['mw'] = (event) => {
-            if (event.ctrlKey)
-                event.preventDefault(); // Avoid zooming the browser window
-            event.stopPropagation();
-            let delta = canvas.grid.type > CONST.GRID_TYPES.SQUARE ? 30 : 15;
-            let snap = event.shiftKey ? delta : 5;
-            this.data.direction += snap * Math.sign(event.deltaY);
-            // @ts-ignore
-            this.refresh();
-        };
-        // Activate listeners
-        canvas.stage.on('mousemove', handlers['mm']);
-        canvas.stage.on('mousedown', handlers['lc']);
-        canvas.app.view.oncontextmenu = handlers['rc'];
-        canvas.app.view.onwheel = handlers['mw'];
-    }
-}
-exports.default = Template;
-},{}]},{},[34])
+},{"./constants":26,"./migrator/VersionMigration":34}]},{},[32])
 
 //# sourceMappingURL=bundle.js.map

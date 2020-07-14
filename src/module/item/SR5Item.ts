@@ -1,6 +1,5 @@
 import { Helpers } from '../helpers';
 import { SR5Actor } from '../actor/SR5Actor';
-import { ShadowrunItemDialog } from '../apps/dialogs/ShadowrunItemDialog';
 import ModList = Shadowrun.ModList;
 import AttackData = Shadowrun.AttackData;
 import AttributeField = Shadowrun.AttributeField;
@@ -12,9 +11,6 @@ import ComplexFormLevelData = Shadowrun.ComplexFormLevelData;
 import FireRangeData = Shadowrun.FireRangeData;
 import BlastData = Shadowrun.BlastData;
 import { ChatData } from './ChatData';
-import { AdvancedRollProps, ShadowrunRoll, ShadowrunRoller } from '../rolls/ShadowrunRoller';
-import Template from '../template';
-import { createChatData } from '../chat';
 import { SYSTEM_NAME } from '../constants';
 
 export class SR5Item extends Item {
@@ -219,71 +215,6 @@ export class SR5Item extends Item {
         item['properties'] = this.getChatData().properties;
     }
 
-    async postCard(event?) {
-        // we won't work if we don't have an actor
-        if (!this.actor) return;
-
-        const postOnly = event?.shiftKey || !this.hasRoll;
-
-        const post = (bonus = {}) => {
-            // if only post, don't roll and post a card version -- otherwise roll
-            const onComplete = postOnly
-                ? () => {
-                      const { token } = this.actor;
-                      const attack = this.getAttackData(0);
-                      // don't include any hits
-                      delete attack?.hits;
-                      // generate chat data
-                      createChatData({
-                          header: {
-                              name: this.name,
-                              img: this.img,
-                          },
-                          testName: this.getRollName(),
-                          actor: this.actor,
-                          tokenId: token ? `${token.scene._id}.${token.id}` : undefined,
-                          description: this.getChatData(),
-                          item: this,
-                          previewTemplate: this.hasTemplate,
-                          attack,
-                          ...bonus,
-                      }).then((chatData) => {
-                          // create the message
-                          return ChatMessage.create(chatData, { displaySheet: false });
-                      });
-                  }
-                : () => this.rollTest(event);
-
-            if (!postOnly && this.hasTemplate) {
-                // onComplete is called when template is finished
-                const template = Template.fromItem(this, onComplete);
-                if (template) {
-                    template.drawPreview();
-                }
-            } else {
-                onComplete();
-            }
-        };
-        // prompt user if needed
-        const dialogData = await ShadowrunItemDialog.fromItem(this, event);
-        if (dialogData) {
-            // keep track of old close function
-            const oldClose = dialogData.close;
-            // call post() after dialog closes
-            dialogData.close = async (html) => {
-                if (oldClose) {
-                    // the oldClose we put on the dialog will return a boolean
-                    const ret = ((await oldClose(html)) as unknown) as boolean;
-                    if (!ret) return;
-                }
-                post();
-            };
-            return new Dialog(dialogData).render(true);
-        } else {
-            post();
-        }
-    }
-
     getChatData(htmlOptions?) {
         const data = duplicate(this.data.data);
         const { labels } = this;
@@ -456,97 +387,6 @@ export class SR5Item extends Item {
         const { licenses } = data.data;
         licenses.splice(index, 1);
         this.update(data);
-    }
-
-    async rollOpposedTest(target: SR5Actor, ev) {
-        const itemData = this.data.data;
-        const options = {
-            event: ev,
-            fireModeDefense: 0,
-            cover: false,
-        };
-
-        const lastAttack = this.getLastAttack();
-        const parts = this.getOpposedTestMod();
-        const { opposed } = itemData.action;
-
-        if (opposed.type === 'defense') {
-            if (lastAttack) {
-                options['incomingAttack'] = lastAttack;
-                options.cover = true;
-                if (lastAttack.fireMode?.defense) {
-                    options.fireModeDefense = +lastAttack.fireMode.defense;
-                }
-            }
-            return target.rollDefense(options, parts);
-        } else if (opposed.type === 'soak') {
-            options['damage'] = lastAttack?.damage;
-            options['attackerHits'] = lastAttack?.hits;
-            return target.rollSoak(options, parts);
-        } else if (opposed.type === 'armor') {
-            return target.rollArmor(options);
-        } else {
-            if (opposed.skill && opposed.attribute) {
-                return target.rollSkill(opposed.skill, {
-                    ...options,
-                    attribute: opposed.attribute,
-                });
-            } else if (opposed.attribute && opposed.attribute2) {
-                return target.rollTwoAttributes([opposed.attribute, opposed.attribute2], options);
-            } else if (opposed.attribute) {
-                return target.rollSingleAttribute(opposed.attribute, options);
-            }
-        }
-    }
-
-    async rollExtraTest(type: string, event) {
-        const targets = SR5Item.getTargets();
-        if (type === 'opposed') {
-            for (const t of targets) {
-                await this.rollOpposedTest(t, event);
-            }
-        }
-    }
-
-    /**
-     * Rolls a test using the latest stored data on the item (force, fireMode, level)
-     * @param event - mouse event
-     * @param options - any additional roll options to pass along - note that currently the Item will overwrite -- WIP
-     */
-    async rollTest(event, options?: Partial<AdvancedRollProps>): Promise<ShadowrunRoll | undefined> {
-        const promise = ShadowrunRoller.itemRoll(event, this, options);
-
-        // handle promise when it resolves for our own stuff
-        promise.then(async (roll) => {
-            // complex form handles fade
-            if (this.isComplexForm()) {
-                const totalFade = Math.max(this.getFade() + this.getLastComplexFormLevel().value, 2);
-                await this.actor.rollFade({ event }, totalFade);
-            } // spells handle drain, force, and attack data
-            else if (this.isSpell()) {
-                if (this.isCombatSpell() && roll) {
-                    const attackData = this.getAttackData(roll.total);
-                    if (attackData) {
-                        await this.setLastAttack(attackData);
-                    }
-                }
-                const forceData = this.getLastSpellForce();
-                const drain = Math.max(this.getDrain() + forceData.value + (forceData.reckless ? 3 : 0), 2);
-                await this.actor?.rollDrain({ event }, drain);
-            } // weapons handle ammo and attack data
-            else if (this.data.type === 'weapon') {
-                const attackData = this.getAttackData(roll?.total || 0);
-                if (attackData) {
-                    await this.setLastAttack(attackData);
-                }
-                if (this.hasAmmo) {
-                    const fireMode = this.getLastFireMode()?.value || 1;
-                    await this.useAmmo(fireMode);
-                }
-            }
-        });
-
-        return promise;
     }
 
     static getItemFromMessage(html): SR5Item | undefined {

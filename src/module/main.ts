@@ -7,10 +7,8 @@ import { Helpers } from './helpers';
 import { registerSystemSettings } from './settings';
 import { preCombatUpdate, shadowrunCombatUpdate } from './combat';
 import { measureDistance } from './canvas';
-import * as chat from './chat';
 import { OverwatchScoreTracker } from './apps/gmtools/OverwatchScoreTracker';
 import { registerHandlebarHelpers, preloadHandlebarsTemplates } from './handlebars';
-import { ShadowrunRoller } from './rolls/ShadowrunRoller';
 import { Migrator } from './migrator/Migrator';
 import { SYSTEM_NAME } from './constants';
 
@@ -24,7 +22,6 @@ Hooks.once('init', function () {
     // Create a shadowrun5e namespace within the game global
     game['shadowrun5e'] = {
         SR5Actor,
-        ShadowrunRoller,
         SR5Item,
         rollItemMacro,
     };
@@ -71,11 +68,6 @@ Hooks.on('ready', function () {
 });
 
 Hooks.on('preUpdateCombat', preCombatUpdate);
-Hooks.on('renderChatMessage', (app, html) => {
-    chat.addRollListeners(app, html);
-});
-
-Hooks.on('getChatLogEntryContext', chat.addChatMessageContextOptions);
 
 /* -------------------------------------------- */
 /*  Hotbar Macros                               */
