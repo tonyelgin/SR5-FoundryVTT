@@ -67,8 +67,8 @@ declare namespace Shadowrun {
         bonus: KeyValuePair[];
     };
 
-    type KeyValuePair<TKey = string, TValue = number> = {
-        key: TKey;
-        value: TValue;
+    type KeyValuePair = {
+        key: string;
+        value: number;
     };
 }

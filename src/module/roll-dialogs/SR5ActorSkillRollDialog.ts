@@ -48,7 +48,7 @@ export class SR5ActorSkillRollDialog extends SR5ActorRollDialog {
             this.parts.set(this.skillField.label, this.skillField.value);
             this.attribute = this.skillField.attribute;
             if (this.specialization && this.skillField.specs.includes(this.specialization)) {
-                this.addPart(this.specialization, 2);
+                this.parts.set(this.specialization, 2);
             }
         }
         if (this.attributeField?.label) {
@@ -89,11 +89,11 @@ export class SR5ActorSkillRollDialog extends SR5ActorRollDialog {
     changeSpec(specialization: string) {
         const oldSpec = this.specialization;
         if (oldSpec) {
-            this.removePart(oldSpec);
+            this.parts.remove(oldSpec);
         }
         this.specialization = specialization;
         if (this.specialization) {
-            this.addPart(this.specialization, 2);
+            this.parts.set(this.specialization, 2);
         }
     }
 
