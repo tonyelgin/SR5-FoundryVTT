@@ -5,24 +5,26 @@ import { SR5ActiveSkill } from '../../types/enum/SR5ActiveSkill';
 import SR5ActorData = Shadowrun.SR5ActorData;
 
 export class SkillField extends SelectField {
-    public static getOptions(): string[] {
-        const pattern = /[A-Z]/;
-        const keys = Object.keys(SR5ActiveSkill);
-        for (let i = 0; i < keys.length; i++) {
-            const match = keys[i].match(pattern);
-            console.warn(keys[i]);
-            console.warn(match);
-        }
-        return keys;
+    // <editor-fold desc="Static Properties"></editor-fold>
+    // <editor-fold desc="Static Methods"></editor-fold>
+    // <editor-fold desc="Properties"></editor-fold>
+    // <editor-fold desc="Constructor & Initialization">
+
+    constructor(defaultSkill: SR5ActiveSkill) {
+        super('skill', 'SR5.Skill', defaultSkill.toString());
     }
 
-    public static getValues(): string[] {
+    protected getOptions(): string[] {
+        return Object.keys(SR5ActiveSkill);
+    }
+
+    protected getValues(): string[] {
         return Object.values(SR5ActiveSkill);
     }
 
-    constructor(defaultSkill: SR5ActiveSkill) {
-        super('skill', 'SR5.Skill', defaultSkill.toString(), SkillField.getOptions(), SkillField.getValues());
-    }
+    // </editor-fold>
+    // <editor-fold desc="Getters & Setters"></editor-fold>
+    // <editor-fold desc="Instance Methods">
 
     collect(actor: SR5Actor | undefined, data: RollData) {
         // TODO: An example of how powerful this is.
@@ -33,4 +35,6 @@ export class SkillField extends SelectField {
         data['skill'] = actorData.skills.active[this.getValue()];
         data['skill']['attribute'] = actorData.attributes[data['skill']['attribute']];
     }
+
+    // </editor-fold>
 }

@@ -6410,9 +6410,16 @@ exports.SituationalModifierField = exports.SITUATIONAL_MODIFIER_DATA_KEY = void 
 const NumberField_1 = require("./base/NumberField");
 exports.SITUATIONAL_MODIFIER_DATA_KEY = 'situationalModifier';
 class SituationalModifierField extends NumberField_1.NumberField {
+    // <editor-fold desc="Static Properties"></editor-fold>
+    // <editor-fold desc="Static Methods"></editor-fold>
+    // <editor-fold desc="Properties"></editor-fold>
+    // <editor-fold desc="Constructor & Initialization">
     constructor(defaultModifier) {
         super('situational-modifier', 'SR5.SituationalModifier', defaultModifier);
     }
+    // </editor-fold>
+    // <editor-fold desc="Getters & Setters"></editor-fold>
+    // <editor-fold desc="Instance Methods">
     collect(actor, data) {
         data[exports.SITUATIONAL_MODIFIER_DATA_KEY] = this.getValue();
     }
@@ -6425,22 +6432,22 @@ exports.SkillField = void 0;
 const SelectField_1 = require("./base/SelectField");
 const SR5ActiveSkill_1 = require("../../types/enum/SR5ActiveSkill");
 class SkillField extends SelectField_1.SelectField {
-    static getOptions() {
-        const pattern = /[A-Z]/;
-        const keys = Object.keys(SR5ActiveSkill_1.SR5ActiveSkill);
-        for (let i = 0; i < keys.length; i++) {
-            const match = keys[i].match(pattern);
-            console.warn(keys[i]);
-            console.warn(match);
-        }
-        return keys;
+    // <editor-fold desc="Static Properties"></editor-fold>
+    // <editor-fold desc="Static Methods"></editor-fold>
+    // <editor-fold desc="Properties"></editor-fold>
+    // <editor-fold desc="Constructor & Initialization">
+    constructor(defaultSkill) {
+        super('skill', 'SR5.Skill', defaultSkill.toString());
     }
-    static getValues() {
+    getOptions() {
+        return Object.keys(SR5ActiveSkill_1.SR5ActiveSkill);
+    }
+    getValues() {
         return Object.values(SR5ActiveSkill_1.SR5ActiveSkill);
     }
-    constructor(defaultSkill) {
-        super('skill', 'SR5.Skill', defaultSkill.toString(), SkillField.getOptions(), SkillField.getValues());
-    }
+    // </editor-fold>
+    // <editor-fold desc="Getters & Setters"></editor-fold>
+    // <editor-fold desc="Instance Methods">
     collect(actor, data) {
         // TODO: An example of how powerful this is.
         //  We might not want this to pull data like this though.
@@ -6464,16 +6471,33 @@ class DialogField extends HTMLElement {
         this.id = id;
         this.labelKey = label;
         this._value = value;
-        this.setAttribute('class', this.class);
     }
     // </editor-fold>
     // <editor-fold desc="Getters & Setters">
     // Read Only
     /**
-     * Get the class that should be added to the root element.
+     * The class(es) that should be applied to the container.
      */
-    get class() {
+    get fieldClass() {
         return 'form-group';
+    }
+    /**
+     * The class(es) that should be applied to the input.
+     */
+    get inputClass() {
+        return 'display';
+    }
+    /**
+     * The class(es) that should be applied to the label.
+     */
+    get labelClass() {
+        return 'display';
+    }
+    /**
+     * The label associated with this field.
+     */
+    get label() {
+        return this._label;
     }
     // Read + Write
     /**
@@ -6503,12 +6527,16 @@ class DialogField extends HTMLElement {
      * by accident. If you want more elements you should use {@see createAdditionalElements} instead.
      */
     connectedCallback() {
+        this.setAttribute('class', this.fieldClass);
         const label = this.createLabel();
         const input = this.createInput();
         input.onchange = this.onInputChanged.bind(this);
         input.oninput = this.onInputChanged.bind(this);
         this.append(label);
         this.append(input);
+        this._label = label;
+        label.setAttribute('class', this.labelClass);
+        input.setAttribute('class', this.inputClass);
         this.createAdditionalElements();
     }
     /**
@@ -6533,16 +6561,24 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.NumberField = void 0;
 const DialogField_1 = require("./DialogField");
 class NumberField extends DialogField_1.DialogField {
+    // <editor-fold desc="Static Properties"></editor-fold>
+    // <editor-fold desc="Static Methods"></editor-fold>
+    // <editor-fold desc="Properties"></editor-fold>
+    // <editor-fold desc="Constructor & Initialization">
     constructor(id, label, value) {
         super(id, label, value);
         // TODO: Handle min + max
     }
+    // </editor-fold>
+    // <editor-fold desc="Getters & Setters">
     setValue(value) {
         if (typeof value === 'string') {
             value = parseInt(value);
         }
         super.setValue(value);
     }
+    // </editor-fold>
+    // <editor-fold desc="Instance Methods">
     createInput() {
         const input = document.createElement('input');
         input.id = this.getIdForChild('input');
@@ -6568,14 +6604,26 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.SelectField = void 0;
 const DialogField_1 = require("./DialogField");
 class SelectField extends DialogField_1.DialogField {
-    constructor(id, label, value, options, values) {
+    // </editor-fold>
+    // <editor-fold desc="Constructor & Initialization">
+    constructor(id, label, value) {
         super(id, label, value);
+        const options = this.getOptions();
+        const values = this.getValues();
         if (options.length !== values.length) {
             throw new Error(`Cannot create SelectField: Options.length = ${options.length} but values.length = ${values.length}`);
         }
         this._options = options;
         this._values = values;
     }
+    // </editor-fold>
+    // <editor-fold desc="Getters & Setters">
+    // Read Only
+    get select() {
+        return this._select;
+    }
+    // </editor-fold>
+    // <editor-fold desc="Instance Methods">
     createOptions() {
         const options = [];
         for (let i = 0; i < this._options.length; i++) {
@@ -6590,6 +6638,7 @@ class SelectField extends DialogField_1.DialogField {
     }
     onInputChanged(event) {
         event.preventDefault();
+        this.setValue(this.select.value);
     }
     createInput() {
         const select = document.createElement('select');
@@ -6598,6 +6647,7 @@ class SelectField extends DialogField_1.DialogField {
         select.onchange += this.onInputChanged.bind(this);
         const options = this.createOptions();
         select.append(...options);
+        this._select = select;
         return select;
     }
 }

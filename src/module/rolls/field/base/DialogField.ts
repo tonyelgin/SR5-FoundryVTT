@@ -3,9 +3,7 @@ import { SR5Actor } from '../../../actor/SR5Actor';
 
 export abstract class DialogField<TValue extends { toString: () => string }> extends HTMLElement {
     // <editor-fold desc="Static Properties"></editor-fold>
-
     // <editor-fold desc="Static Methods"></editor-fold>
-
     // <editor-fold desc="Properties">
 
     /**
@@ -18,8 +16,12 @@ export abstract class DialogField<TValue extends { toString: () => string }> ext
      */
     private _value: TValue;
 
-    // </editor-fold>
+    /**
+     * The label associated with this field.
+     */
+    private _label: HTMLLabelElement;
 
+    // </editor-fold>
     // <editor-fold desc="Constructor & Initialization">
 
     protected constructor(id: string, label: string, value: TValue) {
@@ -28,21 +30,39 @@ export abstract class DialogField<TValue extends { toString: () => string }> ext
         this.id = id;
         this.labelKey = label;
         this._value = value;
-
-        this.setAttribute('class', this.class);
     }
 
     // </editor-fold>
-
     // <editor-fold desc="Getters & Setters">
 
     // Read Only
 
     /**
-     * Get the class that should be added to the root element.
+     * The class(es) that should be applied to the container.
      */
-    public get class(): string {
+    public get fieldClass(): string {
         return 'form-group';
+    }
+
+    /**
+     * The class(es) that should be applied to the input.
+     */
+    public get inputClass(): string {
+        return 'display';
+    }
+
+    /**
+     * The class(es) that should be applied to the label.
+     */
+    public get labelClass(): string {
+        return 'display';
+    }
+
+    /**
+     * The label associated with this field.
+     */
+    public get label(): HTMLLabelElement {
+        return this._label;
     }
 
     // Read + Write
@@ -63,7 +83,6 @@ export abstract class DialogField<TValue extends { toString: () => string }> ext
     }
 
     // </editor-fold>
-
     // <editor-fold desc="Instance Methods">
 
     /**
@@ -79,6 +98,8 @@ export abstract class DialogField<TValue extends { toString: () => string }> ext
      * by accident. If you want more elements you should use {@see createAdditionalElements} instead.
      */
     private connectedCallback() {
+        this.setAttribute('class', this.fieldClass);
+
         const label = this.createLabel();
         const input = this.createInput();
 
@@ -87,6 +108,11 @@ export abstract class DialogField<TValue extends { toString: () => string }> ext
 
         this.append(label);
         this.append(input);
+
+        this._label = label;
+
+        label.setAttribute('class', this.labelClass);
+        input.setAttribute('class', this.inputClass);
 
         this.createAdditionalElements();
     }

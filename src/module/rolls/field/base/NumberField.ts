@@ -1,10 +1,18 @@
 import { DialogField } from './DialogField';
 
 export abstract class NumberField extends DialogField<number> {
+    // <editor-fold desc="Static Properties"></editor-fold>
+    // <editor-fold desc="Static Methods"></editor-fold>
+    // <editor-fold desc="Properties"></editor-fold>
+    // <editor-fold desc="Constructor & Initialization">
+
     protected constructor(id: string, label: string, value: number) {
         super(id, label, value);
         // TODO: Handle min + max
     }
+
+    // </editor-fold>
+    // <editor-fold desc="Getters & Setters">
 
     public setValue(value: number | string) {
         if (typeof value === 'string') {
@@ -13,6 +21,9 @@ export abstract class NumberField extends DialogField<number> {
 
         super.setValue(value);
     }
+
+    // </editor-fold>
+    // <editor-fold desc="Instance Methods">
 
     protected createInput(): HTMLInputElement {
         const input = document.createElement('input');
@@ -35,4 +46,6 @@ export abstract class NumberField extends DialogField<number> {
             this.setValue(stringValue);
         }
     }
+
+    // </editor-fold>
 }

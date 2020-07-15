@@ -1,11 +1,22 @@
 import { DialogField } from './DialogField';
 
 export abstract class SelectField extends DialogField<string> {
-    protected _options: string[];
-    protected _values: string[];
+    // <editor-fold desc="Static Properties"></editor-fold>
+    // <editor-fold desc="Static Methods"></editor-fold>
+    // <editor-fold desc="Properties">
 
-    protected constructor(id: string, label: string, value: string, options: string[], values: string[]) {
+    protected readonly _options: string[];
+    protected readonly _values: string[];
+    private _select: HTMLSelectElement;
+
+    // </editor-fold>
+    // <editor-fold desc="Constructor & Initialization">
+
+    protected constructor(id: string, label: string, value: string) {
         super(id, label, value);
+
+        const options = this.getOptions();
+        const values = this.getValues();
 
         if (options.length !== values.length) {
             throw new Error(`Cannot create SelectField: Options.length = ${options.length} but values.length = ${values.length}`);
@@ -14,6 +25,27 @@ export abstract class SelectField extends DialogField<string> {
         this._options = options;
         this._values = values;
     }
+
+    /**
+     * Get valid option names for the select.
+     */
+    protected abstract getOptions();
+
+    /**
+     * Get valid option values for the select.
+     */
+    protected abstract getValues();
+
+    // </editor-fold>
+    // <editor-fold desc="Getters & Setters">
+
+    // Read Only
+    public get select(): HTMLSelectElement {
+        return this._select;
+    }
+
+    // </editor-fold>
+    // <editor-fold desc="Instance Methods">
 
     protected createOptions(): HTMLOptionElement[] {
         const options: HTMLOptionElement[] = [];
@@ -32,7 +64,7 @@ export abstract class SelectField extends DialogField<string> {
     protected onInputChanged(event: Event) {
         event.preventDefault();
 
-
+        this.setValue(this.select.value);
     }
 
     protected createInput(): HTMLSelectElement {
@@ -45,6 +77,11 @@ export abstract class SelectField extends DialogField<string> {
 
         const options = this.createOptions();
         select.append(...options);
+
+        this._select = select;
+
         return select;
     }
+
+    // </editor-fold>
 }
