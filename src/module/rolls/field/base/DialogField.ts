@@ -2,33 +2,41 @@ import { RollData } from '../../dialog/RollDialog';
 import { SR5Actor } from '../../../actor/SR5Actor';
 
 export abstract class DialogField<TValue extends { toString: () => string }> extends HTMLElement {
-    protected readonly _labelKey: string;
+    // <editor-fold desc="Static Properties"></editor-fold>
+
+    // <editor-fold desc="Static Methods"></editor-fold>
+
+    // <editor-fold desc="Properties">
+
+    /**
+     * The localization key of the label.
+     */
+    protected readonly labelKey: string;
+
+    /**
+     * Internal stored value of this field.
+     */
     private _value: TValue;
+
+    // </editor-fold>
+
+    // <editor-fold desc="Constructor & Initialization">
 
     protected constructor(id: string, label: string, value: TValue) {
         super();
 
         this.id = id;
-        this._labelKey = label;
+        this.labelKey = label;
         this._value = value;
 
         this.setAttribute('class', this.class);
     }
 
-    public getValue(): TValue {
-        return this._value;
-    }
+    // </editor-fold>
 
-    public setValue(value: TValue) {
-        this._value = value;
-    }
+    // <editor-fold desc="Getters & Setters">
 
-    /**
-     * The localization key of the label.
-     */
-    public get labelKey(): string {
-        return this._labelKey;
-    }
+    // Read Only
 
     /**
      * Get the class that should be added to the root element.
@@ -37,22 +45,33 @@ export abstract class DialogField<TValue extends { toString: () => string }> ext
         return 'form-group';
     }
 
+    // Read + Write
+
     /**
-     * Get an id for the specified type of element
-     * @param type
+     * Get the value for this field. Can be overridden if type coercion is needed.
      */
-    public getId(type: string) {
-        return `${this.id}-${type}`;
+    public getValue(): TValue {
+        return this._value;
     }
 
     /**
-     * Overrides getAttribute to always return a string. Returns '' if the attribute is not found.
-     * @param qualifiedName
+     * Set the value for this field. Can be overridden if type coercion is needed.
+     * @param value
      */
-    public getAttribute(qualifiedName: string): string {
-        const result = super.getAttribute(qualifiedName);
-        if (result === null) return '';
-        return result;
+    public setValue(value: TValue) {
+        this._value = value;
+    }
+
+    // </editor-fold>
+
+    // <editor-fold desc="Instance Methods">
+
+    /**
+     * Get an id for the specified child element
+     * @param type
+     */
+    public getIdForChild(type: 'label' | 'input') {
+        return `${this.id}-${type}`;
     }
 
     /**
@@ -62,6 +81,9 @@ export abstract class DialogField<TValue extends { toString: () => string }> ext
     private connectedCallback() {
         const label = this.createLabel();
         const input = this.createInput();
+
+        input.onchange = this.onInputChanged.bind(this);
+        input.oninput = this.onInputChanged.bind(this);
 
         this.append(label);
         this.append(input);
@@ -80,8 +102,8 @@ export abstract class DialogField<TValue extends { toString: () => string }> ext
     protected createLabel(): HTMLLabelElement {
         const label = document.createElement('label');
 
-        label.id = this.getId('label');
-        label.setAttribute('for', this.getId('input'));
+        label.id = this.getIdForChild('label');
+        label.setAttribute('for', this.getIdForChild('input'));
         label.innerText = game.i18n.localize(this.labelKey);
 
         return label;
@@ -98,5 +120,12 @@ export abstract class DialogField<TValue extends { toString: () => string }> ext
      */
     protected abstract onInputChanged(event: Event);
 
+    /**
+     * Collects relevant data from the actor or fields and places it in the RollData object for use.
+     * @param actor
+     * @param data
+     */
     public abstract collect(actor: SR5Actor | undefined, data: RollData);
+
+    // </editor-fold>
 }

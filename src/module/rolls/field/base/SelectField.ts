@@ -29,11 +29,17 @@ export abstract class SelectField extends DialogField<string> {
         return options;
     }
 
+    protected onInputChanged(event: Event) {
+        event.preventDefault();
+
+
+    }
+
     protected createInput(): HTMLSelectElement {
         const select = document.createElement('select');
 
-        select.id = this.getId('input');
-        select.value = this._value.toString();
+        select.id = this.getIdForChild('input');
+        select.value = this.getValue().toString();
 
         select.onchange += this.onInputChanged.bind(this);
 

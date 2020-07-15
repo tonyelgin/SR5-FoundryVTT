@@ -1743,7 +1743,7 @@ class SR5ActorSheet extends ActorSheet {
         // html.find('.matrix-roll').click(this._onRollMatrixAttribute.bind(this));
         html.find('.matrix-att-selector').change(this._onMatrixAttributeSelected.bind(this));
         html.find('.basic-roll').on('click', () => __awaiter(this, void 0, void 0, function* () {
-            const d = new DynamicDialog_1.DynamicDialog([new SituationalModifierField_1.SituationalModifierField('modifier', 'SR5.SituationalModifier', 0)], this.actor);
+            const d = new DynamicDialog_1.DynamicDialog([new SituationalModifierField_1.SituationalModifierField(0)], this.actor);
             d.render(true);
         }));
         // html.find('.armor-roll').click(this._onRollArmor.bind(this));
@@ -6404,14 +6404,15 @@ exports.RollDialog = RollDialog;
 },{}],39:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.SituationalModifierField = void 0;
+exports.SituationalModifierField = exports.SITUATIONAL_MODIFIER_DATA_KEY = void 0;
 const NumberField_1 = require("./base/NumberField");
+exports.SITUATIONAL_MODIFIER_DATA_KEY = 'situationalModifier';
 class SituationalModifierField extends NumberField_1.NumberField {
-    constructor(id, label, value) {
-        super(id, label, value);
+    constructor(defaultModifier) {
+        super('situational-modifier', 'SR5.SituationalModifier', defaultModifier);
     }
     collect(actor, data) {
-        data['situationalModifier'] = this.getValue();
+        data[exports.SITUATIONAL_MODIFIER_DATA_KEY] = this.getValue();
     }
 }
 exports.SituationalModifierField = SituationalModifierField;
@@ -6420,47 +6421,46 @@ exports.SituationalModifierField = SituationalModifierField;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DialogField = void 0;
 class DialogField extends HTMLElement {
+    // </editor-fold>
+    // <editor-fold desc="Constructor & Initialization">
     constructor(id, label, value) {
         super();
         this.id = id;
-        this._labelKey = label;
+        this.labelKey = label;
         this._value = value;
         this.setAttribute('class', this.class);
     }
-    getValue() {
-        return this._value;
-    }
-    setValue(value) {
-        this._value = value;
-    }
-    /**
-     * The localization key of the label.
-     */
-    get labelKey() {
-        return this._labelKey;
-    }
+    // </editor-fold>
+    // <editor-fold desc="Getters & Setters">
+    // Read Only
     /**
      * Get the class that should be added to the root element.
      */
     get class() {
         return 'form-group';
     }
+    // Read + Write
     /**
-     * Get an id for the specified type of element
-     * @param type
+     * Get the value for this field. Can be overridden if type coercion is needed.
      */
-    getId(type) {
-        return `${this.id}-${type}`;
+    getValue() {
+        return this._value;
     }
     /**
-     * Overrides getAttribute to always return a string. Returns '' if the attribute is not found.
-     * @param qualifiedName
+     * Set the value for this field. Can be overridden if type coercion is needed.
+     * @param value
      */
-    getAttribute(qualifiedName) {
-        const result = super.getAttribute(qualifiedName);
-        if (result === null)
-            return '';
-        return result;
+    setValue(value) {
+        this._value = value;
+    }
+    // </editor-fold>
+    // <editor-fold desc="Instance Methods">
+    /**
+     * Get an id for the specified child element
+     * @param type
+     */
+    getIdForChild(type) {
+        return `${this.id}-${type}`;
     }
     /**
      * This gets called when the element has been connected to the DOM. It's private so it doesn't get overwritten
@@ -6469,6 +6469,8 @@ class DialogField extends HTMLElement {
     connectedCallback() {
         const label = this.createLabel();
         const input = this.createInput();
+        input.onchange = this.onInputChanged.bind(this);
+        input.oninput = this.onInputChanged.bind(this);
         this.append(label);
         this.append(input);
         this.createAdditionalElements();
@@ -6482,8 +6484,8 @@ class DialogField extends HTMLElement {
      */
     createLabel() {
         const label = document.createElement('label');
-        label.id = this.getId('label');
-        label.setAttribute('for', this.getId('input'));
+        label.id = this.getIdForChild('label');
+        label.setAttribute('for', this.getIdForChild('input'));
         label.innerText = game.i18n.localize(this.labelKey);
         return label;
     }
@@ -6507,10 +6509,8 @@ class NumberField extends DialogField_1.DialogField {
     }
     createInput() {
         const input = document.createElement('input');
-        input.id = this.getId('input');
+        input.id = this.getIdForChild('input');
         input.value = this.getValue().toString();
-        input.onchange = this.onInputChanged.bind(this);
-        input.oninput = this.onInputChanged.bind(this);
         input.setAttribute('type', 'number');
         return input;
     }

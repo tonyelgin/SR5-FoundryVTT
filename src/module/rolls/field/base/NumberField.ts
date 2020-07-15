@@ -10,17 +10,15 @@ export abstract class NumberField extends DialogField<number> {
         if (typeof value === 'string') {
             value = parseInt(value);
         }
+
         super.setValue(value);
     }
 
     protected createInput(): HTMLInputElement {
         const input = document.createElement('input');
 
-        input.id = this.getId('input');
+        input.id = this.getIdForChild('input');
         input.value = this.getValue().toString();
-
-        input.onchange = this.onInputChanged.bind(this);
-        input.oninput = this.onInputChanged.bind(this);
 
         input.setAttribute('type', 'number');
 

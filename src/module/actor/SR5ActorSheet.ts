@@ -296,7 +296,7 @@ export class SR5ActorSheet extends ActorSheet {
         // html.find('.matrix-roll').click(this._onRollMatrixAttribute.bind(this));
         html.find('.matrix-att-selector').change(this._onMatrixAttributeSelected.bind(this));
         html.find('.basic-roll').on('click', async () => {
-            const d = new DynamicDialog([new SituationalModifierField('modifier', 'SR5.SituationalModifier', 0)], this.actor);
+            const d = new DynamicDialog([new SituationalModifierField(0)], this.actor);
             d.render(true);
         });
         // html.find('.armor-roll').click(this._onRollArmor.bind(this));
