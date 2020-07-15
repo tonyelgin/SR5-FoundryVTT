@@ -3,7 +3,25 @@ import { SR5Actor } from '../../../actor/SR5Actor';
 
 export abstract class DialogField<TValue extends { toString: () => string }> extends HTMLElement {
     protected readonly _labelKey: string;
-    protected _value: TValue;
+    private _value: TValue;
+
+    protected constructor(id: string, label: string, value: TValue) {
+        super();
+
+        this.id = id;
+        this._labelKey = label;
+        this._value = value;
+
+        this.setAttribute('class', this.class);
+    }
+
+    public getValue(): TValue {
+        return this._value;
+    }
+
+    public setValue(value: TValue) {
+        this._value = value;
+    }
 
     /**
      * The localization key of the label.
@@ -25,16 +43,6 @@ export abstract class DialogField<TValue extends { toString: () => string }> ext
      */
     public getId(type: string) {
         return `${this.id}-${type}`;
-    }
-
-    protected constructor(id: string, label: string, value: TValue) {
-        super();
-
-        this.id = id;
-        this._labelKey = label;
-        this._value = value;
-
-        this.setAttribute('class', this.class);
     }
 
     /**

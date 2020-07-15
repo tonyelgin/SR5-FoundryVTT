@@ -8,6 +8,6 @@ export class SituationalModifierField extends NumberField {
     }
 
     collect(actor: SR5Actor, data: RollData) {
-        data['situationalModifier'] = this._value;
+        data['situationalModifier'] = this.getValue();
     }
 }

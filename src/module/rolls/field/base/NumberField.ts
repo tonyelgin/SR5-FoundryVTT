@@ -6,11 +6,18 @@ export abstract class NumberField extends DialogField<number> {
         // TODO: Handle min + max
     }
 
+    public setValue(value: number | string) {
+        if (typeof value === 'string') {
+            value = parseInt(value);
+        }
+        super.setValue(value);
+    }
+
     protected createInput(): HTMLInputElement {
         const input = document.createElement('input');
 
         input.id = this.getId('input');
-        input.value = this._value.toString();
+        input.value = this.getValue().toString();
 
         input.onchange = this.onInputChanged.bind(this);
         input.oninput = this.onInputChanged.bind(this);
@@ -23,13 +30,11 @@ export abstract class NumberField extends DialogField<number> {
     protected onInputChanged(event: Event) {
         const input: HTMLInputElement = event.currentTarget as HTMLInputElement;
         const stringValue = input.value.trim();
-        let numberValue: number;
-        if (stringValue === '') {
-            numberValue = 0;
-        } else {
-            numberValue = parseInt(stringValue);
-        }
 
-        this._value = numberValue;
+        if (stringValue === '') {
+            this.setValue(0);
+        } else {
+            this.setValue(stringValue);
+        }
     }
 }

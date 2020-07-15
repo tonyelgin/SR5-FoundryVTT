@@ -6411,7 +6411,7 @@ class SituationalModifierField extends NumberField_1.NumberField {
         super(id, label, value);
     }
     collect(actor, data) {
-        data['situationalModifier'] = this._value;
+        data['situationalModifier'] = this.getValue();
     }
 }
 exports.SituationalModifierField = SituationalModifierField;
@@ -6426,6 +6426,12 @@ class DialogField extends HTMLElement {
         this._labelKey = label;
         this._value = value;
         this.setAttribute('class', this.class);
+    }
+    getValue() {
+        return this._value;
+    }
+    setValue(value) {
+        this._value = value;
     }
     /**
      * The localization key of the label.
@@ -6493,10 +6499,16 @@ class NumberField extends DialogField_1.DialogField {
         super(id, label, value);
         // TODO: Handle min + max
     }
+    setValue(value) {
+        if (typeof value === 'string') {
+            value = parseInt(value);
+        }
+        super.setValue(value);
+    }
     createInput() {
         const input = document.createElement('input');
         input.id = this.getId('input');
-        input.value = this._value.toString();
+        input.value = this.getValue().toString();
         input.onchange = this.onInputChanged.bind(this);
         input.oninput = this.onInputChanged.bind(this);
         input.setAttribute('type', 'number');
@@ -6505,14 +6517,12 @@ class NumberField extends DialogField_1.DialogField {
     onInputChanged(event) {
         const input = event.currentTarget;
         const stringValue = input.value.trim();
-        let numberValue;
         if (stringValue === '') {
-            numberValue = 0;
+            this.setValue(0);
         }
         else {
-            numberValue = parseInt(stringValue);
+            this.setValue(stringValue);
         }
-        this._value = numberValue;
     }
 }
 exports.NumberField = NumberField;
