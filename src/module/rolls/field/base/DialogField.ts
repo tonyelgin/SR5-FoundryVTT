@@ -90,5 +90,5 @@ export abstract class DialogField<TValue extends { toString: () => string }> ext
      */
     protected abstract onInputChanged(event: Event);
 
-    public abstract collect(actor: SR5Actor, data: RollData);
+    public abstract collect(actor: SR5Actor | undefined, data: RollData);
 }

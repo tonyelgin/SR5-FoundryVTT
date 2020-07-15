@@ -45,7 +45,7 @@ export abstract class RollDialog extends Application {
             form.prepend(field);
         }
 
-        $(html).find('#roll').on('click', this.onRollClicked);
+        $(html).find('#roll').on('click', this.onRollClicked.bind(this));
     }
 
     protected onRollClicked(event: Event) {
@@ -56,6 +56,7 @@ export abstract class RollDialog extends Application {
             field.collect(this._actor, data);
         }
 
+        console.warn('Data-Post-Collection');
         console.warn(data);
         // TODO: Roll the dice.
     }

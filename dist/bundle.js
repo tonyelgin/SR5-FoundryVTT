@@ -1471,8 +1471,8 @@ const chummer_import_form_1 = require("../apps/chummer-import-form");
 const SkillEditForm_1 = require("../apps/skills/SkillEditForm");
 const KnowledgeSkillEditForm_1 = require("../apps/skills/KnowledgeSkillEditForm");
 const LanguageSkillEditForm_1 = require("../apps/skills/LanguageSkillEditForm");
-const NumberField_1 = require("../rolls/field/base/NumberField");
 const DynamicDialog_1 = require("../rolls/dialog/DynamicDialog");
+const SituationalModifierField_1 = require("../rolls/field/SituationalModifierField");
 /**
  * Extend the basic ActorSheet with some very simple modifications
  */
@@ -1743,7 +1743,7 @@ class SR5ActorSheet extends ActorSheet {
         // html.find('.matrix-roll').click(this._onRollMatrixAttribute.bind(this));
         html.find('.matrix-att-selector').change(this._onMatrixAttributeSelected.bind(this));
         html.find('.basic-roll').on('click', () => __awaiter(this, void 0, void 0, function* () {
-            const d = new DynamicDialog_1.DynamicDialog([new NumberField_1.NumberField('dicepool', 'SR5.DicePool', 5), new NumberField_1.NumberField('itemmod', 'SR5.ItemMod', 10)]);
+            const d = new DynamicDialog_1.DynamicDialog([new SituationalModifierField_1.SituationalModifierField('modifier', 'SR5.SituationalModifier', 0)], this.actor);
             d.render(true);
         }));
         // html.find('.armor-roll').click(this._onRollArmor.bind(this));
@@ -2008,7 +2008,7 @@ class SR5ActorSheet extends ActorSheet {
     }
 }
 exports.SR5ActorSheet = SR5ActorSheet;
-},{"../apps/chummer-import-form":18,"../apps/skills/KnowledgeSkillEditForm":20,"../apps/skills/LanguageSkillEditForm":21,"../apps/skills/SkillEditForm":22,"../helpers":28,"../rolls/dialog/DynamicDialog":37,"../rolls/field/base/NumberField":40}],18:[function(require,module,exports){
+},{"../apps/chummer-import-form":18,"../apps/skills/KnowledgeSkillEditForm":20,"../apps/skills/LanguageSkillEditForm":21,"../apps/skills/SkillEditForm":22,"../helpers":28,"../rolls/dialog/DynamicDialog":37,"../rolls/field/SituationalModifierField":39}],18:[function(require,module,exports){
 "use strict";
 
 var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
@@ -5489,7 +5489,7 @@ function rollItemMacro(itemName) {
     return item.rollTest(event);
 }
 handlebars_1.registerHandlebarHelpers();
-},{"./actor/SR5Actor":16,"./actor/SR5ActorSheet":17,"./apps/gmtools/OverwatchScoreTracker":19,"./canvas":23,"./combat":24,"./config":25,"./constants":26,"./handlebars":27,"./helpers":28,"./item/SR5Item":30,"./item/SR5ItemSheet":31,"./migrator/Migrator":33,"./rolls/util/RegistrationHelper":41,"./settings":42}],33:[function(require,module,exports){
+},{"./actor/SR5Actor":16,"./actor/SR5ActorSheet":17,"./apps/gmtools/OverwatchScoreTracker":19,"./canvas":23,"./combat":24,"./config":25,"./constants":26,"./handlebars":27,"./helpers":28,"./item/SR5Item":30,"./item/SR5ItemSheet":31,"./migrator/Migrator":33,"./rolls/util/RegistrationHelper":42,"./settings":43}],33:[function(require,module,exports){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -6387,7 +6387,7 @@ class RollDialog extends Application {
         for (const field of this._fields) {
             form.prepend(field);
         }
-        $(html).find('#roll').on('click', this.onRollClicked);
+        $(html).find('#roll').on('click', this.onRollClicked.bind(this));
     }
     onRollClicked(event) {
         event.preventDefault();
@@ -6395,12 +6395,27 @@ class RollDialog extends Application {
         for (const field of this._fields) {
             field.collect(this._actor, data);
         }
+        console.warn('Data-Post-Collection');
         console.warn(data);
         // TODO: Roll the dice.
     }
 }
 exports.RollDialog = RollDialog;
 },{}],39:[function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.SituationalModifierField = void 0;
+const NumberField_1 = require("./base/NumberField");
+class SituationalModifierField extends NumberField_1.NumberField {
+    constructor(id, label, value) {
+        super(id, label, value);
+    }
+    collect(actor, data) {
+        data['situationalModifier'] = this._value;
+    }
+}
+exports.SituationalModifierField = SituationalModifierField;
+},{"./base/NumberField":41}],40:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DialogField = void 0;
@@ -6468,7 +6483,7 @@ class DialogField extends HTMLElement {
     }
 }
 exports.DialogField = DialogField;
-},{}],40:[function(require,module,exports){
+},{}],41:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.NumberField = void 0;
@@ -6482,7 +6497,8 @@ class NumberField extends DialogField_1.DialogField {
         const input = document.createElement('input');
         input.id = this.getId('input');
         input.value = this._value.toString();
-        input.onchange += this.onInputChanged.bind(this);
+        input.onchange = this.onInputChanged.bind(this);
+        input.oninput = this.onInputChanged.bind(this);
         input.setAttribute('type', 'number');
         return input;
     }
@@ -6500,16 +6516,16 @@ class NumberField extends DialogField_1.DialogField {
     }
 }
 exports.NumberField = NumberField;
-},{"./DialogField":39}],41:[function(require,module,exports){
+},{"./DialogField":40}],42:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.registerCustomElements = void 0;
-const NumberField_1 = require("../field/base/NumberField");
+const SituationalModifierField_1 = require("../field/SituationalModifierField");
 exports.registerCustomElements = () => {
     console.warn(`Registering Custom HTML Elements`);
-    window.customElements.define('number-field', NumberField_1.NumberField);
+    window.customElements.define('sitmod-field', SituationalModifierField_1.SituationalModifierField);
 };
-},{"../field/base/NumberField":40}],42:[function(require,module,exports){
+},{"../field/SituationalModifierField":39}],43:[function(require,module,exports){
 "use strict";
 // game settings for shadowrun 5e
 Object.defineProperty(exports, "__esModule", { value: true });

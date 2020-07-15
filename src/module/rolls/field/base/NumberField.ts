@@ -12,7 +12,8 @@ export abstract class NumberField extends DialogField<number> {
         input.id = this.getId('input');
         input.value = this._value.toString();
 
-        input.onchange += this.onInputChanged.bind(this);
+        input.onchange = this.onInputChanged.bind(this);
+        input.oninput = this.onInputChanged.bind(this);
 
         input.setAttribute('type', 'number');
 

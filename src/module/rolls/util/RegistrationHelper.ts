@@ -1,6 +1,6 @@
-import { NumberField } from '../field/base/NumberField';
+import { SituationalModifierField } from '../field/SituationalModifierField';
 
 export const registerCustomElements = () => {
     console.warn(`Registering Custom HTML Elements`);
-    window.customElements.define('number-field', NumberField);
+    window.customElements.define('sitmod-field', SituationalModifierField);
 };
