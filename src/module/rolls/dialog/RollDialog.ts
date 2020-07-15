@@ -4,7 +4,7 @@ import { SR5Actor } from '../../actor/SR5Actor';
 export type SR5RollDialogOptions = ApplicationOptions;
 
 export type RollData = {
-    [key: string]: number | boolean;
+    [key: string]: any;
 };
 
 export abstract class RollDialog extends Application {

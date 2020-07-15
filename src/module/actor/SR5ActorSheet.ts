@@ -3,15 +3,15 @@ import { ChummerImportForm } from '../apps/chummer-import-form';
 import { SkillEditForm } from '../apps/skills/SkillEditForm';
 import { KnowledgeSkillEditForm } from '../apps/skills/KnowledgeSkillEditForm';
 import { LanguageSkillEditForm } from '../apps/skills/LanguageSkillEditForm';
+import { SR5Actor } from './SR5Actor';
+import { DynamicDialog } from '../rolls/dialog/DynamicDialog';
+import { SituationalModifierField } from '../rolls/field/SituationalModifierField';
+import { SkillField } from '../rolls/field/SkillField';
+import { SR5ActiveSkill } from '../types/enum/SR5ActiveSkill';
 import SR5ActorSheetData = Shadowrun.SR5ActorSheetData;
 import SR5SheetFilters = Shadowrun.SR5SheetFilters;
 import Skills = Shadowrun.Skills;
-import { SR5Actor } from './SR5Actor';
 import MatrixAttribute = Shadowrun.MatrixAttribute;
-import { RollDialog } from '../rolls/dialog/RollDialog';
-import { NumberField } from '../rolls/field/base/NumberField';
-import { DynamicDialog } from '../rolls/dialog/DynamicDialog';
-import { SituationalModifierField } from '../rolls/field/SituationalModifierField';
 
 /**
  * Extend the basic ActorSheet with some very simple modifications
@@ -296,7 +296,7 @@ export class SR5ActorSheet extends ActorSheet {
         // html.find('.matrix-roll').click(this._onRollMatrixAttribute.bind(this));
         html.find('.matrix-att-selector').change(this._onMatrixAttributeSelected.bind(this));
         html.find('.basic-roll').on('click', async () => {
-            const d = new DynamicDialog([new SituationalModifierField(0)], this.actor);
+            const d = new DynamicDialog([new SituationalModifierField(0), new SkillField(SR5ActiveSkill.AeronauticsMechanic)], this.actor);
             d.render(true);
         });
         // html.find('.armor-roll').click(this._onRollArmor.bind(this));

@@ -1473,6 +1473,8 @@ const KnowledgeSkillEditForm_1 = require("../apps/skills/KnowledgeSkillEditForm"
 const LanguageSkillEditForm_1 = require("../apps/skills/LanguageSkillEditForm");
 const DynamicDialog_1 = require("../rolls/dialog/DynamicDialog");
 const SituationalModifierField_1 = require("../rolls/field/SituationalModifierField");
+const SkillField_1 = require("../rolls/field/SkillField");
+const SR5ActiveSkill_1 = require("../types/enum/SR5ActiveSkill");
 /**
  * Extend the basic ActorSheet with some very simple modifications
  */
@@ -1743,7 +1745,7 @@ class SR5ActorSheet extends ActorSheet {
         // html.find('.matrix-roll').click(this._onRollMatrixAttribute.bind(this));
         html.find('.matrix-att-selector').change(this._onMatrixAttributeSelected.bind(this));
         html.find('.basic-roll').on('click', () => __awaiter(this, void 0, void 0, function* () {
-            const d = new DynamicDialog_1.DynamicDialog([new SituationalModifierField_1.SituationalModifierField(0)], this.actor);
+            const d = new DynamicDialog_1.DynamicDialog([new SituationalModifierField_1.SituationalModifierField(0), new SkillField_1.SkillField(SR5ActiveSkill_1.SR5ActiveSkill.AeronauticsMechanic)], this.actor);
             d.render(true);
         }));
         // html.find('.armor-roll').click(this._onRollArmor.bind(this));
@@ -2008,7 +2010,7 @@ class SR5ActorSheet extends ActorSheet {
     }
 }
 exports.SR5ActorSheet = SR5ActorSheet;
-},{"../apps/chummer-import-form":18,"../apps/skills/KnowledgeSkillEditForm":20,"../apps/skills/LanguageSkillEditForm":21,"../apps/skills/SkillEditForm":22,"../helpers":28,"../rolls/dialog/DynamicDialog":37,"../rolls/field/SituationalModifierField":39}],18:[function(require,module,exports){
+},{"../apps/chummer-import-form":18,"../apps/skills/KnowledgeSkillEditForm":20,"../apps/skills/LanguageSkillEditForm":21,"../apps/skills/SkillEditForm":22,"../helpers":28,"../rolls/dialog/DynamicDialog":37,"../rolls/field/SituationalModifierField":39,"../rolls/field/SkillField":40,"../types/enum/SR5ActiveSkill":46}],18:[function(require,module,exports){
 "use strict";
 
 var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
@@ -5489,7 +5491,7 @@ function rollItemMacro(itemName) {
     return item.rollTest(event);
 }
 handlebars_1.registerHandlebarHelpers();
-},{"./actor/SR5Actor":16,"./actor/SR5ActorSheet":17,"./apps/gmtools/OverwatchScoreTracker":19,"./canvas":23,"./combat":24,"./config":25,"./constants":26,"./handlebars":27,"./helpers":28,"./item/SR5Item":30,"./item/SR5ItemSheet":31,"./migrator/Migrator":33,"./rolls/util/RegistrationHelper":42,"./settings":43}],33:[function(require,module,exports){
+},{"./actor/SR5Actor":16,"./actor/SR5ActorSheet":17,"./apps/gmtools/OverwatchScoreTracker":19,"./canvas":23,"./combat":24,"./config":25,"./constants":26,"./handlebars":27,"./helpers":28,"./item/SR5Item":30,"./item/SR5ItemSheet":31,"./migrator/Migrator":33,"./rolls/util/RegistrationHelper":44,"./settings":45}],33:[function(require,module,exports){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -6416,7 +6418,41 @@ class SituationalModifierField extends NumberField_1.NumberField {
     }
 }
 exports.SituationalModifierField = SituationalModifierField;
-},{"./base/NumberField":41}],40:[function(require,module,exports){
+},{"./base/NumberField":42}],40:[function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.SkillField = void 0;
+const SelectField_1 = require("./base/SelectField");
+const SR5ActiveSkill_1 = require("../../types/enum/SR5ActiveSkill");
+class SkillField extends SelectField_1.SelectField {
+    static getOptions() {
+        const pattern = /[A-Z]/;
+        const keys = Object.keys(SR5ActiveSkill_1.SR5ActiveSkill);
+        for (let i = 0; i < keys.length; i++) {
+            const match = keys[i].match(pattern);
+            console.warn(keys[i]);
+            console.warn(match);
+        }
+        return keys;
+    }
+    static getValues() {
+        return Object.values(SR5ActiveSkill_1.SR5ActiveSkill);
+    }
+    constructor(defaultSkill) {
+        super('skill', 'SR5.Skill', defaultSkill.toString(), SkillField.getOptions(), SkillField.getValues());
+    }
+    collect(actor, data) {
+        // TODO: An example of how powerful this is.
+        //  We might not want this to pull data like this though.
+        //  Roll now has access to the entire skill *and* attribute.
+        //  Three lines of code (but some error handling is needed).
+        const actorData = actor === null || actor === void 0 ? void 0 : actor.data.data;
+        data['skill'] = actorData.skills.active[this.getValue()];
+        data['skill']['attribute'] = actorData.attributes[data['skill']['attribute']];
+    }
+}
+exports.SkillField = SkillField;
+},{"../../types/enum/SR5ActiveSkill":46,"./base/SelectField":43}],41:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DialogField = void 0;
@@ -6491,7 +6527,7 @@ class DialogField extends HTMLElement {
     }
 }
 exports.DialogField = DialogField;
-},{}],41:[function(require,module,exports){
+},{}],42:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.NumberField = void 0;
@@ -6526,16 +6562,58 @@ class NumberField extends DialogField_1.DialogField {
     }
 }
 exports.NumberField = NumberField;
-},{"./DialogField":40}],42:[function(require,module,exports){
+},{"./DialogField":41}],43:[function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.SelectField = void 0;
+const DialogField_1 = require("./DialogField");
+class SelectField extends DialogField_1.DialogField {
+    constructor(id, label, value, options, values) {
+        super(id, label, value);
+        if (options.length !== values.length) {
+            throw new Error(`Cannot create SelectField: Options.length = ${options.length} but values.length = ${values.length}`);
+        }
+        this._options = options;
+        this._values = values;
+    }
+    createOptions() {
+        const options = [];
+        for (let i = 0; i < this._options.length; i++) {
+            const option = this._options[i];
+            const value = this._values[i];
+            const element = document.createElement('option');
+            element.value = value;
+            element.innerText = option;
+            options.push(element);
+        }
+        return options;
+    }
+    onInputChanged(event) {
+        event.preventDefault();
+    }
+    createInput() {
+        const select = document.createElement('select');
+        select.id = this.getIdForChild('input');
+        select.value = this.getValue().toString();
+        select.onchange += this.onInputChanged.bind(this);
+        const options = this.createOptions();
+        select.append(...options);
+        return select;
+    }
+}
+exports.SelectField = SelectField;
+},{"./DialogField":41}],44:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.registerCustomElements = void 0;
 const SituationalModifierField_1 = require("../field/SituationalModifierField");
+const SkillField_1 = require("../field/SkillField");
 exports.registerCustomElements = () => {
     console.warn(`Registering Custom HTML Elements`);
     window.customElements.define('sitmod-field', SituationalModifierField_1.SituationalModifierField);
+    window.customElements.define('skill-field', SkillField_1.SkillField);
 };
-},{"../field/SituationalModifierField":39}],43:[function(require,module,exports){
+},{"../field/SituationalModifierField":39,"../field/SkillField":40}],45:[function(require,module,exports){
 "use strict";
 // game settings for shadowrun 5e
 Object.defineProperty(exports, "__esModule", { value: true });
@@ -6589,6 +6667,92 @@ exports.registerSystemSettings = () => {
         default: '0',
     });
 };
-},{"./constants":26,"./migrator/VersionMigration":34}]},{},[32])
+},{"./constants":26,"./migrator/VersionMigration":34}],46:[function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.SR5ActiveSkill = void 0;
+/**
+ * An active skill in the SR5 system. These can be safely used as keys to access an actor's active skill list.
+ * TODO: Move this enum to a module. Also need a map for localization.
+ */
+var SR5ActiveSkill;
+(function (SR5ActiveSkill) {
+    SR5ActiveSkill["Archery"] = "archery";
+    SR5ActiveSkill["Automatics"] = "automatics";
+    SR5ActiveSkill["Blades"] = "blades";
+    SR5ActiveSkill["Clubs"] = "clubs";
+    SR5ActiveSkill["ExoticMelee"] = "exotic_melee";
+    SR5ActiveSkill["ExoticRange"] = "exotic_range";
+    SR5ActiveSkill["HeavyWeapons"] = "heavy_weapons";
+    SR5ActiveSkill["Longarms"] = "longarms";
+    SR5ActiveSkill["Pistols"] = "pistols";
+    SR5ActiveSkill["ThrowingWeapons"] = "throwing_weapons";
+    SR5ActiveSkill["UnarmedCombat"] = "unarmed_combat";
+    SR5ActiveSkill["Disguise"] = "disguise";
+    SR5ActiveSkill["Diving"] = "diving";
+    SR5ActiveSkill["EscapeArtist"] = "escape_artist";
+    SR5ActiveSkill["FreeFall"] = "free_fall";
+    SR5ActiveSkill["Gymnastics"] = "gymnastics";
+    SR5ActiveSkill["Palming"] = "palming";
+    SR5ActiveSkill["Perception"] = "perception";
+    SR5ActiveSkill["Running"] = "running";
+    SR5ActiveSkill["Sneaking"] = "sneaking";
+    SR5ActiveSkill["Survival"] = "survival";
+    SR5ActiveSkill["Swimming"] = "swimming";
+    SR5ActiveSkill["Tracking"] = "tracking";
+    SR5ActiveSkill["Con"] = "con";
+    SR5ActiveSkill["Etiquette"] = "etiquette";
+    SR5ActiveSkill["Impersonation"] = "impersonation";
+    SR5ActiveSkill["Instruction"] = "instruction";
+    SR5ActiveSkill["Intimidation"] = "intimidation";
+    SR5ActiveSkill["Leadership"] = "leadership";
+    SR5ActiveSkill["Negotiation"] = "negotiation";
+    SR5ActiveSkill["Performance"] = "performance";
+    SR5ActiveSkill["Alchemy"] = "alchemy";
+    SR5ActiveSkill["Arcana"] = "arcana";
+    SR5ActiveSkill["Artificing"] = "artificing";
+    SR5ActiveSkill["Assensing"] = "assensing";
+    SR5ActiveSkill["AstralCombat"] = "astral_combat";
+    SR5ActiveSkill["Banishing"] = "banishing";
+    SR5ActiveSkill["Binding"] = "binding";
+    SR5ActiveSkill["Counterspelling"] = "counterspelling";
+    SR5ActiveSkill["Disenchanting"] = "disenchanting";
+    SR5ActiveSkill["RitualSpellcasting"] = "ritual_spellcasting";
+    SR5ActiveSkill["Spellcasting"] = "spellcasting";
+    SR5ActiveSkill["Summoning"] = "summoning";
+    SR5ActiveSkill["Compiling"] = "compiling";
+    SR5ActiveSkill["Decompiling"] = "decompiling";
+    SR5ActiveSkill["Registering"] = "registering";
+    SR5ActiveSkill["AeronauticsMechanic"] = "aeronautics_mechanic";
+    SR5ActiveSkill["AutomotiveMechanic"] = "automotive_mechanic";
+    SR5ActiveSkill["IndustrialMechanic"] = "industrial_mechanic";
+    SR5ActiveSkill["NauticalMechanic"] = "nautical_mechanic";
+    SR5ActiveSkill["AnimalHandling"] = "animal_handling";
+    SR5ActiveSkill["Armorer"] = "armorer";
+    SR5ActiveSkill["Artisan"] = "artisan";
+    SR5ActiveSkill["Biotechnology"] = "biotechnology";
+    SR5ActiveSkill["Chemistry"] = "chemistry";
+    SR5ActiveSkill["Computer"] = "computer";
+    SR5ActiveSkill["Cybercombat"] = "cybercombat";
+    SR5ActiveSkill["Cybertechnology"] = "cybertechnology";
+    SR5ActiveSkill["Demolitions"] = "demolitions";
+    SR5ActiveSkill["ElectronicWarfare"] = "electronic_warfare";
+    SR5ActiveSkill["FirstAid"] = "first_aid";
+    SR5ActiveSkill["Forgery"] = "forgery";
+    SR5ActiveSkill["Hacking"] = "hacking";
+    SR5ActiveSkill["Hardware"] = "hardware";
+    SR5ActiveSkill["Locksmith"] = "locksmith";
+    SR5ActiveSkill["Medicine"] = "medicine";
+    SR5ActiveSkill["Navigation"] = "navigation";
+    SR5ActiveSkill["Software"] = "software";
+    SR5ActiveSkill["Gunnery"] = "gunnery";
+    SR5ActiveSkill["PilotAerospace"] = "pilot_aerospace";
+    SR5ActiveSkill["PilotAircraft"] = "pilot_aircraft";
+    SR5ActiveSkill["PilotWalker"] = "pilot_walker";
+    SR5ActiveSkill["PilotGroundCraft"] = "pilot_ground_craft";
+    SR5ActiveSkill["PilotWaterCraft"] = "pilot_water_craft";
+    SR5ActiveSkill["PilotExoticVehicle"] = "pilot_exotic_vehicle";
+})(SR5ActiveSkill = exports.SR5ActiveSkill || (exports.SR5ActiveSkill = {}));
+},{}]},{},[32])
 
 //# sourceMappingURL=bundle.js.map

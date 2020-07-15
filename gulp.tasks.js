@@ -140,4 +140,5 @@ exports.sass = buildSass;
 exports.assets = copyAssets;
 exports.build = gulp.series(copyAssets, buildSass, buildJS);
 exports.watch = gulp.series(exports.build, watch);
+exports.rewatch = gulp.series(cleanDist, exports.watch);
 exports.rebuild = gulp.series(cleanDist, exports.build);
