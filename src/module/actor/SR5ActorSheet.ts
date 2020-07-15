@@ -8,6 +8,9 @@ import SR5SheetFilters = Shadowrun.SR5SheetFilters;
 import Skills = Shadowrun.Skills;
 import { SR5Actor } from './SR5Actor';
 import MatrixAttribute = Shadowrun.MatrixAttribute;
+import { RollDialog } from '../rolls/dialog/RollDialog';
+import { NumberField } from '../rolls/field/base/NumberField';
+import { DynamicDialog } from '../rolls/dialog/DynamicDialog';
 
 /**
  * Extend the basic ActorSheet with some very simple modifications
@@ -291,7 +294,10 @@ export class SR5ActorSheet extends ActorSheet {
         html.find('.item-create').click(this._onItemCreate.bind(this));
         // html.find('.matrix-roll').click(this._onRollMatrixAttribute.bind(this));
         html.find('.matrix-att-selector').change(this._onMatrixAttributeSelected.bind(this));
-        // html.find('.basic-roll').click(this._onRollPrompt.bind(this));
+        html.find('.basic-roll').on('click', async () => {
+            const d = new DynamicDialog([new NumberField('dicepool', 'SR5.DicePool', 5), new NumberField('itemmod', 'SR5.ItemMod', 10)]);
+            d.render(true);
+        });
         // html.find('.armor-roll').click(this._onRollArmor.bind(this));
         html.find('.add-knowledge').click(this._onAddKnowledgeSkill.bind(this));
         // html.find('.knowledge-skill').click(this._onRollKnowledgeSkill.bind(this));

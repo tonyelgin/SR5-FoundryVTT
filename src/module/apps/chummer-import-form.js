@@ -136,7 +136,7 @@ export class ChummerImportForm extends FormApplication {
                         update.public_awareness = c.calculatedpublicawareness;
                     }
                     if (c.karma) {
-                        update.karma.value = c.karma;
+                        update.karma.valueType = c.karma;
                     }
                     if (c.totalkarma) {
                         update.karma.max = c.totalkarma;
@@ -577,7 +577,7 @@ export class ChummerImportForm extends FormApplication {
                                 if (s.descriptors) description = s.descriptors;
                                 if (s.description) description += `\n${s.description}`;
                                 data.description = {};
-                                data.description.value = TextEditor.enrichHTML(description);
+                                data.description.valueType = TextEditor.enrichHTML(description);
 
                                 if (s.duration.toLowerCase() === 's') data.duration = 'sustained';
                                 else if (s.duration.toLowerCase() === 'i')
@@ -594,12 +594,12 @@ export class ChummerImportForm extends FormApplication {
                                     if (s.category.toLowerCase() === 'combat') {
                                         data.combat = {};
                                         if (desc.includes('direct')) {
-                                            data.combat.type = 'indirect';
+                                            data.combat.inputType = 'indirect';
                                             action.opposed = {
                                                 type: 'defense',
                                             };
                                         } else {
-                                            data.combat.type = 'direct';
+                                            data.combat.inputType = 'direct';
                                             if (data.type === 'mana') {
                                                 action.opposed = {
                                                     type: 'custom',
@@ -627,7 +627,7 @@ export class ChummerImportForm extends FormApplication {
                                             else if (token.includes('active'))
                                                 data.detection.passive = false;
                                             else if (token)
-                                                data.detection.type = token.toLowerCase();
+                                                data.detection.inputType = token.toLowerCase();
                                         });
                                         if (!data.detection.passive) {
                                             action.opposed = {
@@ -649,7 +649,7 @@ export class ChummerImportForm extends FormApplication {
                                             if (token.includes('sense'))
                                                 data.illusion.sense = token.toLowerCase();
                                             else if (token)
-                                                data.illusion.type = token.toLowerCase();
+                                                data.illusion.inputType = token.toLowerCase();
                                         });
                                         if (data.type === 'mana') {
                                             action.opposed = {

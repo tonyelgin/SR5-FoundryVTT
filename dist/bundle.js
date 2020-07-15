@@ -1471,6 +1471,8 @@ const chummer_import_form_1 = require("../apps/chummer-import-form");
 const SkillEditForm_1 = require("../apps/skills/SkillEditForm");
 const KnowledgeSkillEditForm_1 = require("../apps/skills/KnowledgeSkillEditForm");
 const LanguageSkillEditForm_1 = require("../apps/skills/LanguageSkillEditForm");
+const NumberField_1 = require("../rolls/field/base/NumberField");
+const DynamicDialog_1 = require("../rolls/dialog/DynamicDialog");
 /**
  * Extend the basic ActorSheet with some very simple modifications
  */
@@ -1740,7 +1742,10 @@ class SR5ActorSheet extends ActorSheet {
         html.find('.item-create').click(this._onItemCreate.bind(this));
         // html.find('.matrix-roll').click(this._onRollMatrixAttribute.bind(this));
         html.find('.matrix-att-selector').change(this._onMatrixAttributeSelected.bind(this));
-        // html.find('.basic-roll').click(this._onRollPrompt.bind(this));
+        html.find('.basic-roll').on('click', () => __awaiter(this, void 0, void 0, function* () {
+            const d = new DynamicDialog_1.DynamicDialog([new NumberField_1.NumberField('dicepool', 'SR5.DicePool', 5), new NumberField_1.NumberField('itemmod', 'SR5.ItemMod', 10)]);
+            d.render(true);
+        }));
         // html.find('.armor-roll').click(this._onRollArmor.bind(this));
         html.find('.add-knowledge').click(this._onAddKnowledgeSkill.bind(this));
         // html.find('.knowledge-skill').click(this._onRollKnowledgeSkill.bind(this));
@@ -2003,7 +2008,7 @@ class SR5ActorSheet extends ActorSheet {
     }
 }
 exports.SR5ActorSheet = SR5ActorSheet;
-},{"../apps/chummer-import-form":18,"../apps/skills/KnowledgeSkillEditForm":20,"../apps/skills/LanguageSkillEditForm":21,"../apps/skills/SkillEditForm":22,"../helpers":28}],18:[function(require,module,exports){
+},{"../apps/chummer-import-form":18,"../apps/skills/KnowledgeSkillEditForm":20,"../apps/skills/LanguageSkillEditForm":21,"../apps/skills/SkillEditForm":22,"../helpers":28,"../rolls/dialog/DynamicDialog":37,"../rolls/field/base/NumberField":40}],18:[function(require,module,exports){
 "use strict";
 
 var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
@@ -2205,7 +2210,7 @@ var ChummerImportForm = /*#__PURE__*/function (_FormApplication) {
                       }
 
                       if (c.karma) {
-                        update.karma.value = c.karma;
+                        update.karma.valueType = c.karma;
                       }
 
                       if (c.totalkarma) {
@@ -2638,7 +2643,7 @@ var ChummerImportForm = /*#__PURE__*/function (_FormApplication) {
                             if (s.descriptors) description = s.descriptors;
                             if (s.description) description += "\n".concat(s.description);
                             data.description = {};
-                            data.description.value = TextEditor.enrichHTML(description);
+                            data.description.valueType = TextEditor.enrichHTML(description);
                             if (s.duration.toLowerCase() === 's') data.duration = 'sustained';else if (s.duration.toLowerCase() === 'i') data.duration = 'instant';else if (s.duration.toLowerCase() === 'p') data.duration = 'permanent';
                             action.type = 'varies';
                             action.skill = 'spellcasting';
@@ -2651,12 +2656,12 @@ var ChummerImportForm = /*#__PURE__*/function (_FormApplication) {
                                 data.combat = {};
 
                                 if (desc.includes('direct')) {
-                                  data.combat.type = 'indirect';
+                                  data.combat.inputType = 'indirect';
                                   action.opposed = {
                                     type: 'defense'
                                   };
                                 } else {
-                                  data.combat.type = 'direct';
+                                  data.combat.inputType = 'direct';
 
                                   if (data.type === 'mana') {
                                     action.opposed = {
@@ -2680,7 +2685,7 @@ var ChummerImportForm = /*#__PURE__*/function (_FormApplication) {
                                   token = token.replace(' detection spell', '');
                                   if (!token) return;
                                   if (token.includes('area')) return;
-                                  if (token.includes('passive')) data.detection.passive = true;else if (token.includes('active')) data.detection.passive = false;else if (token) data.detection.type = token.toLowerCase();
+                                  if (token.includes('passive')) data.detection.passive = true;else if (token.includes('active')) data.detection.passive = false;else if (token) data.detection.inputType = token.toLowerCase();
                                 });
 
                                 if (!data.detection.passive) {
@@ -2702,7 +2707,7 @@ var ChummerImportForm = /*#__PURE__*/function (_FormApplication) {
                                   token = token.replace(' illusion spell', '');
                                   if (!token) return;
                                   if (token.includes('area')) return;
-                                  if (token.includes('sense')) data.illusion.sense = token.toLowerCase();else if (token) data.illusion.type = token.toLowerCase();
+                                  if (token.includes('sense')) data.illusion.sense = token.toLowerCase();else if (token) data.illusion.inputType = token.toLowerCase();
                                 });
 
                                 if (data.type === 'mana') {
@@ -3627,7 +3632,7 @@ exports.preloadHandlebarsTemplates = () => __awaiter(void 0, void 0, void 0, fun
         'systems/shadowrun5e/dist/templates/item/parts/ammo.html',
         'systems/shadowrun5e/dist/templates/item/parts/modification.html',
         'systems/shadowrun5e/dist/templates/item/parts/program.html',
-        'systems/shadowrun5e/dist/templates/rolls/parts/parts-list.html',
+        'systems/shadowrun5e/dist/templates/roll/dialog/components/field.html',
     ];
     return loadTemplates(templatePaths);
 });
@@ -5366,6 +5371,11 @@ const handlebars_1 = require("./handlebars");
 const Migrator_1 = require("./migrator/Migrator");
 const constants_1 = require("./constants");
 /* -------------------------------------------- */
+/*  Browser Initialization                      */
+/* -------------------------------------------- */
+const RegistrationHelper_1 = require("./rolls/util/RegistrationHelper");
+RegistrationHelper_1.registerCustomElements();
+/* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
 /* -------------------------------------------- */
 Hooks.once('init', function () {
@@ -5479,7 +5489,7 @@ function rollItemMacro(itemName) {
     return item.rollTest(event);
 }
 handlebars_1.registerHandlebarHelpers();
-},{"./actor/SR5Actor":16,"./actor/SR5ActorSheet":17,"./apps/gmtools/OverwatchScoreTracker":19,"./canvas":23,"./combat":24,"./config":25,"./constants":26,"./handlebars":27,"./helpers":28,"./item/SR5Item":30,"./item/SR5ItemSheet":31,"./migrator/Migrator":33,"./settings":37}],33:[function(require,module,exports){
+},{"./actor/SR5Actor":16,"./actor/SR5ActorSheet":17,"./apps/gmtools/OverwatchScoreTracker":19,"./canvas":23,"./combat":24,"./config":25,"./constants":26,"./handlebars":27,"./helpers":28,"./item/SR5Item":30,"./item/SR5ItemSheet":31,"./migrator/Migrator":33,"./rolls/util/RegistrationHelper":41,"./settings":42}],33:[function(require,module,exports){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -5495,130 +5505,133 @@ exports.Migrator = void 0;
 const VersionMigration_1 = require("./VersionMigration");
 const LegacyMigration_1 = require("./versions/LegacyMigration");
 const Version0_6_5_1 = require("./versions/Version0_6_5");
-class Migrator {
-    //TODO: Call on Init()
-    static BeginMigration() {
-        return __awaiter(this, void 0, void 0, function* () {
-            let currentVersion = game.settings.get(VersionMigration_1.VersionMigration.MODULE_NAME, VersionMigration_1.VersionMigration.KEY_DATA_VERSION);
-            if (currentVersion === undefined || currentVersion === null) {
-                currentVersion = VersionMigration_1.VersionMigration.NO_VERSION;
-            }
-            const migrations = Migrator.s_Versions.filter(({ versionNumber }) => {
-                // if versionNUmber is greater than currentVersion, we need to apply this migration
-                return this.compareVersion(versionNumber, currentVersion) === 1;
-            });
-            // No migrations are required, exit.
-            if (migrations.length === 0) {
-                return;
-            }
-            const localizedWarningTitle = game.i18n.localize('SR5.MIGRATION.WarningTitle');
-            const localizedWarningHeader = game.i18n.localize('SR5.MIGRATION.WarningHeader');
-            const localizedWarningRequired = game.i18n.localize('SR5.MIGRATION.WarningRequired');
-            const localizedWarningDescription = game.i18n.localize('SR5.MIGRATION.WarningDescription');
-            const localizedWarningBackup = game.i18n.localize('SR5.MIGRATION.WarningBackup');
-            const localizedWarningBegin = game.i18n.localize('SR5.MIGRATION.BeginMigration');
-            const d = new Dialog({
-                title: localizedWarningTitle,
-                content: `<h2 style="color: red; text-align: center">${localizedWarningHeader}</h2>` +
-                    `<p style="text-align: center"><i>${localizedWarningRequired}</i></p>` +
-                    `<p>${localizedWarningDescription}</p>` +
-                    `<h3 style="color: red">${localizedWarningBackup}</h3>`,
-                buttons: {
-                    ok: {
-                        label: localizedWarningBegin,
-                        callback: () => this.migrate(migrations),
-                    },
-                },
-                default: 'ok',
-            });
-            d.render(true);
-        });
-    }
-    static migrate(migrations) {
-        return __awaiter(this, void 0, void 0, function* () {
-            // we want to apply migrations in ascending order until we're up to the latest
-            migrations.sort((a, b) => {
-                return this.compareVersion(a.versionNumber, b.versionNumber);
-            });
-            yield this.migrateWorld(game, migrations);
-            yield this.migrateCompendium(game, migrations);
-            const localizedWarningTitle = game.i18n.localize('SR5.MIGRATION.SuccessTitle');
-            const localizedWarningHeader = game.i18n.localize('SR5.MIGRATION.SuccessHeader');
-            const localizedSuccessDescription = game.i18n.localize('SR5.MIGRATION.SuccessDescription');
-            const localizedSuccessPacksInfo = game.i18n.localize('SR5.MIGRATION.SuccessPacksInfo');
-            const localizedSuccessConfirm = game.i18n.localize('SR5.MIGRATION.SuccessConfirm');
-            const packsDialog = new Dialog({
-                title: localizedWarningTitle,
-                content: `<h2 style="text-align: center; color: green">${localizedWarningHeader}</h2>` +
-                    `<p>${localizedSuccessDescription}</p>` +
-                    `<p style="text-align: center"><i>${localizedSuccessPacksInfo}</i></p>`,
-                buttons: {
-                    ok: {
-                        icon: '<i class="fas fa-check"></i>',
-                        label: localizedSuccessConfirm,
-                    },
-                },
-                default: 'ok',
-            });
-            packsDialog.render(true);
-        });
-    }
-    /**
-     * Migrate all world objects
-     * @param game
-     * @param migrations
-     */
-    static migrateWorld(game, migrations) {
-        return __awaiter(this, void 0, void 0, function* () {
-            // Run the migrations in order
-            for (const { migration } of migrations) {
-                yield migration.Migrate(game);
-            }
-        });
-    }
-    /**
-     * Iterate over all world compendium packs
-     * @param game Game that will be migrated
-     * @param migrations Instances of the version migration
-     */
-    static migrateCompendium(game, migrations) {
-        return __awaiter(this, void 0, void 0, function* () {
-            // Migrate World Compendium Packs
-            const packs = game.packs.filter((pack) => pack.metadata.package === 'world' && ['Actor', 'Item', 'Scene'].includes(pack.metadata.entity));
-            // Run the migrations in order on each pack.
-            for (const pack of packs) {
-                for (const { migration } of migrations) {
-                    yield migration.MigrateCompendiumPack(pack);
+let Migrator = /** @class */ (() => {
+    class Migrator {
+        //TODO: Call on Init()
+        static BeginMigration() {
+            return __awaiter(this, void 0, void 0, function* () {
+                let currentVersion = game.settings.get(VersionMigration_1.VersionMigration.MODULE_NAME, VersionMigration_1.VersionMigration.KEY_DATA_VERSION);
+                if (currentVersion === undefined || currentVersion === null) {
+                    currentVersion = VersionMigration_1.VersionMigration.NO_VERSION;
                 }
-            }
-        });
-    }
-    // found at: https://helloacm.com/the-javascript-function-to-compare-version-number-strings/
-    // updated for typescript
-    /**
-     * compare two version numbers, returns 1 if v1 > v2, -1 if v1 < v2, 0 if equal
-     * @param v1
-     * @param v2
-     */
-    static compareVersion(v1, v2) {
-        const s1 = v1.split('.').map((s) => parseInt(s, 10));
-        const s2 = v2.split('.').map((s) => parseInt(s, 10));
-        const k = Math.min(v1.length, v2.length);
-        for (let i = 0; i < k; ++i) {
-            if (s1[i] > s2[i])
-                return 1;
-            if (s1[i] < s2[i])
-                return -1;
+                const migrations = Migrator.s_Versions.filter(({ versionNumber }) => {
+                    // if versionNUmber is greater than currentVersion, we need to apply this migration
+                    return this.compareVersion(versionNumber, currentVersion) === 1;
+                });
+                // No migrations are required, exit.
+                if (migrations.length === 0) {
+                    return;
+                }
+                const localizedWarningTitle = game.i18n.localize('SR5.MIGRATION.WarningTitle');
+                const localizedWarningHeader = game.i18n.localize('SR5.MIGRATION.WarningHeader');
+                const localizedWarningRequired = game.i18n.localize('SR5.MIGRATION.WarningRequired');
+                const localizedWarningDescription = game.i18n.localize('SR5.MIGRATION.WarningDescription');
+                const localizedWarningBackup = game.i18n.localize('SR5.MIGRATION.WarningBackup');
+                const localizedWarningBegin = game.i18n.localize('SR5.MIGRATION.BeginMigration');
+                const d = new Dialog({
+                    title: localizedWarningTitle,
+                    content: `<h2 style="color: red; text-align: center">${localizedWarningHeader}</h2>` +
+                        `<p style="text-align: center"><i>${localizedWarningRequired}</i></p>` +
+                        `<p>${localizedWarningDescription}</p>` +
+                        `<h3 style="color: red">${localizedWarningBackup}</h3>`,
+                    buttons: {
+                        ok: {
+                            label: localizedWarningBegin,
+                            callback: () => this.migrate(migrations),
+                        },
+                    },
+                    default: 'ok',
+                });
+                d.render(true);
+            });
         }
-        return v1.length === v2.length ? 0 : v1.length < v2.length ? -1 : 1;
+        static migrate(migrations) {
+            return __awaiter(this, void 0, void 0, function* () {
+                // we want to apply migrations in ascending order until we're up to the latest
+                migrations.sort((a, b) => {
+                    return this.compareVersion(a.versionNumber, b.versionNumber);
+                });
+                yield this.migrateWorld(game, migrations);
+                yield this.migrateCompendium(game, migrations);
+                const localizedWarningTitle = game.i18n.localize('SR5.MIGRATION.SuccessTitle');
+                const localizedWarningHeader = game.i18n.localize('SR5.MIGRATION.SuccessHeader');
+                const localizedSuccessDescription = game.i18n.localize('SR5.MIGRATION.SuccessDescription');
+                const localizedSuccessPacksInfo = game.i18n.localize('SR5.MIGRATION.SuccessPacksInfo');
+                const localizedSuccessConfirm = game.i18n.localize('SR5.MIGRATION.SuccessConfirm');
+                const packsDialog = new Dialog({
+                    title: localizedWarningTitle,
+                    content: `<h2 style="text-align: center; color: green">${localizedWarningHeader}</h2>` +
+                        `<p>${localizedSuccessDescription}</p>` +
+                        `<p style="text-align: center"><i>${localizedSuccessPacksInfo}</i></p>`,
+                    buttons: {
+                        ok: {
+                            icon: '<i class="fas fa-check"></i>',
+                            label: localizedSuccessConfirm,
+                        },
+                    },
+                    default: 'ok',
+                });
+                packsDialog.render(true);
+            });
+        }
+        /**
+         * Migrate all world objects
+         * @param game
+         * @param migrations
+         */
+        static migrateWorld(game, migrations) {
+            return __awaiter(this, void 0, void 0, function* () {
+                // Run the migrations in order
+                for (const { migration } of migrations) {
+                    yield migration.Migrate(game);
+                }
+            });
+        }
+        /**
+         * Iterate over all world compendium packs
+         * @param game Game that will be migrated
+         * @param migrations Instances of the version migration
+         */
+        static migrateCompendium(game, migrations) {
+            return __awaiter(this, void 0, void 0, function* () {
+                // Migrate World Compendium Packs
+                const packs = game.packs.filter((pack) => pack.metadata.package === 'world' && ['Actor', 'Item', 'Scene'].includes(pack.metadata.entity));
+                // Run the migrations in order on each pack.
+                for (const pack of packs) {
+                    for (const { migration } of migrations) {
+                        yield migration.MigrateCompendiumPack(pack);
+                    }
+                }
+            });
+        }
+        // found at: https://helloacm.com/the-javascript-function-to-compare-version-number-strings/
+        // updated for typescript
+        /**
+         * compare two version numbers, returns 1 if v1 > v2, -1 if v1 < v2, 0 if equal
+         * @param v1
+         * @param v2
+         */
+        static compareVersion(v1, v2) {
+            const s1 = v1.split('.').map((s) => parseInt(s, 10));
+            const s2 = v2.split('.').map((s) => parseInt(s, 10));
+            const k = Math.min(v1.length, v2.length);
+            for (let i = 0; i < k; ++i) {
+                if (s1[i] > s2[i])
+                    return 1;
+                if (s1[i] < s2[i])
+                    return -1;
+            }
+            return v1.length === v2.length ? 0 : v1.length < v2.length ? -1 : 1;
+        }
     }
-}
+    // Map of all version migrations to their target version numbers.
+    Migrator.s_Versions = [
+        { versionNumber: LegacyMigration_1.LegacyMigration.TargetVersion, migration: new LegacyMigration_1.LegacyMigration() },
+        { versionNumber: Version0_6_5_1.Version0_6_5.TargetVersion, migration: new Version0_6_5_1.Version0_6_5() },
+    ];
+    return Migrator;
+})();
 exports.Migrator = Migrator;
-// Map of all version migrations to their target version numbers.
-Migrator.s_Versions = [
-    { versionNumber: LegacyMigration_1.LegacyMigration.TargetVersion, migration: new LegacyMigration_1.LegacyMigration() },
-    { versionNumber: Version0_6_5_1.Version0_6_5.TargetVersion, migration: new Version0_6_5_1.Version0_6_5() },
-];
 },{"./VersionMigration":34,"./versions/LegacyMigration":35,"./versions/Version0_6_5":36}],34:[function(require,module,exports){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
@@ -5637,417 +5650,420 @@ exports.VersionMigration = void 0;
  * Extending classes are only required to handle items, actors, and scenes,
  *  other methods are implementable purely for convenience and atomicity.
  */
-class VersionMigration {
-    constructor() {
-        this.m_Abort = false;
-    }
-    get SourceVersionFriendlyName() {
-        return `v${this.SourceVersion}`;
-    }
-    get TargetVersionFriendlyName() {
-        return `v${this.TargetVersion}`;
-    }
-    /**
-     * Flag the migration to be aborted.
-     * @param reason The reason that the migration must be aborted, to be displayed
-     *  to the user and returned from the migration call.
-     */
-    abort(reason) {
-        this.m_Abort = true;
-        this.m_AbortReason = reason;
-        // @ts-ignore
-        ui.notifications.error(`Data migration has been aborted: ${reason}`, { permanent: true });
-    }
-    /**
-     * Begin migration for the specified game.
-     * @param game The world that should be migrated.
-     */
-    Migrate(game) {
-        return __awaiter(this, void 0, void 0, function* () {
-            // @ts-ignore TODO Unignore when Foundry Types updates
-            ui.notifications.info(`Beginning Shadowrun system migration from version ${this.SourceVersionFriendlyName} to ${this.TargetVersionFriendlyName}.`);
-            // @ts-ignore TODO Unignore when Foundry Types updates
-            ui.notifications.warn(`Please do not close your game or shutdown FoundryVTT.`, {
-                permanent: true,
-            });
-            // Map of entities to update, store until later to reduce chance of partial updates
-            // which may result in impossible game states.
-            const entityUpdates = new Map();
-            // Migrate World Items
-            yield this.PreMigrateItemData(game, entityUpdates);
-            if (this.m_Abort) {
-                return Promise.reject(this.m_AbortReason);
-            }
-            yield this.IterateItems(game, entityUpdates);
-            yield this.PostMigrateItemData(game, entityUpdates);
-            if (this.m_Abort) {
-                return Promise.reject(this.m_AbortReason);
-            }
-            // Migrate World Actors
-            yield this.PreMigrateActorData(game, entityUpdates);
-            if (this.m_Abort) {
-                return Promise.reject(this.m_AbortReason);
-            }
-            yield this.IterateActors(game, entityUpdates);
-            yield this.PostMigrateActorData(game, entityUpdates);
-            if (this.m_Abort) {
-                return Promise.reject(this.m_AbortReason);
-            }
-            // Migrate Actor Tokens
-            yield this.PreMigrateSceneData(game, entityUpdates);
-            if (this.m_Abort) {
-                return Promise.reject(this.m_AbortReason);
-            }
-            yield this.IterateScenes(game, entityUpdates);
-            yield this.PostMigrateSceneData(game, entityUpdates);
-            if (this.m_Abort) {
-                return Promise.reject(this.m_AbortReason);
-            }
-            // Apply the updates, this should *always* work, now that parsing is complete.
-            yield this.Apply(entityUpdates);
-            yield game.settings.set(VersionMigration.MODULE_NAME, VersionMigration.KEY_DATA_VERSION, this.TargetVersion);
-            // @ts-ignore TODO Unignore when Foundry Types updates
-            ui.notifications.info(`Shadowrun system migration successfully migrated to version ${this.TargetVersion}.`, { permanent: true });
-        });
-    }
-    /**
-     * Applies the specified mapping of entities, iteratively updating each.
-     * @param entityUpdates A mapping of entity updateData pairs.
-     */
-    Apply(entityUpdates) {
-        return __awaiter(this, void 0, void 0, function* () {
-            for (const [entity, { updateData, embeddedItems }] of entityUpdates) {
-                if (embeddedItems !== null) {
-                    const actor = entity;
-                    yield actor.updateOwnedItem(embeddedItems);
+let VersionMigration = /** @class */ (() => {
+    class VersionMigration {
+        constructor() {
+            this.m_Abort = false;
+        }
+        get SourceVersionFriendlyName() {
+            return `v${this.SourceVersion}`;
+        }
+        get TargetVersionFriendlyName() {
+            return `v${this.TargetVersion}`;
+        }
+        /**
+         * Flag the migration to be aborted.
+         * @param reason The reason that the migration must be aborted, to be displayed
+         *  to the user and returned from the migration call.
+         */
+        abort(reason) {
+            this.m_Abort = true;
+            this.m_AbortReason = reason;
+            // @ts-ignore
+            ui.notifications.error(`Data migration has been aborted: ${reason}`, { permanent: true });
+        }
+        /**
+         * Begin migration for the specified game.
+         * @param game The world that should be migrated.
+         */
+        Migrate(game) {
+            return __awaiter(this, void 0, void 0, function* () {
+                // @ts-ignore TODO Unignore when Foundry Types updates
+                ui.notifications.info(`Beginning Shadowrun system migration from version ${this.SourceVersionFriendlyName} to ${this.TargetVersionFriendlyName}.`);
+                // @ts-ignore TODO Unignore when Foundry Types updates
+                ui.notifications.warn(`Please do not close your game or shutdown FoundryVTT.`, {
+                    permanent: true,
+                });
+                // Map of entities to update, store until later to reduce chance of partial updates
+                // which may result in impossible game states.
+                const entityUpdates = new Map();
+                // Migrate World Items
+                yield this.PreMigrateItemData(game, entityUpdates);
+                if (this.m_Abort) {
+                    return Promise.reject(this.m_AbortReason);
                 }
-                yield entity.update(updateData, { enforceTypes: false });
-            }
-        });
-    }
-    /**
-     * Iterate through all scenes and migrate each if needed.
-     * @param game
-     * @param entityUpdates
-     */
-    IterateScenes(game, entityUpdates) {
-        return __awaiter(this, void 0, void 0, function* () {
-            for (const scene of game.scenes.entities) {
-                try {
-                    if (!(yield this.ShouldMigrateSceneData(scene))) {
-                        continue;
+                yield this.IterateItems(game, entityUpdates);
+                yield this.PostMigrateItemData(game, entityUpdates);
+                if (this.m_Abort) {
+                    return Promise.reject(this.m_AbortReason);
+                }
+                // Migrate World Actors
+                yield this.PreMigrateActorData(game, entityUpdates);
+                if (this.m_Abort) {
+                    return Promise.reject(this.m_AbortReason);
+                }
+                yield this.IterateActors(game, entityUpdates);
+                yield this.PostMigrateActorData(game, entityUpdates);
+                if (this.m_Abort) {
+                    return Promise.reject(this.m_AbortReason);
+                }
+                // Migrate Actor Tokens
+                yield this.PreMigrateSceneData(game, entityUpdates);
+                if (this.m_Abort) {
+                    return Promise.reject(this.m_AbortReason);
+                }
+                yield this.IterateScenes(game, entityUpdates);
+                yield this.PostMigrateSceneData(game, entityUpdates);
+                if (this.m_Abort) {
+                    return Promise.reject(this.m_AbortReason);
+                }
+                // Apply the updates, this should *always* work, now that parsing is complete.
+                yield this.Apply(entityUpdates);
+                yield game.settings.set(VersionMigration.MODULE_NAME, VersionMigration.KEY_DATA_VERSION, this.TargetVersion);
+                // @ts-ignore TODO Unignore when Foundry Types updates
+                ui.notifications.info(`Shadowrun system migration successfully migrated to version ${this.TargetVersion}.`, { permanent: true });
+            });
+        }
+        /**
+         * Applies the specified mapping of entities, iteratively updating each.
+         * @param entityUpdates A mapping of entity updateData pairs.
+         */
+        Apply(entityUpdates) {
+            return __awaiter(this, void 0, void 0, function* () {
+                for (const [entity, { updateData, embeddedItems }] of entityUpdates) {
+                    if (embeddedItems !== null) {
+                        const actor = entity;
+                        yield actor.updateOwnedItem(embeddedItems);
                     }
-                    if (scene._id === 'MAwSFhlXRipixOWw') {
-                        console.log('Scene Pre-Update');
-                        console.log(scene);
-                    }
-                    console.log(`Migrating Scene entity ${scene.name}`);
-                    const updateData = yield this.MigrateSceneData(duplicate(scene.data));
-                    let hasTokenUpdates = false;
-                    updateData.tokens = yield Promise.all(
-                    // @ts-ignore
-                    scene.data.tokens.map((token) => __awaiter(this, void 0, void 0, function* () {
-                        if (isObjectEmpty(token.actorData)) {
-                            return token;
+                    yield entity.update(updateData, { enforceTypes: false });
+                }
+            });
+        }
+        /**
+         * Iterate through all scenes and migrate each if needed.
+         * @param game
+         * @param entityUpdates
+         */
+        IterateScenes(game, entityUpdates) {
+            return __awaiter(this, void 0, void 0, function* () {
+                for (const scene of game.scenes.entities) {
+                    try {
+                        if (!(yield this.ShouldMigrateSceneData(scene))) {
+                            continue;
                         }
-                        let tokenDataUpdate = yield this.MigrateActorData(token.actorData);
-                        if (!isObjectEmpty(tokenDataUpdate)) {
-                            hasTokenUpdates = true;
-                            tokenDataUpdate['_id'] = token._id;
-                            const newToken = duplicate(token);
-                            newToken.actorData = yield mergeObject(token.actorData, tokenDataUpdate, {
+                        if (scene._id === 'MAwSFhlXRipixOWw') {
+                            console.log('Scene Pre-Update');
+                            console.log(scene);
+                        }
+                        console.log(`Migrating Scene entity ${scene.name}`);
+                        const updateData = yield this.MigrateSceneData(duplicate(scene.data));
+                        let hasTokenUpdates = false;
+                        updateData.tokens = yield Promise.all(
+                        // @ts-ignore
+                        scene.data.tokens.map((token) => __awaiter(this, void 0, void 0, function* () {
+                            if (isObjectEmpty(token.actorData)) {
+                                return token;
+                            }
+                            let tokenDataUpdate = yield this.MigrateActorData(token.actorData);
+                            if (!isObjectEmpty(tokenDataUpdate)) {
+                                hasTokenUpdates = true;
+                                tokenDataUpdate['_id'] = token._id;
+                                const newToken = duplicate(token);
+                                newToken.actorData = yield mergeObject(token.actorData, tokenDataUpdate, {
+                                    enforceTypes: false,
+                                    inplace: false,
+                                });
+                                console.log(newToken);
+                                return newToken;
+                            }
+                            else {
+                                return token;
+                            }
+                        })));
+                        if (scene._id === 'MAwSFhlXRipixOWw') {
+                            console.log('Scene Pre-Update');
+                            console.log(scene);
+                        }
+                        if (isObjectEmpty(updateData)) {
+                            continue;
+                        }
+                        expandObject(updateData);
+                        entityUpdates.set(scene, {
+                            updateData,
+                            embeddedItems: null,
+                        });
+                    }
+                    catch (error) {
+                        console.error(error);
+                        return Promise.reject(error);
+                    }
+                }
+            });
+        }
+        /**
+         * Iterate through all items and migrate each if needed.
+         * @param game The game to be updated.
+         * @param entityUpdates The current map of entity updates.
+         */
+        IterateItems(game, entityUpdates) {
+            return __awaiter(this, void 0, void 0, function* () {
+                for (const item of game.items.entities) {
+                    try {
+                        if (!(yield this.ShouldMigrateItemData(item.data))) {
+                            continue;
+                        }
+                        console.log(`Migrating Item: ${item.name}`);
+                        const updateData = yield this.MigrateItemData(item.data);
+                        if (isObjectEmpty(updateData)) {
+                            continue;
+                        }
+                        expandObject(updateData);
+                        entityUpdates.set(item, {
+                            updateData,
+                            embeddedItems: null,
+                        });
+                    }
+                    catch (error) {
+                        console.error(error);
+                        return Promise.reject(error);
+                    }
+                }
+            });
+        }
+        /**
+         * Iterate through all actors and migrate each if needed.
+         * @param game The game to be updated.
+         * @param entityUpdates The current map of entity updates.
+         */
+        IterateActors(game, entityUpdates) {
+            return __awaiter(this, void 0, void 0, function* () {
+                for (const actor of game.actors.entities) {
+                    try {
+                        if (!(yield this.ShouldMigrateActorData(actor.data))) {
+                            continue;
+                        }
+                        console.log(`Migrating Actor ${actor.name}`);
+                        console.log(actor);
+                        const updateData = yield this.MigrateActorData(duplicate(actor.data));
+                        console.log(updateData);
+                        let items = [];
+                        if (updateData.items) {
+                            items = updateData.items;
+                            delete updateData.items;
+                        }
+                        expandObject(updateData);
+                        entityUpdates.set(actor, {
+                            updateData,
+                            embeddedItems: items,
+                        });
+                    }
+                    catch (error) {
+                        console.error(error);
+                        return Promise.reject(error);
+                    }
+                }
+            });
+        }
+        /**
+         * Iterate over an actor's items, updating those that need updating.
+         * @param actorData The actor to iterate over
+         * @param updateData The existing update data to merge into
+         */
+        IterateActorItems(actorData, updateData) {
+            return __awaiter(this, void 0, void 0, function* () {
+                let hasItemUpdates = false;
+                // @ts-ignore
+                if (actorData.items !== undefined) {
+                    const items = yield Promise.all(
+                    // @ts-ignore
+                    actorData.items.map((item) => __awaiter(this, void 0, void 0, function* () {
+                        let itemUpdate = yield this.MigrateItemData(item);
+                        if (!isObjectEmpty(itemUpdate)) {
+                            hasItemUpdates = true;
+                            itemUpdate['_id'] = item._id;
+                            return yield mergeObject(item, itemUpdate, {
                                 enforceTypes: false,
                                 inplace: false,
                             });
-                            console.log(newToken);
-                            return newToken;
                         }
                         else {
-                            return token;
+                            return item;
                         }
                     })));
-                    if (scene._id === 'MAwSFhlXRipixOWw') {
-                        console.log('Scene Pre-Update');
-                        console.log(scene);
+                    if (hasItemUpdates) {
+                        updateData.items = items;
                     }
-                    if (isObjectEmpty(updateData)) {
-                        continue;
-                    }
-                    expandObject(updateData);
-                    entityUpdates.set(scene, {
-                        updateData,
-                        embeddedItems: null,
-                    });
                 }
-                catch (error) {
-                    console.error(error);
-                    return Promise.reject(error);
-                }
-            }
-        });
-    }
-    /**
-     * Iterate through all items and migrate each if needed.
-     * @param game The game to be updated.
-     * @param entityUpdates The current map of entity updates.
-     */
-    IterateItems(game, entityUpdates) {
-        return __awaiter(this, void 0, void 0, function* () {
-            for (const item of game.items.entities) {
-                try {
-                    if (!(yield this.ShouldMigrateItemData(item.data))) {
-                        continue;
-                    }
-                    console.log(`Migrating Item: ${item.name}`);
-                    const updateData = yield this.MigrateItemData(item.data);
-                    if (isObjectEmpty(updateData)) {
-                        continue;
-                    }
-                    expandObject(updateData);
-                    entityUpdates.set(item, {
-                        updateData,
-                        embeddedItems: null,
-                    });
-                }
-                catch (error) {
-                    console.error(error);
-                    return Promise.reject(error);
-                }
-            }
-        });
-    }
-    /**
-     * Iterate through all actors and migrate each if needed.
-     * @param game The game to be updated.
-     * @param entityUpdates The current map of entity updates.
-     */
-    IterateActors(game, entityUpdates) {
-        return __awaiter(this, void 0, void 0, function* () {
-            for (const actor of game.actors.entities) {
-                try {
-                    if (!(yield this.ShouldMigrateActorData(actor.data))) {
-                        continue;
-                    }
-                    console.log(`Migrating Actor ${actor.name}`);
-                    console.log(actor);
-                    const updateData = yield this.MigrateActorData(duplicate(actor.data));
-                    console.log(updateData);
-                    let items = [];
-                    if (updateData.items) {
-                        items = updateData.items;
-                        delete updateData.items;
-                    }
-                    expandObject(updateData);
-                    entityUpdates.set(actor, {
-                        updateData,
-                        embeddedItems: items,
-                    });
-                }
-                catch (error) {
-                    console.error(error);
-                    return Promise.reject(error);
-                }
-            }
-        });
-    }
-    /**
-     * Iterate over an actor's items, updating those that need updating.
-     * @param actorData The actor to iterate over
-     * @param updateData The existing update data to merge into
-     */
-    IterateActorItems(actorData, updateData) {
-        return __awaiter(this, void 0, void 0, function* () {
-            let hasItemUpdates = false;
-            // @ts-ignore
-            if (actorData.items !== undefined) {
-                const items = yield Promise.all(
-                // @ts-ignore
-                actorData.items.map((item) => __awaiter(this, void 0, void 0, function* () {
-                    let itemUpdate = yield this.MigrateItemData(item);
-                    if (!isObjectEmpty(itemUpdate)) {
-                        hasItemUpdates = true;
-                        itemUpdate['_id'] = item._id;
-                        return yield mergeObject(item, itemUpdate, {
-                            enforceTypes: false,
-                            inplace: false,
-                        });
-                    }
-                    else {
-                        return item;
-                    }
-                })));
-                if (hasItemUpdates) {
-                    updateData.items = items;
-                }
-            }
-            return updateData;
-        });
-    }
-    /**
-     * Check if a scene requires updates.
-     * @param scene The scene to check.
-     * @return A promise that resolves true or false.
-     */
-    ShouldMigrateSceneData(scene) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return false;
-        });
-    }
-    /**
-     * Migrate the specified scene's data.
-     * @param scene The scene to migrate.
-     * @return A promise that resolves with the update data.
-     */
-    MigrateSceneData(scene) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return {};
-        });
-    }
-    /**
-     * Do something right before scene data is migrated.
-     * @param game The game to be updated.
-     * @param entityUpdates The current map of entity updates.
-     */
-    PreMigrateSceneData(game, entityUpdates) {
-        return __awaiter(this, void 0, void 0, function* () { });
-    }
-    /**
-     * Do something right before scene data is migrated.
-     * @param game The game to be updated.
-     * @param entityUpdates The current map of entity updates.
-     */
-    PostMigrateSceneData(game, entityUpdates) {
-        return __awaiter(this, void 0, void 0, function* () { });
-    }
-    /**
-     * Check if an item requires updates.
-     * @param item The item to check.
-     * @return A promise that resolves true or false.
-     */
-    ShouldMigrateItemData(item) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return false;
-        });
-    }
-    /**
-     * Migrate the specified item's data.
-     * @param item The item to migrate.
-     * @return A promise that resolves with the update data.
-     */
-    MigrateItemData(item) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return {};
-        });
-    }
-    /**
-     * Do something right before item data is migrated.
-     * @param game The game to be updated.
-     * @param entityUpdates The current map of entity updates.
-     */
-    PreMigrateItemData(game, entityUpdates) {
-        return __awaiter(this, void 0, void 0, function* () { });
-    }
-    /**
-     * Do something right before item data is migrated.
-     * @param game The game to be updated.
-     * @param entityUpdates The current map of entity updates.
-     */
-    PostMigrateItemData(game, entityUpdates) {
-        return __awaiter(this, void 0, void 0, function* () { });
-    }
-    /**
-     * Check if an actor requires updates.
-     * @param actor The actor to check.
-     * @return A promise that resolves true or false.
-     */
-    ShouldMigrateActorData(actor) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return false;
-        });
-    }
-    /**
-     * Migrate the specified actor's data.
-     * @param actor The actor to migrate.
-     * @return A promise that resolves with the update data.
-     */
-    MigrateActorData(actor) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return {};
-        });
-    }
-    /**
-     * Do something right before actor data is migrated.
-     * @param game The game to be updated.
-     * @param entityUpdates The current map of entity updates.
-     */
-    PreMigrateActorData(game, entityUpdates) {
-        return __awaiter(this, void 0, void 0, function* () { });
-    }
-    /**
-     * Do something right after actor data is migrated.
-     * @param game The game to be updated.
-     * @param entityUpdates The current map of entity updates.
-     */
-    PostMigrateActorData(game, entityUpdates) {
-        return __awaiter(this, void 0, void 0, function* () { });
-    }
-    /**
-     * Migrate a compendium pack
-     * @param pack
-     */
-    MigrateCompendiumPack(pack) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const entity = pack.metadata.entity;
-            if (!['Actor', 'Item', 'Scene'].includes(entity))
-                return;
-            // Begin by requesting server-side data model migration and get the migrated content
-            yield pack.migrate({});
-            const content = yield pack.getContent();
-            // Iterate over compendium entries - applying fine-tuned migration functions
-            for (let ent of content) {
-                try {
-                    let updateData = null;
-                    if (entity === 'Item') {
-                        updateData = yield this.MigrateItemData(ent.data);
-                        if (isObjectEmpty(updateData)) {
-                            continue;
+                return updateData;
+            });
+        }
+        /**
+         * Check if a scene requires updates.
+         * @param scene The scene to check.
+         * @return A promise that resolves true or false.
+         */
+        ShouldMigrateSceneData(scene) {
+            return __awaiter(this, void 0, void 0, function* () {
+                return false;
+            });
+        }
+        /**
+         * Migrate the specified scene's data.
+         * @param scene The scene to migrate.
+         * @return A promise that resolves with the update data.
+         */
+        MigrateSceneData(scene) {
+            return __awaiter(this, void 0, void 0, function* () {
+                return {};
+            });
+        }
+        /**
+         * Do something right before scene data is migrated.
+         * @param game The game to be updated.
+         * @param entityUpdates The current map of entity updates.
+         */
+        PreMigrateSceneData(game, entityUpdates) {
+            return __awaiter(this, void 0, void 0, function* () { });
+        }
+        /**
+         * Do something right before scene data is migrated.
+         * @param game The game to be updated.
+         * @param entityUpdates The current map of entity updates.
+         */
+        PostMigrateSceneData(game, entityUpdates) {
+            return __awaiter(this, void 0, void 0, function* () { });
+        }
+        /**
+         * Check if an item requires updates.
+         * @param item The item to check.
+         * @return A promise that resolves true or false.
+         */
+        ShouldMigrateItemData(item) {
+            return __awaiter(this, void 0, void 0, function* () {
+                return false;
+            });
+        }
+        /**
+         * Migrate the specified item's data.
+         * @param item The item to migrate.
+         * @return A promise that resolves with the update data.
+         */
+        MigrateItemData(item) {
+            return __awaiter(this, void 0, void 0, function* () {
+                return {};
+            });
+        }
+        /**
+         * Do something right before item data is migrated.
+         * @param game The game to be updated.
+         * @param entityUpdates The current map of entity updates.
+         */
+        PreMigrateItemData(game, entityUpdates) {
+            return __awaiter(this, void 0, void 0, function* () { });
+        }
+        /**
+         * Do something right before item data is migrated.
+         * @param game The game to be updated.
+         * @param entityUpdates The current map of entity updates.
+         */
+        PostMigrateItemData(game, entityUpdates) {
+            return __awaiter(this, void 0, void 0, function* () { });
+        }
+        /**
+         * Check if an actor requires updates.
+         * @param actor The actor to check.
+         * @return A promise that resolves true or false.
+         */
+        ShouldMigrateActorData(actor) {
+            return __awaiter(this, void 0, void 0, function* () {
+                return false;
+            });
+        }
+        /**
+         * Migrate the specified actor's data.
+         * @param actor The actor to migrate.
+         * @return A promise that resolves with the update data.
+         */
+        MigrateActorData(actor) {
+            return __awaiter(this, void 0, void 0, function* () {
+                return {};
+            });
+        }
+        /**
+         * Do something right before actor data is migrated.
+         * @param game The game to be updated.
+         * @param entityUpdates The current map of entity updates.
+         */
+        PreMigrateActorData(game, entityUpdates) {
+            return __awaiter(this, void 0, void 0, function* () { });
+        }
+        /**
+         * Do something right after actor data is migrated.
+         * @param game The game to be updated.
+         * @param entityUpdates The current map of entity updates.
+         */
+        PostMigrateActorData(game, entityUpdates) {
+            return __awaiter(this, void 0, void 0, function* () { });
+        }
+        /**
+         * Migrate a compendium pack
+         * @param pack
+         */
+        MigrateCompendiumPack(pack) {
+            return __awaiter(this, void 0, void 0, function* () {
+                const entity = pack.metadata.entity;
+                if (!['Actor', 'Item', 'Scene'].includes(entity))
+                    return;
+                // Begin by requesting server-side data model migration and get the migrated content
+                yield pack.migrate({});
+                const content = yield pack.getContent();
+                // Iterate over compendium entries - applying fine-tuned migration functions
+                for (let ent of content) {
+                    try {
+                        let updateData = null;
+                        if (entity === 'Item') {
+                            updateData = yield this.MigrateItemData(ent.data);
+                            if (isObjectEmpty(updateData)) {
+                                continue;
+                            }
+                            expandObject(updateData);
+                            updateData['_id'] = ent._id;
+                            yield pack.updateEntity(updateData);
+                            // TODO: Uncomment when foundry allows embeddeds to be updated in packs
+                            // } else if (entity === 'Actor') {
+                            //     updateData = await this.MigrateActorData(ent.data);
+                            //
+                            //     if (isObjectEmpty(updateData)) {
+                            //         continue;
+                            //     }
+                            //
+                            //     updateData['_id'] = ent._id;
+                            //     await pack.updateEntity(updateData);
                         }
-                        expandObject(updateData);
-                        updateData['_id'] = ent._id;
-                        yield pack.updateEntity(updateData);
-                        // TODO: Uncomment when foundry allows embeddeds to be updated in packs
-                        // } else if (entity === 'Actor') {
-                        //     updateData = await this.MigrateActorData(ent.data);
-                        //
-                        //     if (isObjectEmpty(updateData)) {
-                        //         continue;
-                        //     }
-                        //
-                        //     updateData['_id'] = ent._id;
-                        //     await pack.updateEntity(updateData);
-                    }
-                    else if (entity === 'Scene') {
-                        updateData = yield this.MigrateSceneData(ent.data);
-                        if (isObjectEmpty(updateData)) {
-                            continue;
+                        else if (entity === 'Scene') {
+                            updateData = yield this.MigrateSceneData(ent.data);
+                            if (isObjectEmpty(updateData)) {
+                                continue;
+                            }
+                            expandObject(updateData);
+                            updateData['_id'] = ent._id;
+                            yield pack.updateEntity(updateData);
                         }
-                        expandObject(updateData);
-                        updateData['_id'] = ent._id;
-                        yield pack.updateEntity(updateData);
+                    }
+                    catch (err) {
+                        console.error(err);
                     }
                 }
-                catch (err) {
-                    console.error(err);
-                }
-            }
-            console.log(`Migrated all ${entity} entities from Compendium ${pack.collection}`);
-        });
+                console.log(`Migrated all ${entity} entities from Compendium ${pack.collection}`);
+            });
+        }
     }
-}
+    VersionMigration.MODULE_NAME = 'shadowrun5e';
+    VersionMigration.KEY_DATA_VERSION = 'systemMigrationVersion';
+    VersionMigration.NO_VERSION = '0';
+    return VersionMigration;
+})();
 exports.VersionMigration = VersionMigration;
-VersionMigration.MODULE_NAME = 'shadowrun5e';
-VersionMigration.KEY_DATA_VERSION = 'systemMigrationVersion';
-VersionMigration.NO_VERSION = '0';
 },{}],35:[function(require,module,exports){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
@@ -6328,6 +6344,172 @@ class Version0_6_5 extends VersionMigration_1.VersionMigration {
 }
 exports.Version0_6_5 = Version0_6_5;
 },{"../VersionMigration":34}],37:[function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.DynamicDialog = void 0;
+const RollDialog_1 = require("./RollDialog");
+class DynamicDialog extends RollDialog_1.RollDialog {
+    constructor(fields, actor, options) {
+        super(actor, options);
+        this._fields.push(...fields);
+    }
+}
+exports.DynamicDialog = DynamicDialog;
+},{"./RollDialog":38}],38:[function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.RollDialog = void 0;
+class RollDialog extends Application {
+    constructor(actor, options) {
+        super(options);
+        this._fields = [];
+        this._actor = actor;
+    }
+    static get defaultOptions() {
+        const options = super.defaultOptions;
+        options.baseApplication = 'SR5RollDialog';
+        options.classes = ['sr5', 'roll-dialog'];
+        options.width = 400;
+        options.height = 'auto';
+        // TODO: I18n
+        options.title = 'Simple Roll';
+        return options;
+    }
+    /**
+     * Path to the template used for the dialog application.
+     */
+    get template() {
+        return 'systems/shadowrun5e/dist/templates/roll/dialog/basic-roll.html';
+    }
+    activateListeners(html) {
+        super.activateListeners(html);
+        const form = $(this.element).find('form');
+        for (const field of this._fields) {
+            form.prepend(field);
+        }
+        $(html).find('#roll').on('click', this.onRollClicked);
+    }
+    onRollClicked(event) {
+        event.preventDefault();
+        let data = {};
+        for (const field of this._fields) {
+            field.collect(this._actor, data);
+        }
+        console.warn(data);
+        // TODO: Roll the dice.
+    }
+}
+exports.RollDialog = RollDialog;
+},{}],39:[function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.DialogField = void 0;
+class DialogField extends HTMLElement {
+    constructor(id, label, value) {
+        super();
+        this.id = id;
+        this._labelKey = label;
+        this._value = value;
+        this.setAttribute('class', this.class);
+    }
+    /**
+     * The localization key of the label.
+     */
+    get labelKey() {
+        return this._labelKey;
+    }
+    /**
+     * Get the class that should be added to the root element.
+     */
+    get class() {
+        return 'form-group';
+    }
+    /**
+     * Get an id for the specified type of element
+     * @param type
+     */
+    getId(type) {
+        return `${this.id}-${type}`;
+    }
+    /**
+     * Overrides getAttribute to always return a string. Returns '' if the attribute is not found.
+     * @param qualifiedName
+     */
+    getAttribute(qualifiedName) {
+        const result = super.getAttribute(qualifiedName);
+        if (result === null)
+            return '';
+        return result;
+    }
+    /**
+     * This gets called when the element has been connected to the DOM. It's private so it doesn't get overwritten
+     * by accident. If you want more elements you should use {@see createAdditionalElements} instead.
+     */
+    connectedCallback() {
+        const label = this.createLabel();
+        const input = this.createInput();
+        this.append(label);
+        this.append(input);
+        this.createAdditionalElements();
+    }
+    /**
+     * Create any additional elements this field needs.
+     */
+    createAdditionalElements() { }
+    /**
+     * Create the label to be used in this field.
+     */
+    createLabel() {
+        const label = document.createElement('label');
+        label.id = this.getId('label');
+        label.setAttribute('for', this.getId('input'));
+        label.innerText = game.i18n.localize(this.labelKey);
+        return label;
+    }
+}
+exports.DialogField = DialogField;
+},{}],40:[function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.NumberField = void 0;
+const DialogField_1 = require("./DialogField");
+class NumberField extends DialogField_1.DialogField {
+    constructor(id, label, value) {
+        super(id, label, value);
+        // TODO: Handle min + max
+    }
+    createInput() {
+        const input = document.createElement('input');
+        input.id = this.getId('input');
+        input.value = this._value.toString();
+        input.onchange += this.onInputChanged.bind(this);
+        input.setAttribute('type', 'number');
+        return input;
+    }
+    onInputChanged(event) {
+        const input = event.currentTarget;
+        const stringValue = input.value.trim();
+        let numberValue;
+        if (stringValue === '') {
+            numberValue = 0;
+        }
+        else {
+            numberValue = parseInt(stringValue);
+        }
+        this._value = numberValue;
+    }
+}
+exports.NumberField = NumberField;
+},{"./DialogField":39}],41:[function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.registerCustomElements = void 0;
+const NumberField_1 = require("../field/base/NumberField");
+exports.registerCustomElements = () => {
+    console.warn(`Registering Custom HTML Elements`);
+    window.customElements.define('number-field', NumberField_1.NumberField);
+};
+},{"../field/base/NumberField":40}],42:[function(require,module,exports){
 "use strict";
 // game settings for shadowrun 5e
 Object.defineProperty(exports, "__esModule", { value: true });

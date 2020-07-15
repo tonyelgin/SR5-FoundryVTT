@@ -13,6 +13,12 @@ import { Migrator } from './migrator/Migrator';
 import { SYSTEM_NAME } from './constants';
 
 /* -------------------------------------------- */
+/*  Browser Initialization                      */
+/* -------------------------------------------- */
+import { registerCustomElements } from './rolls/util/RegistrationHelper';
+registerCustomElements();
+
+/* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
 /* -------------------------------------------- */
 
