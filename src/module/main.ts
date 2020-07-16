@@ -13,6 +13,14 @@ import { registerHandlebarHelpers, preloadHandlebarsTemplates } from './handleba
 import { ShadowrunRoller } from './rolls/ShadowrunRoller';
 import { Migrator } from './migrator/Migrator';
 import { SYSTEM_NAME } from './constants';
+import { ImportApp } from 'import';
+
+Hooks.once('ready', () => {
+    const actor = game.actors.find((a) => a.name === 'New Actor' || a.name === 'Firebomb (Ashley/Ashton Hannah-Knight)');
+    if (actor) {
+        new ImportApp(actor).render(true);
+    }
+});
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */

@@ -4,6 +4,12 @@
       "strictNullChecks": true,
       "types": [
         "foundry-pc-types"
-      ]
+      ],
+      "baseUrl": "src/module",
+      "paths": {
+        "import": [
+          "import/index.ts"
+        ]
+      }
     }
   }

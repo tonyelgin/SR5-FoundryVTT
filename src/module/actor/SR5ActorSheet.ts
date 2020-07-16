@@ -1,5 +1,4 @@
 import { Helpers } from '../helpers';
-import { ChummerImportForm } from '../apps/chummer-import-form';
 import { SkillEditForm } from '../apps/skills/SkillEditForm';
 import { KnowledgeSkillEditForm } from '../apps/skills/KnowledgeSkillEditForm';
 import { LanguageSkillEditForm } from '../apps/skills/LanguageSkillEditForm';
@@ -8,6 +7,7 @@ import SR5SheetFilters = Shadowrun.SR5SheetFilters;
 import Skills = Shadowrun.Skills;
 import { SR5Actor } from './SR5Actor';
 import MatrixAttribute = Shadowrun.MatrixAttribute;
+import { ImportApp } from 'import';
 
 /**
  * Extend the basic ActorSheet with some very simple modifications
@@ -210,7 +210,7 @@ export class SR5ActorSheet extends ActorSheet {
             if (left.name > right.name) return 1;
             if (left.name < right.name) return -1;
             return 0;
-        }
+        };
         actions.sort(sortByName);
         adept_powers.sort(sortByName);
         complex_forms.sort(sortByName);
@@ -623,10 +623,6 @@ export class SR5ActorSheet extends ActorSheet {
 
     _onShowImportCharacter(event) {
         event.preventDefault();
-        const options = {
-            name: 'chummer-import',
-            title: 'Chummer Import',
-        };
-        new ChummerImportForm(this.actor, options).render(true);
+        new ImportApp(this.actor).render(true);
     }
 }

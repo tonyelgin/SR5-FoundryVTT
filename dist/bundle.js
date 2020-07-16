@@ -1,4 +1,4 @@
-(function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
+(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.Shadowrun5e = f()}})(function(){var define,module,exports;return (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 function _assertThisInitialized(self) {
   if (self === void 0) {
     throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
@@ -9,44 +9,6 @@ function _assertThisInitialized(self) {
 
 module.exports = _assertThisInitialized;
 },{}],2:[function(require,module,exports){
-function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
-  try {
-    var info = gen[key](arg);
-    var value = info.value;
-  } catch (error) {
-    reject(error);
-    return;
-  }
-
-  if (info.done) {
-    resolve(value);
-  } else {
-    Promise.resolve(value).then(_next, _throw);
-  }
-}
-
-function _asyncToGenerator(fn) {
-  return function () {
-    var self = this,
-        args = arguments;
-    return new Promise(function (resolve, reject) {
-      var gen = fn.apply(self, args);
-
-      function _next(value) {
-        asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);
-      }
-
-      function _throw(err) {
-        asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);
-      }
-
-      _next(undefined);
-    });
-  };
-}
-
-module.exports = _asyncToGenerator;
-},{}],3:[function(require,module,exports){
 function _classCallCheck(instance, Constructor) {
   if (!(instance instanceof Constructor)) {
     throw new TypeError("Cannot call a class as a function");
@@ -54,7 +16,7 @@ function _classCallCheck(instance, Constructor) {
 }
 
 module.exports = _classCallCheck;
-},{}],4:[function(require,module,exports){
+},{}],3:[function(require,module,exports){
 function _defineProperties(target, props) {
   for (var i = 0; i < props.length; i++) {
     var descriptor = props[i];
@@ -72,7 +34,7 @@ function _createClass(Constructor, protoProps, staticProps) {
 }
 
 module.exports = _createClass;
-},{}],5:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 function _defineProperty(obj, key, value) {
   if (key in obj) {
     Object.defineProperty(obj, key, {
@@ -89,7 +51,7 @@ function _defineProperty(obj, key, value) {
 }
 
 module.exports = _defineProperty;
-},{}],6:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 var superPropBase = require("./superPropBase");
 
 function _get(target, property, receiver) {
@@ -113,7 +75,7 @@ function _get(target, property, receiver) {
 }
 
 module.exports = _get;
-},{"./superPropBase":12}],7:[function(require,module,exports){
+},{"./superPropBase":11}],6:[function(require,module,exports){
 function _getPrototypeOf(o) {
   module.exports = _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
     return o.__proto__ || Object.getPrototypeOf(o);
@@ -122,7 +84,7 @@ function _getPrototypeOf(o) {
 }
 
 module.exports = _getPrototypeOf;
-},{}],8:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 var setPrototypeOf = require("./setPrototypeOf");
 
 function _inherits(subClass, superClass) {
@@ -141,7 +103,7 @@ function _inherits(subClass, superClass) {
 }
 
 module.exports = _inherits;
-},{"./setPrototypeOf":11}],9:[function(require,module,exports){
+},{"./setPrototypeOf":10}],8:[function(require,module,exports){
 function _interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : {
     "default": obj
@@ -149,7 +111,7 @@ function _interopRequireDefault(obj) {
 }
 
 module.exports = _interopRequireDefault;
-},{}],10:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 var _typeof = require("../helpers/typeof");
 
 var assertThisInitialized = require("./assertThisInitialized");
@@ -163,7 +125,7 @@ function _possibleConstructorReturn(self, call) {
 }
 
 module.exports = _possibleConstructorReturn;
-},{"../helpers/typeof":13,"./assertThisInitialized":1}],11:[function(require,module,exports){
+},{"../helpers/typeof":12,"./assertThisInitialized":1}],10:[function(require,module,exports){
 function _setPrototypeOf(o, p) {
   module.exports = _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
     o.__proto__ = p;
@@ -174,7 +136,7 @@ function _setPrototypeOf(o, p) {
 }
 
 module.exports = _setPrototypeOf;
-},{}],12:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 var getPrototypeOf = require("./getPrototypeOf");
 
 function _superPropBase(object, property) {
@@ -187,7 +149,7 @@ function _superPropBase(object, property) {
 }
 
 module.exports = _superPropBase;
-},{"./getPrototypeOf":7}],13:[function(require,module,exports){
+},{"./getPrototypeOf":6}],12:[function(require,module,exports){
 function _typeof(obj) {
   "@babel/helpers - typeof";
 
@@ -205,741 +167,7 @@ function _typeof(obj) {
 }
 
 module.exports = _typeof;
-},{}],14:[function(require,module,exports){
-module.exports = require("regenerator-runtime");
-
-},{"regenerator-runtime":15}],15:[function(require,module,exports){
-/**
- * Copyright (c) 2014-present, Facebook, Inc.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
-
-var runtime = (function (exports) {
-  "use strict";
-
-  var Op = Object.prototype;
-  var hasOwn = Op.hasOwnProperty;
-  var undefined; // More compressible than void 0.
-  var $Symbol = typeof Symbol === "function" ? Symbol : {};
-  var iteratorSymbol = $Symbol.iterator || "@@iterator";
-  var asyncIteratorSymbol = $Symbol.asyncIterator || "@@asyncIterator";
-  var toStringTagSymbol = $Symbol.toStringTag || "@@toStringTag";
-
-  function wrap(innerFn, outerFn, self, tryLocsList) {
-    // If outerFn provided and outerFn.prototype is a Generator, then outerFn.prototype instanceof Generator.
-    var protoGenerator = outerFn && outerFn.prototype instanceof Generator ? outerFn : Generator;
-    var generator = Object.create(protoGenerator.prototype);
-    var context = new Context(tryLocsList || []);
-
-    // The ._invoke method unifies the implementations of the .next,
-    // .throw, and .return methods.
-    generator._invoke = makeInvokeMethod(innerFn, self, context);
-
-    return generator;
-  }
-  exports.wrap = wrap;
-
-  // Try/catch helper to minimize deoptimizations. Returns a completion
-  // record like context.tryEntries[i].completion. This interface could
-  // have been (and was previously) designed to take a closure to be
-  // invoked without arguments, but in all the cases we care about we
-  // already have an existing method we want to call, so there's no need
-  // to create a new function object. We can even get away with assuming
-  // the method takes exactly one argument, since that happens to be true
-  // in every case, so we don't have to touch the arguments object. The
-  // only additional allocation required is the completion record, which
-  // has a stable shape and so hopefully should be cheap to allocate.
-  function tryCatch(fn, obj, arg) {
-    try {
-      return { type: "normal", arg: fn.call(obj, arg) };
-    } catch (err) {
-      return { type: "throw", arg: err };
-    }
-  }
-
-  var GenStateSuspendedStart = "suspendedStart";
-  var GenStateSuspendedYield = "suspendedYield";
-  var GenStateExecuting = "executing";
-  var GenStateCompleted = "completed";
-
-  // Returning this object from the innerFn has the same effect as
-  // breaking out of the dispatch switch statement.
-  var ContinueSentinel = {};
-
-  // Dummy constructor functions that we use as the .constructor and
-  // .constructor.prototype properties for functions that return Generator
-  // objects. For full spec compliance, you may wish to configure your
-  // minifier not to mangle the names of these two functions.
-  function Generator() {}
-  function GeneratorFunction() {}
-  function GeneratorFunctionPrototype() {}
-
-  // This is a polyfill for %IteratorPrototype% for environments that
-  // don't natively support it.
-  var IteratorPrototype = {};
-  IteratorPrototype[iteratorSymbol] = function () {
-    return this;
-  };
-
-  var getProto = Object.getPrototypeOf;
-  var NativeIteratorPrototype = getProto && getProto(getProto(values([])));
-  if (NativeIteratorPrototype &&
-      NativeIteratorPrototype !== Op &&
-      hasOwn.call(NativeIteratorPrototype, iteratorSymbol)) {
-    // This environment has a native %IteratorPrototype%; use it instead
-    // of the polyfill.
-    IteratorPrototype = NativeIteratorPrototype;
-  }
-
-  var Gp = GeneratorFunctionPrototype.prototype =
-    Generator.prototype = Object.create(IteratorPrototype);
-  GeneratorFunction.prototype = Gp.constructor = GeneratorFunctionPrototype;
-  GeneratorFunctionPrototype.constructor = GeneratorFunction;
-  GeneratorFunctionPrototype[toStringTagSymbol] =
-    GeneratorFunction.displayName = "GeneratorFunction";
-
-  // Helper for defining the .next, .throw, and .return methods of the
-  // Iterator interface in terms of a single ._invoke method.
-  function defineIteratorMethods(prototype) {
-    ["next", "throw", "return"].forEach(function(method) {
-      prototype[method] = function(arg) {
-        return this._invoke(method, arg);
-      };
-    });
-  }
-
-  exports.isGeneratorFunction = function(genFun) {
-    var ctor = typeof genFun === "function" && genFun.constructor;
-    return ctor
-      ? ctor === GeneratorFunction ||
-        // For the native GeneratorFunction constructor, the best we can
-        // do is to check its .name property.
-        (ctor.displayName || ctor.name) === "GeneratorFunction"
-      : false;
-  };
-
-  exports.mark = function(genFun) {
-    if (Object.setPrototypeOf) {
-      Object.setPrototypeOf(genFun, GeneratorFunctionPrototype);
-    } else {
-      genFun.__proto__ = GeneratorFunctionPrototype;
-      if (!(toStringTagSymbol in genFun)) {
-        genFun[toStringTagSymbol] = "GeneratorFunction";
-      }
-    }
-    genFun.prototype = Object.create(Gp);
-    return genFun;
-  };
-
-  // Within the body of any async function, `await x` is transformed to
-  // `yield regeneratorRuntime.awrap(x)`, so that the runtime can test
-  // `hasOwn.call(value, "__await")` to determine if the yielded value is
-  // meant to be awaited.
-  exports.awrap = function(arg) {
-    return { __await: arg };
-  };
-
-  function AsyncIterator(generator, PromiseImpl) {
-    function invoke(method, arg, resolve, reject) {
-      var record = tryCatch(generator[method], generator, arg);
-      if (record.type === "throw") {
-        reject(record.arg);
-      } else {
-        var result = record.arg;
-        var value = result.value;
-        if (value &&
-            typeof value === "object" &&
-            hasOwn.call(value, "__await")) {
-          return PromiseImpl.resolve(value.__await).then(function(value) {
-            invoke("next", value, resolve, reject);
-          }, function(err) {
-            invoke("throw", err, resolve, reject);
-          });
-        }
-
-        return PromiseImpl.resolve(value).then(function(unwrapped) {
-          // When a yielded Promise is resolved, its final value becomes
-          // the .value of the Promise<{value,done}> result for the
-          // current iteration.
-          result.value = unwrapped;
-          resolve(result);
-        }, function(error) {
-          // If a rejected Promise was yielded, throw the rejection back
-          // into the async generator function so it can be handled there.
-          return invoke("throw", error, resolve, reject);
-        });
-      }
-    }
-
-    var previousPromise;
-
-    function enqueue(method, arg) {
-      function callInvokeWithMethodAndArg() {
-        return new PromiseImpl(function(resolve, reject) {
-          invoke(method, arg, resolve, reject);
-        });
-      }
-
-      return previousPromise =
-        // If enqueue has been called before, then we want to wait until
-        // all previous Promises have been resolved before calling invoke,
-        // so that results are always delivered in the correct order. If
-        // enqueue has not been called before, then it is important to
-        // call invoke immediately, without waiting on a callback to fire,
-        // so that the async generator function has the opportunity to do
-        // any necessary setup in a predictable way. This predictability
-        // is why the Promise constructor synchronously invokes its
-        // executor callback, and why async functions synchronously
-        // execute code before the first await. Since we implement simple
-        // async functions in terms of async generators, it is especially
-        // important to get this right, even though it requires care.
-        previousPromise ? previousPromise.then(
-          callInvokeWithMethodAndArg,
-          // Avoid propagating failures to Promises returned by later
-          // invocations of the iterator.
-          callInvokeWithMethodAndArg
-        ) : callInvokeWithMethodAndArg();
-    }
-
-    // Define the unified helper method that is used to implement .next,
-    // .throw, and .return (see defineIteratorMethods).
-    this._invoke = enqueue;
-  }
-
-  defineIteratorMethods(AsyncIterator.prototype);
-  AsyncIterator.prototype[asyncIteratorSymbol] = function () {
-    return this;
-  };
-  exports.AsyncIterator = AsyncIterator;
-
-  // Note that simple async functions are implemented on top of
-  // AsyncIterator objects; they just return a Promise for the value of
-  // the final result produced by the iterator.
-  exports.async = function(innerFn, outerFn, self, tryLocsList, PromiseImpl) {
-    if (PromiseImpl === void 0) PromiseImpl = Promise;
-
-    var iter = new AsyncIterator(
-      wrap(innerFn, outerFn, self, tryLocsList),
-      PromiseImpl
-    );
-
-    return exports.isGeneratorFunction(outerFn)
-      ? iter // If outerFn is a generator, return the full iterator.
-      : iter.next().then(function(result) {
-          return result.done ? result.value : iter.next();
-        });
-  };
-
-  function makeInvokeMethod(innerFn, self, context) {
-    var state = GenStateSuspendedStart;
-
-    return function invoke(method, arg) {
-      if (state === GenStateExecuting) {
-        throw new Error("Generator is already running");
-      }
-
-      if (state === GenStateCompleted) {
-        if (method === "throw") {
-          throw arg;
-        }
-
-        // Be forgiving, per 25.3.3.3.3 of the spec:
-        // https://people.mozilla.org/~jorendorff/es6-draft.html#sec-generatorresume
-        return doneResult();
-      }
-
-      context.method = method;
-      context.arg = arg;
-
-      while (true) {
-        var delegate = context.delegate;
-        if (delegate) {
-          var delegateResult = maybeInvokeDelegate(delegate, context);
-          if (delegateResult) {
-            if (delegateResult === ContinueSentinel) continue;
-            return delegateResult;
-          }
-        }
-
-        if (context.method === "next") {
-          // Setting context._sent for legacy support of Babel's
-          // function.sent implementation.
-          context.sent = context._sent = context.arg;
-
-        } else if (context.method === "throw") {
-          if (state === GenStateSuspendedStart) {
-            state = GenStateCompleted;
-            throw context.arg;
-          }
-
-          context.dispatchException(context.arg);
-
-        } else if (context.method === "return") {
-          context.abrupt("return", context.arg);
-        }
-
-        state = GenStateExecuting;
-
-        var record = tryCatch(innerFn, self, context);
-        if (record.type === "normal") {
-          // If an exception is thrown from innerFn, we leave state ===
-          // GenStateExecuting and loop back for another invocation.
-          state = context.done
-            ? GenStateCompleted
-            : GenStateSuspendedYield;
-
-          if (record.arg === ContinueSentinel) {
-            continue;
-          }
-
-          return {
-            value: record.arg,
-            done: context.done
-          };
-
-        } else if (record.type === "throw") {
-          state = GenStateCompleted;
-          // Dispatch the exception by looping back around to the
-          // context.dispatchException(context.arg) call above.
-          context.method = "throw";
-          context.arg = record.arg;
-        }
-      }
-    };
-  }
-
-  // Call delegate.iterator[context.method](context.arg) and handle the
-  // result, either by returning a { value, done } result from the
-  // delegate iterator, or by modifying context.method and context.arg,
-  // setting context.delegate to null, and returning the ContinueSentinel.
-  function maybeInvokeDelegate(delegate, context) {
-    var method = delegate.iterator[context.method];
-    if (method === undefined) {
-      // A .throw or .return when the delegate iterator has no .throw
-      // method always terminates the yield* loop.
-      context.delegate = null;
-
-      if (context.method === "throw") {
-        // Note: ["return"] must be used for ES3 parsing compatibility.
-        if (delegate.iterator["return"]) {
-          // If the delegate iterator has a return method, give it a
-          // chance to clean up.
-          context.method = "return";
-          context.arg = undefined;
-          maybeInvokeDelegate(delegate, context);
-
-          if (context.method === "throw") {
-            // If maybeInvokeDelegate(context) changed context.method from
-            // "return" to "throw", let that override the TypeError below.
-            return ContinueSentinel;
-          }
-        }
-
-        context.method = "throw";
-        context.arg = new TypeError(
-          "The iterator does not provide a 'throw' method");
-      }
-
-      return ContinueSentinel;
-    }
-
-    var record = tryCatch(method, delegate.iterator, context.arg);
-
-    if (record.type === "throw") {
-      context.method = "throw";
-      context.arg = record.arg;
-      context.delegate = null;
-      return ContinueSentinel;
-    }
-
-    var info = record.arg;
-
-    if (! info) {
-      context.method = "throw";
-      context.arg = new TypeError("iterator result is not an object");
-      context.delegate = null;
-      return ContinueSentinel;
-    }
-
-    if (info.done) {
-      // Assign the result of the finished delegate to the temporary
-      // variable specified by delegate.resultName (see delegateYield).
-      context[delegate.resultName] = info.value;
-
-      // Resume execution at the desired location (see delegateYield).
-      context.next = delegate.nextLoc;
-
-      // If context.method was "throw" but the delegate handled the
-      // exception, let the outer generator proceed normally. If
-      // context.method was "next", forget context.arg since it has been
-      // "consumed" by the delegate iterator. If context.method was
-      // "return", allow the original .return call to continue in the
-      // outer generator.
-      if (context.method !== "return") {
-        context.method = "next";
-        context.arg = undefined;
-      }
-
-    } else {
-      // Re-yield the result returned by the delegate method.
-      return info;
-    }
-
-    // The delegate iterator is finished, so forget it and continue with
-    // the outer generator.
-    context.delegate = null;
-    return ContinueSentinel;
-  }
-
-  // Define Generator.prototype.{next,throw,return} in terms of the
-  // unified ._invoke helper method.
-  defineIteratorMethods(Gp);
-
-  Gp[toStringTagSymbol] = "Generator";
-
-  // A Generator should always return itself as the iterator object when the
-  // @@iterator function is called on it. Some browsers' implementations of the
-  // iterator prototype chain incorrectly implement this, causing the Generator
-  // object to not be returned from this call. This ensures that doesn't happen.
-  // See https://github.com/facebook/regenerator/issues/274 for more details.
-  Gp[iteratorSymbol] = function() {
-    return this;
-  };
-
-  Gp.toString = function() {
-    return "[object Generator]";
-  };
-
-  function pushTryEntry(locs) {
-    var entry = { tryLoc: locs[0] };
-
-    if (1 in locs) {
-      entry.catchLoc = locs[1];
-    }
-
-    if (2 in locs) {
-      entry.finallyLoc = locs[2];
-      entry.afterLoc = locs[3];
-    }
-
-    this.tryEntries.push(entry);
-  }
-
-  function resetTryEntry(entry) {
-    var record = entry.completion || {};
-    record.type = "normal";
-    delete record.arg;
-    entry.completion = record;
-  }
-
-  function Context(tryLocsList) {
-    // The root entry object (effectively a try statement without a catch
-    // or a finally block) gives us a place to store values thrown from
-    // locations where there is no enclosing try statement.
-    this.tryEntries = [{ tryLoc: "root" }];
-    tryLocsList.forEach(pushTryEntry, this);
-    this.reset(true);
-  }
-
-  exports.keys = function(object) {
-    var keys = [];
-    for (var key in object) {
-      keys.push(key);
-    }
-    keys.reverse();
-
-    // Rather than returning an object with a next method, we keep
-    // things simple and return the next function itself.
-    return function next() {
-      while (keys.length) {
-        var key = keys.pop();
-        if (key in object) {
-          next.value = key;
-          next.done = false;
-          return next;
-        }
-      }
-
-      // To avoid creating an additional object, we just hang the .value
-      // and .done properties off the next function object itself. This
-      // also ensures that the minifier will not anonymize the function.
-      next.done = true;
-      return next;
-    };
-  };
-
-  function values(iterable) {
-    if (iterable) {
-      var iteratorMethod = iterable[iteratorSymbol];
-      if (iteratorMethod) {
-        return iteratorMethod.call(iterable);
-      }
-
-      if (typeof iterable.next === "function") {
-        return iterable;
-      }
-
-      if (!isNaN(iterable.length)) {
-        var i = -1, next = function next() {
-          while (++i < iterable.length) {
-            if (hasOwn.call(iterable, i)) {
-              next.value = iterable[i];
-              next.done = false;
-              return next;
-            }
-          }
-
-          next.value = undefined;
-          next.done = true;
-
-          return next;
-        };
-
-        return next.next = next;
-      }
-    }
-
-    // Return an iterator with no values.
-    return { next: doneResult };
-  }
-  exports.values = values;
-
-  function doneResult() {
-    return { value: undefined, done: true };
-  }
-
-  Context.prototype = {
-    constructor: Context,
-
-    reset: function(skipTempReset) {
-      this.prev = 0;
-      this.next = 0;
-      // Resetting context._sent for legacy support of Babel's
-      // function.sent implementation.
-      this.sent = this._sent = undefined;
-      this.done = false;
-      this.delegate = null;
-
-      this.method = "next";
-      this.arg = undefined;
-
-      this.tryEntries.forEach(resetTryEntry);
-
-      if (!skipTempReset) {
-        for (var name in this) {
-          // Not sure about the optimal order of these conditions:
-          if (name.charAt(0) === "t" &&
-              hasOwn.call(this, name) &&
-              !isNaN(+name.slice(1))) {
-            this[name] = undefined;
-          }
-        }
-      }
-    },
-
-    stop: function() {
-      this.done = true;
-
-      var rootEntry = this.tryEntries[0];
-      var rootRecord = rootEntry.completion;
-      if (rootRecord.type === "throw") {
-        throw rootRecord.arg;
-      }
-
-      return this.rval;
-    },
-
-    dispatchException: function(exception) {
-      if (this.done) {
-        throw exception;
-      }
-
-      var context = this;
-      function handle(loc, caught) {
-        record.type = "throw";
-        record.arg = exception;
-        context.next = loc;
-
-        if (caught) {
-          // If the dispatched exception was caught by a catch block,
-          // then let that catch block handle the exception normally.
-          context.method = "next";
-          context.arg = undefined;
-        }
-
-        return !! caught;
-      }
-
-      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
-        var entry = this.tryEntries[i];
-        var record = entry.completion;
-
-        if (entry.tryLoc === "root") {
-          // Exception thrown outside of any try block that could handle
-          // it, so set the completion value of the entire function to
-          // throw the exception.
-          return handle("end");
-        }
-
-        if (entry.tryLoc <= this.prev) {
-          var hasCatch = hasOwn.call(entry, "catchLoc");
-          var hasFinally = hasOwn.call(entry, "finallyLoc");
-
-          if (hasCatch && hasFinally) {
-            if (this.prev < entry.catchLoc) {
-              return handle(entry.catchLoc, true);
-            } else if (this.prev < entry.finallyLoc) {
-              return handle(entry.finallyLoc);
-            }
-
-          } else if (hasCatch) {
-            if (this.prev < entry.catchLoc) {
-              return handle(entry.catchLoc, true);
-            }
-
-          } else if (hasFinally) {
-            if (this.prev < entry.finallyLoc) {
-              return handle(entry.finallyLoc);
-            }
-
-          } else {
-            throw new Error("try statement without catch or finally");
-          }
-        }
-      }
-    },
-
-    abrupt: function(type, arg) {
-      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
-        var entry = this.tryEntries[i];
-        if (entry.tryLoc <= this.prev &&
-            hasOwn.call(entry, "finallyLoc") &&
-            this.prev < entry.finallyLoc) {
-          var finallyEntry = entry;
-          break;
-        }
-      }
-
-      if (finallyEntry &&
-          (type === "break" ||
-           type === "continue") &&
-          finallyEntry.tryLoc <= arg &&
-          arg <= finallyEntry.finallyLoc) {
-        // Ignore the finally entry if control is not jumping to a
-        // location outside the try/catch block.
-        finallyEntry = null;
-      }
-
-      var record = finallyEntry ? finallyEntry.completion : {};
-      record.type = type;
-      record.arg = arg;
-
-      if (finallyEntry) {
-        this.method = "next";
-        this.next = finallyEntry.finallyLoc;
-        return ContinueSentinel;
-      }
-
-      return this.complete(record);
-    },
-
-    complete: function(record, afterLoc) {
-      if (record.type === "throw") {
-        throw record.arg;
-      }
-
-      if (record.type === "break" ||
-          record.type === "continue") {
-        this.next = record.arg;
-      } else if (record.type === "return") {
-        this.rval = this.arg = record.arg;
-        this.method = "return";
-        this.next = "end";
-      } else if (record.type === "normal" && afterLoc) {
-        this.next = afterLoc;
-      }
-
-      return ContinueSentinel;
-    },
-
-    finish: function(finallyLoc) {
-      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
-        var entry = this.tryEntries[i];
-        if (entry.finallyLoc === finallyLoc) {
-          this.complete(entry.completion, entry.afterLoc);
-          resetTryEntry(entry);
-          return ContinueSentinel;
-        }
-      }
-    },
-
-    "catch": function(tryLoc) {
-      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
-        var entry = this.tryEntries[i];
-        if (entry.tryLoc === tryLoc) {
-          var record = entry.completion;
-          if (record.type === "throw") {
-            var thrown = record.arg;
-            resetTryEntry(entry);
-          }
-          return thrown;
-        }
-      }
-
-      // The context.catch method must only be called with a location
-      // argument that corresponds to a known catch block.
-      throw new Error("illegal catch attempt");
-    },
-
-    delegateYield: function(iterable, resultName, nextLoc) {
-      this.delegate = {
-        iterator: values(iterable),
-        resultName: resultName,
-        nextLoc: nextLoc
-      };
-
-      if (this.method === "next") {
-        // Deliberately forget the last sent value so that we don't
-        // accidentally pass it on to the delegate.
-        this.arg = undefined;
-      }
-
-      return ContinueSentinel;
-    }
-  };
-
-  // Regardless of whether this script is executing as a CommonJS module
-  // or not, return the runtime object so that we can declare the variable
-  // regeneratorRuntime in the outer scope, which allows this module to be
-  // injected easily by `bin/regenerator --include-runtime script.js`.
-  return exports;
-
-}(
-  // If this script is executing as a CommonJS module, use module.exports
-  // as the regeneratorRuntime namespace. Otherwise create a new empty
-  // object. Either way, the resulting object will be used to initialize
-  // the regeneratorRuntime variable at the top of this file.
-  typeof module === "object" ? module.exports : {}
-));
-
-try {
-  regeneratorRuntime = runtime;
-} catch (accidentalStrictMode) {
-  // This module should not be running in strict mode, so the above
-  // assignment should always work unless something is misconfigured. Just
-  // in case runtime.js accidentally runs in strict mode, we can escape
-  // strict mode using a global Function call. This could conceivably fail
-  // if a Content Security Policy forbids using Function, but in that case
-  // the proper solution is to fix the accidental strict mode problem. If
-  // you've misconfigured your bundler to force strict mode and applied a
-  // CSP to forbid Function, and you're not willing to fix either of those
-  // problems, please detail your unique predicament in a GitHub issue.
-  Function("r", "regeneratorRuntime = r")(runtime);
-}
-
-},{}],16:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -2071,7 +1299,7 @@ class SR5Actor extends Actor {
     }
 }
 exports.SR5Actor = SR5Actor;
-},{"../constants":28,"../helpers":30,"../rolls/ShadowrunRoller":39}],17:[function(require,module,exports){
+},{"../constants":24,"../helpers":26,"../rolls/ShadowrunRoller":36}],14:[function(require,module,exports){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -2085,10 +1313,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SR5ActorSheet = void 0;
 const helpers_1 = require("../helpers");
-const chummer_import_form_1 = require("../apps/chummer-import-form");
 const SkillEditForm_1 = require("../apps/skills/SkillEditForm");
 const KnowledgeSkillEditForm_1 = require("../apps/skills/KnowledgeSkillEditForm");
 const LanguageSkillEditForm_1 = require("../apps/skills/LanguageSkillEditForm");
+const import_1 = require("import");
 /**
  * Extend the basic ActorSheet with some very simple modifications
  */
@@ -2709,813 +1937,11 @@ class SR5ActorSheet extends ActorSheet {
     }
     _onShowImportCharacter(event) {
         event.preventDefault();
-        const options = {
-            name: 'chummer-import',
-            title: 'Chummer Import',
-        };
-        new chummer_import_form_1.ChummerImportForm(this.actor, options).render(true);
+        new import_1.ImportApp(this.actor).render(true);
     }
 }
 exports.SR5ActorSheet = SR5ActorSheet;
-},{"../apps/chummer-import-form":18,"../apps/skills/KnowledgeSkillEditForm":21,"../apps/skills/LanguageSkillEditForm":22,"../apps/skills/SkillEditForm":23,"../helpers":30}],18:[function(require,module,exports){
-"use strict";
-
-var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.ChummerImportForm = void 0;
-
-var _regenerator = _interopRequireDefault(require("@babel/runtime/regenerator"));
-
-var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime/helpers/asyncToGenerator"));
-
-var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime/helpers/classCallCheck"));
-
-var _createClass2 = _interopRequireDefault(require("@babel/runtime/helpers/createClass"));
-
-var _get2 = _interopRequireDefault(require("@babel/runtime/helpers/get"));
-
-var _inherits2 = _interopRequireDefault(require("@babel/runtime/helpers/inherits"));
-
-var _possibleConstructorReturn2 = _interopRequireDefault(require("@babel/runtime/helpers/possibleConstructorReturn"));
-
-var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime/helpers/getPrototypeOf"));
-
-function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = (0, _getPrototypeOf2["default"])(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = (0, _getPrototypeOf2["default"])(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return (0, _possibleConstructorReturn2["default"])(this, result); }; }
-
-function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
-
-var ChummerImportForm = /*#__PURE__*/function (_FormApplication) {
-  (0, _inherits2["default"])(ChummerImportForm, _FormApplication);
-
-  var _super = _createSuper(ChummerImportForm);
-
-  function ChummerImportForm() {
-    (0, _classCallCheck2["default"])(this, ChummerImportForm);
-    return _super.apply(this, arguments);
-  }
-
-  (0, _createClass2["default"])(ChummerImportForm, [{
-    key: "getData",
-    value: function getData() {
-      return {};
-    }
-  }, {
-    key: "activateListeners",
-    value: function activateListeners(html) {
-      var _this = this;
-
-      html.find('.submit-chummer-import').click( /*#__PURE__*/function () {
-        var _ref = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee(event) {
-          var chummerfile, weapons, armor, cyberware, equipment, qualities, powers, spells, parseAtt, parseDamage, getValues, getArray, updateData, update, items, error, c, attr, atts, skills, i, s, group, skill, id, category, skillCategory, cat, name, _qualities, _weapons, armors, cyberwares, _powers, gears, _spells;
-
-          return _regenerator["default"].wrap(function _callee$(_context) {
-            while (1) {
-              switch (_context.prev = _context.next) {
-                case 0:
-                  event.preventDefault();
-                  chummerfile = JSON.parse($('.chummer-text').val());
-                  weapons = $('.weapons').is(':checked');
-                  armor = $('.armor').is(':checked');
-                  cyberware = $('.cyberware').is(':checked');
-                  equipment = $('.gear').is(':checked');
-                  qualities = $('.qualities').is(':checked');
-                  powers = $('.powers').is(':checked');
-                  spells = $('.spells').is(':checked');
-                  console.log(chummerfile);
-
-                  parseAtt = function parseAtt(att) {
-                    if (att.toLowerCase() === 'bod') {
-                      return 'body';
-                    }
-
-                    if (att.toLowerCase() === 'agi') {
-                      return 'agility';
-                    }
-
-                    if (att.toLowerCase() === 'rea') {
-                      return 'reaction';
-                    }
-
-                    if (att.toLowerCase() === 'str') {
-                      return 'strength';
-                    }
-
-                    if (att.toLowerCase() === 'cha') {
-                      return 'charisma';
-                    }
-
-                    if (att.toLowerCase() === 'int') {
-                      return 'intuition';
-                    }
-
-                    if (att.toLowerCase() === 'log') {
-                      return 'logic';
-                    }
-
-                    if (att.toLowerCase() === 'wil') {
-                      return 'willpower';
-                    }
-
-                    if (att.toLowerCase() === 'edg') {
-                      return 'edge';
-                    }
-
-                    if (att.toLowerCase() === 'mag') {
-                      return 'magic';
-                    }
-
-                    if (att.toLowerCase() === 'res') {
-                      return 'resonance';
-                    }
-                  };
-
-                  parseDamage = function parseDamage(val) {
-                    var damage = {
-                      damage: 0,
-                      type: 'physical',
-                      radius: 0,
-                      dropoff: 0
-                    };
-                    var split = val.split(',');
-
-                    if (split.length > 0) {
-                      var l = split[0].match(/(\d+)(\w+)/);
-                      if (l && l[1]) damage.damage = parseInt(l[1]);
-                      if (l && l[2]) damage.type = l[2] === 'P' ? 'physical' : 'stun';
-                    }
-
-                    for (var i = 1; i < split.length; i++) {
-                      var _l = split[i].match(/(-?\d+)(.*)/);
-
-                      if (_l && _l[2]) {
-                        if (_l[2].toLowerCase().includes('/m')) damage.dropoff = parseInt(_l[1]);else damage.radius = parseInt(_l[1]);
-                      }
-                    }
-
-                    return damage;
-                  };
-
-                  getValues = function getValues(val) {
-                    var regex = /(-?[0-9]+)(?:([0-9]+))*/g;
-                    var l = val.match(regex);
-                    return l || ['0'];
-                  };
-
-                  getArray = function getArray(value) {
-                    return Array.isArray(value) ? value : [value];
-                  };
-
-                  updateData = duplicate(_this.object.data);
-                  update = updateData.data;
-                  items = [];
-                  error = ''; // character info stuff, also techno/magic and essence
-
-                  if (chummerfile.characters && chummerfile.characters.character) {
-                    c = chummerfile.characters.character;
-
-                    try {
-                      if (c.playername) {
-                        update.player_name = c.playername;
-                      }
-
-                      if (c.alias) {
-                        update.name = c.alias;
-                        updateData.name = c.alias;
-                      }
-
-                      if (c.metatype) {
-                        update.metatype = c.metatype;
-                      }
-
-                      if (c.sex) {
-                        update.sex = c.sex;
-                      }
-
-                      if (c.age) {
-                        update.age = c.age;
-                      }
-
-                      if (c.height) {
-                        update.height = c.height;
-                      }
-
-                      if (c.weight) {
-                        update.weight = c.weight;
-                      }
-
-                      if (c.calculatedstreetcred) {
-                        update.street_cred = c.calculatedstreetcred;
-                      }
-
-                      if (c.calculatednotoriety) {
-                        update.notoriety = c.calculatednotoriety;
-                      }
-
-                      if (c.calculatedpublicawareness) {
-                        update.public_awareness = c.calculatedpublicawareness;
-                      }
-
-                      if (c.karma) {
-                        update.karma.value = c.karma;
-                      }
-
-                      if (c.totalkarma) {
-                        update.karma.max = c.totalkarma;
-                      }
-
-                      if (c.technomancer && c.technomancer.toLowerCase() === 'true') {
-                        update.special = 'resonance';
-                      }
-
-                      if (c.magician && c.magician.toLowerCase() === 'true' || c.adept && c.adept.toLowerCase() === 'true') {
-                        update.special = 'magic';
-                        attr = [];
-
-                        if (c.tradition && c.tradition.drainattribute && c.tradition.drainattribute.attr) {
-                          attr = c.tradition.drainattribute.attr;
-                        } else if (c.tradition && c.tradition.drainattributes) {
-                          attr = c.tradition.drainattributes.split('+').map(function (item) {
-                            return item.trim();
-                          });
-                        }
-
-                        attr.forEach(function (att) {
-                          att = parseAtt(att);
-                          if (att !== 'willpower') update.magic.attribute = att;
-                        });
-                      }
-
-                      if (c.totaless) {
-                        update.attributes.essence.value = c.totaless;
-                      }
-
-                      if (c.nuyen) {
-                        update.nuyen = parseInt(c.nuyen.replace(',', ''));
-                      }
-                    } catch (e) {
-                      error += "Error with character info: ".concat(e, ". ");
-                    } // update attributes
-
-
-                    atts = chummerfile.characters.character.attributes[1].attribute;
-                    atts.forEach(function (att) {
-                      try {
-                        var newAtt = parseAtt(att.name);
-                        if (newAtt) update.attributes[newAtt].base = parseInt(att.total);
-                      } catch (e) {
-                        error += "Error with attributes: ".concat(e, ". ");
-                      }
-                    }); // initiative stuff
-
-                    try {
-                      if (c.initbonus) {
-                        // not sure if this one is correct
-                        update.mods.initiative = c.initbonus;
-                      }
-
-                      if (c.initdice) {
-                        update.mods.initiative_dice = c.initdice - 1;
-                      }
-                    } catch (e) {
-                      error += "Error with initiative: ".concat(e, ". ");
-                    } // skills...
-
-
-                    skills = c.skills.skill;
-
-                    for (i = 0; i < skills.length; i++) {
-                      try {
-                        s = skills[i];
-
-                        if (s.rating > 0 && s.islanguage) {
-                          group = 'active';
-                          skill = null;
-                          id = randomID(16);
-
-                          if (s.islanguage && s.islanguage.toLowerCase() === 'true') {
-                            skill = {};
-                            update.skills.language.value[id] = skill;
-                            group = 'language';
-                          } else if (s.knowledge && s.knowledge.toLowerCase() === 'true') {
-                            category = s.skillcategory_english;
-                            console.log(category);
-                            skill = {};
-                            skillCategory = void 0;
-
-                            if (category) {
-                              console.log('found category', category);
-                              cat = category.toLowerCase();
-                              if (cat === 'street') skillCategory = update.skills.knowledge.street.value;
-                              if (cat === 'academic') skillCategory = update.skills.knowledge.academic.value;
-                              if (cat === 'professional') skillCategory = update.skills.knowledge.professional.value;
-                              if (cat === 'interest') skillCategory = update.skills.knowledge.interests.value;
-                              if (skillCategory) skillCategory[id] = skill;
-                            } else {
-                              if (s.attribute.toLowerCase() === 'int') {
-                                update.skills.knowledge.street.value[id] = skill;
-                              }
-
-                              if (s.attribute.toLowerCase() === 'log') {
-                                update.skills.knowledge.professional.value[id] = skill;
-                              }
-                            }
-
-                            group = 'knowledge';
-                          } else {
-                            name = s.name.toLowerCase().trim().replace(/\s/g, '_').replace(/-/g, '_');
-                            if (name.includes('exotic') && name.includes('_weapon')) name = name.replace('_weapon', '');
-                            skill = update.skills.active[name];
-                          }
-
-                          if (!skill) console.error("Couldn't parse skill ".concat(s.name));
-
-                          if (skill) {
-                            if (group !== 'active') skill.name = s.name;
-                            skill.base = parseInt(s.rating);
-
-                            if (s.skillspecializations) {
-                              skill.specs = getArray(s.skillspecializations.skillspecialization.name);
-                            }
-                          }
-                        }
-                      } catch (e) {
-                        console.error(e);
-                      }
-                    } // qualities
-
-
-                    if (qualities && c.qualities && c.qualities.quality) {
-                      _qualities = getArray(c.qualities.quality);
-
-                      _qualities.forEach(function (q) {
-                        try {
-                          var data = {};
-                          data.type = q.qualitytype.toLowerCase();
-                          if (q.description) data.description = {
-                            value: TextEditor.enrichHTML(q.description)
-                          };
-                          var itemData = {
-                            name: q.name,
-                            type: 'quality',
-                            data: data
-                          };
-                          items.push(itemData);
-                        } catch (e) {
-                          console.error(e);
-                        }
-                      });
-                    } // weapons
-
-
-                    if (weapons && c.weapons != null && c.weapons.weapon != null) {
-                      _weapons = getArray(c.weapons.weapon);
-
-                      _weapons.forEach(function (w) {
-                        try {
-                          var data = {};
-                          var action = {};
-                          var damage = {};
-                          action.damage = damage;
-                          data.action = action;
-
-                          if (w.description) {
-                            data.description = {
-                              value: TextEditor.enrichHTML(w.description)
-                            };
-                          }
-
-                          damage.ap = {
-                            base: parseInt(getValues(w.ap)[0])
-                          };
-                          action.type = 'varies';
-                          if (w.skill) action.skill = w.skill.toLowerCase().replace(/\s/g, '_');else if (w.category && w.category.toLowerCase().includes('exotic')) action.skill = w.category.toLowerCase().replace(' weapons', '').replace(/\s/g, '_');
-                          if (action.skill.includes('exotic')) action.skill = action.skill.replace('_weapon', '');
-                          action.attribute = 'agility';
-                          action.limit = {
-                            base: parseInt(getValues(w.accuracy)[0])
-                          };
-                          action.opposed = {
-                            type: 'defense'
-                          };
-
-                          if (w.type.toLowerCase() === 'melee') {
-                            action.type = 'complex';
-                            data.category = 'melee';
-                            var melee = {};
-                            data.melee = melee;
-                            melee.reach = parseInt(w.reach);
-                          } else if (w.type.toLowerCase() === 'ranged') {
-                            data.category = 'range';
-
-                            if (w.skill.toLowerCase().includes('throw')) {
-                              data.category = 'thrown'; // TODO clean this up
-                            }
-
-                            var range = {};
-                            data.range = range;
-                            range.rc = {
-                              base: parseInt(getValues(w.rc)[0])
-                            };
-
-                            if (w.mode) {
-                              // HeroLab export doesn't have mode
-                              var lower = w.mode.toLowerCase();
-                              range.modes = {
-                                single_shot: lower.includes('ss'),
-                                semi_auto: lower.includes('sa'),
-                                burst_fire: lower.includes('bf'),
-                                full_auto: lower.includes('fa')
-                              };
-                            }
-
-                            if (w.clips != null && w.clips.clip != null) {
-                              // HeroLab export doesn't have clips
-                              var clips = Array.isArray(w.clips.clip) ? w.clips.clip : [w.clips.clip];
-                              clips.forEach(function (clip) {
-                                console.log(clip);
-                              });
-                            }
-
-                            if (w.ranges && w.ranges["short"] && w.ranges.medium && w.ranges["long"] && w.ranges.extreme) {
-                              console.log(w.ranges);
-                              range.ranges = {
-                                "short": parseInt(w.ranges["short"].split('-')[1]),
-                                medium: parseInt(w.ranges.medium.split('-')[1]),
-                                "long": parseInt(w.ranges["long"].split('-')[1]),
-                                extreme: parseInt(w.ranges.extreme.split('-')[1])
-                              };
-                            } // TODO figure out how to add mods to weapons
-                            // if (w.accessories && w.accessories.accessory) {
-                            //     range.mods = [];
-                            //     const accessories = getArray(w.accessories.accessory);
-                            //     accessories.forEach((a) => {
-                            //         if (a) {
-                            //             range.mods.push({
-                            //                 name: a.name,
-                            //             });
-                            //         }
-                            //     });
-                            // }
-
-                          } else if (w.type.toLowerCase() === 'thrown') {
-                            data.category = 'thrown';
-                          }
-
-                          {
-                            // TODO handle raw damage if present
-                            var d = parseDamage(w.damage_english);
-                            damage.base = d.damage;
-                            damage.type = {};
-                            damage.type.base = d.type;
-
-                            if (d.dropoff || d.radius) {
-                              var thrown = {};
-                              data.thrown = thrown;
-                              thrown.blast = {
-                                radius: d.radius,
-                                dropoff: d.dropoff
-                              };
-                            }
-                          }
-                          var itemData = {
-                            name: w.name,
-                            type: 'weapon',
-                            data: data
-                          };
-                          items.push(itemData);
-                        } catch (e) {
-                          console.error(e);
-                        }
-                      });
-                    } // armors
-
-
-                    if (armor && c.armors && c.armors.armor) {
-                      armors = getArray(c.armors.armor);
-                      armors.forEach(function (a) {
-                        try {
-                          var data = {};
-                          var _armor = {};
-                          data.armor = _armor;
-                          var desc = '';
-                          _armor.mod = a.armor.includes('+');
-                          _armor.value = parseInt(a.armor.replace('+', ''));
-                          if (a.description) desc = a.description;
-                          console.log(a);
-
-                          if (a.armormods && a.armormods.armormod) {
-                            _armor.fire = 0;
-                            _armor.electricity = 0;
-                            _armor.cold = 0;
-                            _armor.acid = 0;
-                            _armor.radiation = 0;
-                            var modDesc = [];
-                            var mods = getArray(a.armormods.armormod);
-                            mods.forEach(function (mod) {
-                              if (mod.name.toLowerCase().includes('fire resistance')) {
-                                _armor.fire += parseInt(mod.rating);
-                              } else if (mod.name.toLowerCase().includes('nonconductivity')) {
-                                _armor.electricity += parseInt(mod.rating);
-                              } else if (mod.name.toLowerCase().includes('insulation')) {
-                                _armor.cold += parseInt(mod.rating);
-                              } else if (mod.name.toLowerCase().includes('radiation shielding')) {
-                                _armor.radiation += parseInt(mod.rating);
-                              }
-
-                              if (mod.rating !== '') {
-                                modDesc.push("".concat(mod.name, " R").concat(mod.rating));
-                              } else {
-                                modDesc.push(mod.name);
-                              }
-                            });
-
-                            if (modDesc.length > 0) {
-                              // add desc to beginning
-                              desc = "".concat(modDesc.join(','), "\n\n").concat(desc);
-                            }
-                          }
-
-                          if (a.equipped.toLowerCase() === 'true') {
-                            data.technology = {
-                              equipped: true
-                            };
-                          }
-
-                          data.description = {
-                            value: TextEditor.enrichHTML(desc)
-                          };
-                          var itemData = {
-                            name: a.name,
-                            type: 'armor',
-                            data: data
-                          };
-                          items.push(itemData);
-                        } catch (e) {
-                          console.error(e);
-                        }
-                      });
-                    } // cyberware
-
-
-                    if (cyberware && c.cyberwares && c.cyberwares.cyberware) {
-                      cyberwares = getArray(c.cyberwares.cyberware);
-                      cyberwares.forEach(function (cy) {
-                        try {
-                          var data = {};
-                          data.description = {
-                            rating: cy.rating,
-                            value: cy.description
-                          };
-                          data.technology = {
-                            equipped: true
-                          };
-                          data.essence = cy.ess;
-                          data.grade = cy.grade;
-                          var itemData = {
-                            name: cy.name,
-                            type: 'cyberware',
-                            data: data
-                          };
-                          items.push(itemData);
-                        } catch (e) {
-                          console.error(e);
-                        }
-                      });
-                    } // powers
-
-
-                    if (powers && c.powers && c.powers.power) {
-                      _powers = getArray(c.powers.power);
-
-                      _powers.forEach(function (p) {
-                        var data = {};
-                        if (p.description) data.description = {
-                          value: TextEditor.enrichHTML(p.description)
-                        };
-                        data.level = parseInt(p.rating);
-                        p.pp = parseInt(p.totalpoints);
-                        var itemData = {
-                          name: p.name,
-                          type: 'adept_power',
-                          data: data
-                        };
-                        items.push(itemData);
-                      });
-                    } // gear
-
-
-                    if (equipment && c.gears && c.gears.gear) {
-                      gears = getArray(c.gears.gear);
-                      gears.forEach(function (g) {
-                        try {
-                          var data = {};
-                          var _name = g.name;
-                          if (g.extra) _name += " (".concat(g.extra, ")");
-                          data.technology = {
-                            rating: g.rating,
-                            quantity: g.qty
-                          };
-                          data.description = {
-                            value: g.description
-                          };
-                          var itemData = {
-                            name: _name,
-                            type: 'equipment',
-                            data: data
-                          };
-                          items.push(itemData);
-                        } catch (e) {
-                          console.error(e);
-                        }
-                      });
-                    } // spells
-
-
-                    if (spells && c.spells && c.spells.spell) {
-                      _spells = getArray(c.spells.spell);
-
-                      _spells.forEach(function (s) {
-                        try {
-                          if (s.alchemy.toLowerCase() !== 'true') {
-                            var action = {};
-                            var data = {};
-                            data.action = action;
-                            data.category = s.category.toLowerCase().replace(/\s/g, '_');
-                            data.name = s.name;
-                            data.type = s.type === 'M' ? 'mana' : 'physical';
-                            data.range = s.range === 'T' ? 'touch' : s.range.toLowerCase().replace(/\s/g, '_').replace('(', '').replace(')', '');
-                            data.drain = parseInt(s.dv.replace('F', ''));
-                            var description = '';
-                            if (s.descriptors) description = s.descriptors;
-                            if (s.description) description += "\n".concat(s.description);
-                            data.description = {};
-                            data.description.value = TextEditor.enrichHTML(description);
-                            if (s.duration.toLowerCase() === 's') data.duration = 'sustained';else if (s.duration.toLowerCase() === 'i') data.duration = 'instant';else if (s.duration.toLowerCase() === 'p') data.duration = 'permanent';
-                            action.type = 'varies';
-                            action.skill = 'spellcasting';
-                            action.attribute = 'magic';
-
-                            if (s.descriptors) {
-                              var desc = s.descriptors.toLowerCase();
-
-                              if (s.category.toLowerCase() === 'combat') {
-                                data.combat = {};
-
-                                if (desc.includes('direct')) {
-                                  data.combat.type = 'indirect';
-                                  action.opposed = {
-                                    type: 'defense'
-                                  };
-                                } else {
-                                  data.combat.type = 'direct';
-
-                                  if (data.type === 'mana') {
-                                    action.opposed = {
-                                      type: 'custom',
-                                      attribute: 'willpower'
-                                    };
-                                  } else if (data.type === 'physical') {
-                                    action.opposed = {
-                                      type: 'custom',
-                                      attribute: 'body'
-                                    };
-                                  }
-                                }
-                              }
-
-                              if (s.category.toLowerCase() === 'detection') {
-                                data.detection = {};
-                                var split = desc.split(',');
-                                split.forEach(function (token) {
-                                  token = token || '';
-                                  token = token.replace(' detection spell', '');
-                                  if (!token) return;
-                                  if (token.includes('area')) return;
-                                  if (token.includes('passive')) data.detection.passive = true;else if (token.includes('active')) data.detection.passive = false;else if (token) data.detection.type = token.toLowerCase();
-                                });
-
-                                if (!data.detection.passive) {
-                                  action.opposed = {
-                                    type: 'custom',
-                                    attribute: 'willpower',
-                                    attribute2: 'logic'
-                                  };
-                                }
-                              }
-
-                              if (s.category.toLowerCase() === 'illusion') {
-                                data.illusion = {};
-
-                                var _split = desc.split(',');
-
-                                _split.forEach(function (token) {
-                                  token = token || '';
-                                  token = token.replace(' illusion spell', '');
-                                  if (!token) return;
-                                  if (token.includes('area')) return;
-                                  if (token.includes('sense')) data.illusion.sense = token.toLowerCase();else if (token) data.illusion.type = token.toLowerCase();
-                                });
-
-                                if (data.type === 'mana') {
-                                  action.opposed = {
-                                    type: 'custom',
-                                    attribute: 'willpower',
-                                    attribute2: 'logic'
-                                  };
-                                } else {
-                                  action.opposed = {
-                                    type: 'custom',
-                                    attribute: 'intuition',
-                                    attribute2: 'logic'
-                                  };
-                                }
-                              }
-
-                              if (s.category.toLowerCase() === 'manipulation') {
-                                data.manipulation = {};
-                                if (desc.includes('environmental')) data.manipulation.environmental = true;
-                                if (desc.includes('physical')) data.manipulation.physical = true;
-                                if (desc.includes('mental')) data.manipulation.mental = true; // TODO figure out how to parse damaging
-
-                                if (data.manipulation.mental) {
-                                  action.opposed = {
-                                    type: 'custom',
-                                    attribute: 'willpower',
-                                    attribute2: 'logic'
-                                  };
-                                }
-
-                                if (data.manipulation.physical) {
-                                  action.opposed = {
-                                    type: 'custom',
-                                    attribute: 'body',
-                                    attribute2: 'strength'
-                                  };
-                                }
-                              }
-                            }
-
-                            var itemData = {
-                              name: s.name,
-                              type: 'spell',
-                              data: data
-                            };
-                            items.push(itemData);
-                          }
-                        } catch (e) {
-                          console.error(e);
-                        }
-                      });
-                    }
-                  }
-
-                  _context.next = 21;
-                  return _this.object.update(updateData);
-
-                case 21:
-                  _context.next = 23;
-                  return _this.object.createEmbeddedEntity('OwnedItem', items);
-
-                case 23:
-                  ui.notifications.info('Complete! Check everything. Notably: Ranged weapon mods and ammo; Strength based weapon damage; Specializations on all spells, powers, and weapons;');
-
-                  _this.close();
-
-                case 25:
-                case "end":
-                  return _context.stop();
-              }
-            }
-          }, _callee);
-        }));
-
-        return function (_x) {
-          return _ref.apply(this, arguments);
-        };
-      }());
-    }
-  }], [{
-    key: "defaultOptions",
-    get: function get() {
-      var options = (0, _get2["default"])((0, _getPrototypeOf2["default"])(ChummerImportForm), "defaultOptions", this);
-      options.id = 'chummer-import';
-      options.classes = ['shadowrun5e'];
-      options.title = 'Chummer/Hero Lab Import';
-      options.template = 'systems/shadowrun5e/dist/templates/apps/import.html';
-      options.width = 600;
-      options.height = 'auto';
-      return options;
-    }
-  }]);
-  return ChummerImportForm;
-}(FormApplication);
-
-exports.ChummerImportForm = ChummerImportForm;
-
-},{"@babel/runtime/helpers/asyncToGenerator":2,"@babel/runtime/helpers/classCallCheck":3,"@babel/runtime/helpers/createClass":4,"@babel/runtime/helpers/get":6,"@babel/runtime/helpers/getPrototypeOf":7,"@babel/runtime/helpers/inherits":8,"@babel/runtime/helpers/interopRequireDefault":9,"@babel/runtime/helpers/possibleConstructorReturn":10,"@babel/runtime/regenerator":14}],19:[function(require,module,exports){
+},{"../apps/skills/KnowledgeSkillEditForm":17,"../apps/skills/LanguageSkillEditForm":18,"../apps/skills/SkillEditForm":19,"../helpers":26,"import":"import"}],15:[function(require,module,exports){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -3705,7 +2131,7 @@ class ShadowrunItemDialog extends Dialog {
     }
 }
 exports.ShadowrunItemDialog = ShadowrunItemDialog;
-},{"../../helpers":30}],20:[function(require,module,exports){
+},{"../../helpers":26}],16:[function(require,module,exports){
 "use strict";
 
 var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
@@ -3868,7 +2294,7 @@ var OverwatchScoreTracker = /*#__PURE__*/function (_Application) {
 exports.OverwatchScoreTracker = OverwatchScoreTracker;
 (0, _defineProperty2["default"])(OverwatchScoreTracker, "MatrixOverwatchDiceCount", '2d6');
 
-},{"@babel/runtime/helpers/classCallCheck":3,"@babel/runtime/helpers/createClass":4,"@babel/runtime/helpers/defineProperty":5,"@babel/runtime/helpers/get":6,"@babel/runtime/helpers/getPrototypeOf":7,"@babel/runtime/helpers/inherits":8,"@babel/runtime/helpers/interopRequireDefault":9,"@babel/runtime/helpers/possibleConstructorReturn":10}],21:[function(require,module,exports){
+},{"@babel/runtime/helpers/classCallCheck":2,"@babel/runtime/helpers/createClass":3,"@babel/runtime/helpers/defineProperty":4,"@babel/runtime/helpers/get":5,"@babel/runtime/helpers/getPrototypeOf":6,"@babel/runtime/helpers/inherits":7,"@babel/runtime/helpers/interopRequireDefault":8,"@babel/runtime/helpers/possibleConstructorReturn":9}],17:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.KnowledgeSkillEditForm = void 0;
@@ -3883,7 +2309,7 @@ class KnowledgeSkillEditForm extends LanguageSkillEditForm_1.LanguageSkillEditFo
     }
 }
 exports.KnowledgeSkillEditForm = KnowledgeSkillEditForm;
-},{"./LanguageSkillEditForm":22}],22:[function(require,module,exports){
+},{"./LanguageSkillEditForm":18}],18:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.LanguageSkillEditForm = void 0;
@@ -3906,7 +2332,7 @@ class LanguageSkillEditForm extends SkillEditForm_1.SkillEditForm {
     }
 }
 exports.LanguageSkillEditForm = LanguageSkillEditForm;
-},{"./SkillEditForm":23}],23:[function(require,module,exports){
+},{"./SkillEditForm":19}],19:[function(require,module,exports){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -4063,7 +2489,7 @@ class SkillEditForm extends BaseEntitySheet {
     }
 }
 exports.SkillEditForm = SkillEditForm;
-},{}],24:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.measureDistance = void 0;
@@ -4099,7 +2525,7 @@ exports.measureDistance = function (p0, p1, { gridSpaces = true } = {}) {
     }
     return (nStraight + nDiagonal) * canvas.scene.data.gridDistance;
 };
-},{"./constants":28}],25:[function(require,module,exports){
+},{"./constants":24}],21:[function(require,module,exports){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -4202,7 +2628,7 @@ exports.addRollListeners = (app, html) => {
     if ((item === null || item === void 0 ? void 0 : item.hasRoll) && app.isRoll)
         $(html).find('.card-description').hide();
 };
-},{"./actor/SR5Actor":16,"./constants":28,"./item/SR5Item":32,"./template":41}],26:[function(require,module,exports){
+},{"./actor/SR5Actor":13,"./constants":24,"./item/SR5Item":29,"./template":38}],22:[function(require,module,exports){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -4301,7 +2727,7 @@ exports.shadowrunCombatUpdate = (changes, options) => __awaiter(void 0, void 0, 
         yield combat.update({ turn: 0 });
     }
 });
-},{"./constants":28}],27:[function(require,module,exports){
+},{"./constants":24}],23:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SR5 = void 0;
@@ -4586,12 +3012,12 @@ exports.SR5['programTypes'] = {
     hacking_program: 'SR5.HackingProgram',
     agent: 'SR5.Agent',
 };
-},{}],28:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SYSTEM_NAME = void 0;
 exports.SYSTEM_NAME = 'shadowrun5e';
-},{}],29:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -4742,7 +3168,7 @@ exports.registerHandlebarHelpers = () => {
         return value !== undefined;
     });
 };
-},{"./helpers":30}],30:[function(require,module,exports){
+},{"./helpers":26}],26:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Helpers = void 0;
@@ -4941,7 +3367,59 @@ class Helpers {
     }
 }
 exports.Helpers = Helpers;
-},{}],31:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.ImportApp = void 0;
+class ImportApp extends Application {
+    constructor(actor, options) {
+        super(options);
+        this._actor = actor;
+    }
+    static get defaultOptions() {
+        const data = super.defaultOptions;
+        // TODO: I18n.
+        data.title = 'Chummer Actor Import';
+        data.template = 'systems/shadowrun5e/dist/templates/import/import-app.html';
+        data.width = '600';
+        data.height = 'auto';
+        return data;
+    }
+    activateListeners(html) {
+        super.activateListeners(html);
+        $(html).find('#submit').on('click', this.submit.bind(this));
+    }
+    submit() {
+        // TODO: I18n.
+        // let dialog = new Dialog({
+        //     title: 'Confirm Import',
+        //     content: "<h2 style='color: red'>THIS WILL OVERWRITE ANY CHANGES YOU HAVE MADE SINCE YOUR LAST IMPORT.</h2>",
+        //     buttons: {
+        //         import: {
+        //             icon: '<i class="fas fa-check"></i>',
+        //             label: "I'm sure!",
+        //             callback: () => {
+        //                 this.import($(this.element).find('#source').text());
+        //             },
+        //         },
+        //         cancel: {
+        //             icon: '<i class="fas fa-times"></i>',
+        //             label: 'Wait a second...',
+        //         },
+        //     },
+        //     default: 'cancel',
+        // }).render(true);
+        // TODO: Enable confirmation after development.
+        this.import($(this.element).find('#source').text());
+    }
+    import(json) {
+        console.warn(JSON.parse(json));
+        const updateData = this._actor.data;
+        console.warn(updateData);
+    }
+}
+exports.ImportApp = ImportApp;
+},{}],28:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ChatData = void 0;
@@ -5225,7 +3703,7 @@ exports.ChatData = {
         }
     },
 };
-},{"../helpers":30}],32:[function(require,module,exports){
+},{"../helpers":26}],29:[function(require,module,exports){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -6190,7 +4668,7 @@ class SR5Item extends Item {
     }
 }
 exports.SR5Item = SR5Item;
-},{"../apps/dialogs/ShadowrunItemDialog":19,"../chat":25,"../constants":28,"../helpers":30,"../rolls/ShadowrunRoller":39,"../template":41,"./ChatData":31}],33:[function(require,module,exports){
+},{"../apps/dialogs/ShadowrunItemDialog":15,"../chat":21,"../constants":24,"../helpers":26,"../rolls/ShadowrunRoller":36,"../template":38,"./ChatData":28}],30:[function(require,module,exports){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -6502,7 +4980,7 @@ class SR5ItemSheet extends ItemSheet {
     }
 }
 exports.SR5ItemSheet = SR5ItemSheet;
-},{"../helpers":30}],34:[function(require,module,exports){
+},{"../helpers":26}],31:[function(require,module,exports){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -6529,6 +5007,13 @@ const handlebars_1 = require("./handlebars");
 const ShadowrunRoller_1 = require("./rolls/ShadowrunRoller");
 const Migrator_1 = require("./migrator/Migrator");
 const constants_1 = require("./constants");
+const import_1 = require("import");
+Hooks.once('ready', () => {
+    const actor = game.actors.find((a) => a.name === 'New Actor' || a.name === 'Firebomb (Ashley/Ashton Hannah-Knight)');
+    if (actor) {
+        new import_1.ImportApp(actor).render(true);
+    }
+});
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
 /* -------------------------------------------- */
@@ -6648,7 +5133,7 @@ function rollItemMacro(itemName) {
     return item.rollTest(event);
 }
 handlebars_1.registerHandlebarHelpers();
-},{"./actor/SR5Actor":16,"./actor/SR5ActorSheet":17,"./apps/gmtools/OverwatchScoreTracker":20,"./canvas":24,"./chat":25,"./combat":26,"./config":27,"./constants":28,"./handlebars":29,"./helpers":30,"./item/SR5Item":32,"./item/SR5ItemSheet":33,"./migrator/Migrator":35,"./rolls/ShadowrunRoller":39,"./settings":40}],35:[function(require,module,exports){
+},{"./actor/SR5Actor":13,"./actor/SR5ActorSheet":14,"./apps/gmtools/OverwatchScoreTracker":16,"./canvas":20,"./chat":21,"./combat":22,"./config":23,"./constants":24,"./handlebars":25,"./helpers":26,"./item/SR5Item":29,"./item/SR5ItemSheet":30,"./migrator/Migrator":32,"./rolls/ShadowrunRoller":36,"./settings":37,"import":"import"}],32:[function(require,module,exports){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -6664,131 +5149,134 @@ exports.Migrator = void 0;
 const VersionMigration_1 = require("./VersionMigration");
 const LegacyMigration_1 = require("./versions/LegacyMigration");
 const Version0_6_5_1 = require("./versions/Version0_6_5");
-class Migrator {
-    //TODO: Call on Init()
-    static BeginMigration() {
-        return __awaiter(this, void 0, void 0, function* () {
-            let currentVersion = game.settings.get(VersionMigration_1.VersionMigration.MODULE_NAME, VersionMigration_1.VersionMigration.KEY_DATA_VERSION);
-            if (currentVersion === undefined || currentVersion === null) {
-                currentVersion = VersionMigration_1.VersionMigration.NO_VERSION;
-            }
-            const migrations = Migrator.s_Versions.filter(({ versionNumber }) => {
-                // if versionNUmber is greater than currentVersion, we need to apply this migration
-                return this.compareVersion(versionNumber, currentVersion) === 1;
-            });
-            // No migrations are required, exit.
-            if (migrations.length === 0) {
-                return;
-            }
-            const localizedWarningTitle = game.i18n.localize('SR5.MIGRATION.WarningTitle');
-            const localizedWarningHeader = game.i18n.localize('SR5.MIGRATION.WarningHeader');
-            const localizedWarningRequired = game.i18n.localize('SR5.MIGRATION.WarningRequired');
-            const localizedWarningDescription = game.i18n.localize('SR5.MIGRATION.WarningDescription');
-            const localizedWarningBackup = game.i18n.localize('SR5.MIGRATION.WarningBackup');
-            const localizedWarningBegin = game.i18n.localize('SR5.MIGRATION.BeginMigration');
-            const d = new Dialog({
-                title: localizedWarningTitle,
-                content: `<h2 style="color: red; text-align: center">${localizedWarningHeader}</h2>` +
-                    `<p style="text-align: center"><i>${localizedWarningRequired}</i></p>` +
-                    `<p>${localizedWarningDescription}</p>` +
-                    `<h3 style="color: red">${localizedWarningBackup}</h3>`,
-                buttons: {
-                    ok: {
-                        label: localizedWarningBegin,
-                        callback: () => this.migrate(migrations),
-                    },
-                },
-                default: 'ok',
-            });
-            d.render(true);
-        });
-    }
-    static migrate(migrations) {
-        return __awaiter(this, void 0, void 0, function* () {
-            // we want to apply migrations in ascending order until we're up to the latest
-            migrations.sort((a, b) => {
-                return this.compareVersion(a.versionNumber, b.versionNumber);
-            });
-            yield this.migrateWorld(game, migrations);
-            yield this.migrateCompendium(game, migrations);
-            const localizedWarningTitle = game.i18n.localize('SR5.MIGRATION.SuccessTitle');
-            const localizedWarningHeader = game.i18n.localize('SR5.MIGRATION.SuccessHeader');
-            const localizedSuccessDescription = game.i18n.localize('SR5.MIGRATION.SuccessDescription');
-            const localizedSuccessPacksInfo = game.i18n.localize('SR5.MIGRATION.SuccessPacksInfo');
-            const localizedSuccessConfirm = game.i18n.localize('SR5.MIGRATION.SuccessConfirm');
-            const packsDialog = new Dialog({
-                title: localizedWarningTitle,
-                content: `<h2 style="text-align: center; color: green">${localizedWarningHeader}</h2>` +
-                    `<p>${localizedSuccessDescription}</p>` +
-                    `<p style="text-align: center"><i>${localizedSuccessPacksInfo}</i></p>`,
-                buttons: {
-                    ok: {
-                        icon: '<i class="fas fa-check"></i>',
-                        label: localizedSuccessConfirm,
-                    },
-                },
-                default: 'ok',
-            });
-            packsDialog.render(true);
-        });
-    }
-    /**
-     * Migrate all world objects
-     * @param game
-     * @param migrations
-     */
-    static migrateWorld(game, migrations) {
-        return __awaiter(this, void 0, void 0, function* () {
-            // Run the migrations in order
-            for (const { migration } of migrations) {
-                yield migration.Migrate(game);
-            }
-        });
-    }
-    /**
-     * Iterate over all world compendium packs
-     * @param game Game that will be migrated
-     * @param migrations Instances of the version migration
-     */
-    static migrateCompendium(game, migrations) {
-        return __awaiter(this, void 0, void 0, function* () {
-            // Migrate World Compendium Packs
-            const packs = game.packs.filter((pack) => pack.metadata.package === 'world' && ['Actor', 'Item', 'Scene'].includes(pack.metadata.entity));
-            // Run the migrations in order on each pack.
-            for (const pack of packs) {
-                for (const { migration } of migrations) {
-                    yield migration.MigrateCompendiumPack(pack);
+let Migrator = /** @class */ (() => {
+    class Migrator {
+        //TODO: Call on Init()
+        static BeginMigration() {
+            return __awaiter(this, void 0, void 0, function* () {
+                let currentVersion = game.settings.get(VersionMigration_1.VersionMigration.MODULE_NAME, VersionMigration_1.VersionMigration.KEY_DATA_VERSION);
+                if (currentVersion === undefined || currentVersion === null) {
+                    currentVersion = VersionMigration_1.VersionMigration.NO_VERSION;
                 }
-            }
-        });
-    }
-    // found at: https://helloacm.com/the-javascript-function-to-compare-version-number-strings/
-    // updated for typescript
-    /**
-     * compare two version numbers, returns 1 if v1 > v2, -1 if v1 < v2, 0 if equal
-     * @param v1
-     * @param v2
-     */
-    static compareVersion(v1, v2) {
-        const s1 = v1.split('.').map((s) => parseInt(s, 10));
-        const s2 = v2.split('.').map((s) => parseInt(s, 10));
-        const k = Math.min(v1.length, v2.length);
-        for (let i = 0; i < k; ++i) {
-            if (s1[i] > s2[i])
-                return 1;
-            if (s1[i] < s2[i])
-                return -1;
+                const migrations = Migrator.s_Versions.filter(({ versionNumber }) => {
+                    // if versionNUmber is greater than currentVersion, we need to apply this migration
+                    return this.compareVersion(versionNumber, currentVersion) === 1;
+                });
+                // No migrations are required, exit.
+                if (migrations.length === 0) {
+                    return;
+                }
+                const localizedWarningTitle = game.i18n.localize('SR5.MIGRATION.WarningTitle');
+                const localizedWarningHeader = game.i18n.localize('SR5.MIGRATION.WarningHeader');
+                const localizedWarningRequired = game.i18n.localize('SR5.MIGRATION.WarningRequired');
+                const localizedWarningDescription = game.i18n.localize('SR5.MIGRATION.WarningDescription');
+                const localizedWarningBackup = game.i18n.localize('SR5.MIGRATION.WarningBackup');
+                const localizedWarningBegin = game.i18n.localize('SR5.MIGRATION.BeginMigration');
+                const d = new Dialog({
+                    title: localizedWarningTitle,
+                    content: `<h2 style="color: red; text-align: center">${localizedWarningHeader}</h2>` +
+                        `<p style="text-align: center"><i>${localizedWarningRequired}</i></p>` +
+                        `<p>${localizedWarningDescription}</p>` +
+                        `<h3 style="color: red">${localizedWarningBackup}</h3>`,
+                    buttons: {
+                        ok: {
+                            label: localizedWarningBegin,
+                            callback: () => this.migrate(migrations),
+                        },
+                    },
+                    default: 'ok',
+                });
+                d.render(true);
+            });
         }
-        return v1.length === v2.length ? 0 : v1.length < v2.length ? -1 : 1;
+        static migrate(migrations) {
+            return __awaiter(this, void 0, void 0, function* () {
+                // we want to apply migrations in ascending order until we're up to the latest
+                migrations.sort((a, b) => {
+                    return this.compareVersion(a.versionNumber, b.versionNumber);
+                });
+                yield this.migrateWorld(game, migrations);
+                yield this.migrateCompendium(game, migrations);
+                const localizedWarningTitle = game.i18n.localize('SR5.MIGRATION.SuccessTitle');
+                const localizedWarningHeader = game.i18n.localize('SR5.MIGRATION.SuccessHeader');
+                const localizedSuccessDescription = game.i18n.localize('SR5.MIGRATION.SuccessDescription');
+                const localizedSuccessPacksInfo = game.i18n.localize('SR5.MIGRATION.SuccessPacksInfo');
+                const localizedSuccessConfirm = game.i18n.localize('SR5.MIGRATION.SuccessConfirm');
+                const packsDialog = new Dialog({
+                    title: localizedWarningTitle,
+                    content: `<h2 style="text-align: center; color: green">${localizedWarningHeader}</h2>` +
+                        `<p>${localizedSuccessDescription}</p>` +
+                        `<p style="text-align: center"><i>${localizedSuccessPacksInfo}</i></p>`,
+                    buttons: {
+                        ok: {
+                            icon: '<i class="fas fa-check"></i>',
+                            label: localizedSuccessConfirm,
+                        },
+                    },
+                    default: 'ok',
+                });
+                packsDialog.render(true);
+            });
+        }
+        /**
+         * Migrate all world objects
+         * @param game
+         * @param migrations
+         */
+        static migrateWorld(game, migrations) {
+            return __awaiter(this, void 0, void 0, function* () {
+                // Run the migrations in order
+                for (const { migration } of migrations) {
+                    yield migration.Migrate(game);
+                }
+            });
+        }
+        /**
+         * Iterate over all world compendium packs
+         * @param game Game that will be migrated
+         * @param migrations Instances of the version migration
+         */
+        static migrateCompendium(game, migrations) {
+            return __awaiter(this, void 0, void 0, function* () {
+                // Migrate World Compendium Packs
+                const packs = game.packs.filter((pack) => pack.metadata.package === 'world' && ['Actor', 'Item', 'Scene'].includes(pack.metadata.entity));
+                // Run the migrations in order on each pack.
+                for (const pack of packs) {
+                    for (const { migration } of migrations) {
+                        yield migration.MigrateCompendiumPack(pack);
+                    }
+                }
+            });
+        }
+        // found at: https://helloacm.com/the-javascript-function-to-compare-version-number-strings/
+        // updated for typescript
+        /**
+         * compare two version numbers, returns 1 if v1 > v2, -1 if v1 < v2, 0 if equal
+         * @param v1
+         * @param v2
+         */
+        static compareVersion(v1, v2) {
+            const s1 = v1.split('.').map((s) => parseInt(s, 10));
+            const s2 = v2.split('.').map((s) => parseInt(s, 10));
+            const k = Math.min(v1.length, v2.length);
+            for (let i = 0; i < k; ++i) {
+                if (s1[i] > s2[i])
+                    return 1;
+                if (s1[i] < s2[i])
+                    return -1;
+            }
+            return v1.length === v2.length ? 0 : v1.length < v2.length ? -1 : 1;
+        }
     }
-}
+    // Map of all version migrations to their target version numbers.
+    Migrator.s_Versions = [
+        { versionNumber: LegacyMigration_1.LegacyMigration.TargetVersion, migration: new LegacyMigration_1.LegacyMigration() },
+        { versionNumber: Version0_6_5_1.Version0_6_5.TargetVersion, migration: new Version0_6_5_1.Version0_6_5() },
+    ];
+    return Migrator;
+})();
 exports.Migrator = Migrator;
-// Map of all version migrations to their target version numbers.
-Migrator.s_Versions = [
-    { versionNumber: LegacyMigration_1.LegacyMigration.TargetVersion, migration: new LegacyMigration_1.LegacyMigration() },
-    { versionNumber: Version0_6_5_1.Version0_6_5.TargetVersion, migration: new Version0_6_5_1.Version0_6_5() },
-];
-},{"./VersionMigration":36,"./versions/LegacyMigration":37,"./versions/Version0_6_5":38}],36:[function(require,module,exports){
+},{"./VersionMigration":33,"./versions/LegacyMigration":34,"./versions/Version0_6_5":35}],33:[function(require,module,exports){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -6806,418 +5294,421 @@ exports.VersionMigration = void 0;
  * Extending classes are only required to handle items, actors, and scenes,
  *  other methods are implementable purely for convenience and atomicity.
  */
-class VersionMigration {
-    constructor() {
-        this.m_Abort = false;
-    }
-    get SourceVersionFriendlyName() {
-        return `v${this.SourceVersion}`;
-    }
-    get TargetVersionFriendlyName() {
-        return `v${this.TargetVersion}`;
-    }
-    /**
-     * Flag the migration to be aborted.
-     * @param reason The reason that the migration must be aborted, to be displayed
-     *  to the user and returned from the migration call.
-     */
-    abort(reason) {
-        this.m_Abort = true;
-        this.m_AbortReason = reason;
-        // @ts-ignore
-        ui.notifications.error(`Data migration has been aborted: ${reason}`, { permanent: true });
-    }
-    /**
-     * Begin migration for the specified game.
-     * @param game The world that should be migrated.
-     */
-    Migrate(game) {
-        return __awaiter(this, void 0, void 0, function* () {
-            // @ts-ignore TODO Unignore when Foundry Types updates
-            ui.notifications.info(`Beginning Shadowrun system migration from version ${this.SourceVersionFriendlyName} to ${this.TargetVersionFriendlyName}.`);
-            // @ts-ignore TODO Unignore when Foundry Types updates
-            ui.notifications.warn(`Please do not close your game or shutdown FoundryVTT.`, {
-                permanent: true,
-            });
-            // Map of entities to update, store until later to reduce chance of partial updates
-            // which may result in impossible game states.
-            const entityUpdates = new Map();
-            // Migrate World Items
-            yield this.PreMigrateItemData(game, entityUpdates);
-            if (this.m_Abort) {
-                return Promise.reject(this.m_AbortReason);
-            }
-            yield this.IterateItems(game, entityUpdates);
-            yield this.PostMigrateItemData(game, entityUpdates);
-            if (this.m_Abort) {
-                return Promise.reject(this.m_AbortReason);
-            }
-            // Migrate World Actors
-            yield this.PreMigrateActorData(game, entityUpdates);
-            if (this.m_Abort) {
-                return Promise.reject(this.m_AbortReason);
-            }
-            yield this.IterateActors(game, entityUpdates);
-            yield this.PostMigrateActorData(game, entityUpdates);
-            if (this.m_Abort) {
-                return Promise.reject(this.m_AbortReason);
-            }
-            // Migrate Actor Tokens
-            yield this.PreMigrateSceneData(game, entityUpdates);
-            if (this.m_Abort) {
-                return Promise.reject(this.m_AbortReason);
-            }
-            yield this.IterateScenes(game, entityUpdates);
-            yield this.PostMigrateSceneData(game, entityUpdates);
-            if (this.m_Abort) {
-                return Promise.reject(this.m_AbortReason);
-            }
-            // Apply the updates, this should *always* work, now that parsing is complete.
-            yield this.Apply(entityUpdates);
-            yield game.settings.set(VersionMigration.MODULE_NAME, VersionMigration.KEY_DATA_VERSION, this.TargetVersion);
-            // @ts-ignore TODO Unignore when Foundry Types updates
-            ui.notifications.info(`Shadowrun system migration successfully migrated to version ${this.TargetVersion}.`, { permanent: true });
-        });
-    }
-    /**
-     * Applies the specified mapping of entities, iteratively updating each.
-     * @param entityUpdates A mapping of entity updateData pairs.
-     */
-    Apply(entityUpdates) {
-        return __awaiter(this, void 0, void 0, function* () {
-            for (const [entity, { updateData, embeddedItems }] of entityUpdates) {
-                if (embeddedItems !== null) {
-                    const actor = entity;
-                    yield actor.updateOwnedItem(embeddedItems);
+let VersionMigration = /** @class */ (() => {
+    class VersionMigration {
+        constructor() {
+            this.m_Abort = false;
+        }
+        get SourceVersionFriendlyName() {
+            return `v${this.SourceVersion}`;
+        }
+        get TargetVersionFriendlyName() {
+            return `v${this.TargetVersion}`;
+        }
+        /**
+         * Flag the migration to be aborted.
+         * @param reason The reason that the migration must be aborted, to be displayed
+         *  to the user and returned from the migration call.
+         */
+        abort(reason) {
+            this.m_Abort = true;
+            this.m_AbortReason = reason;
+            // @ts-ignore
+            ui.notifications.error(`Data migration has been aborted: ${reason}`, { permanent: true });
+        }
+        /**
+         * Begin migration for the specified game.
+         * @param game The world that should be migrated.
+         */
+        Migrate(game) {
+            return __awaiter(this, void 0, void 0, function* () {
+                // @ts-ignore TODO Unignore when Foundry Types updates
+                ui.notifications.info(`Beginning Shadowrun system migration from version ${this.SourceVersionFriendlyName} to ${this.TargetVersionFriendlyName}.`);
+                // @ts-ignore TODO Unignore when Foundry Types updates
+                ui.notifications.warn(`Please do not close your game or shutdown FoundryVTT.`, {
+                    permanent: true,
+                });
+                // Map of entities to update, store until later to reduce chance of partial updates
+                // which may result in impossible game states.
+                const entityUpdates = new Map();
+                // Migrate World Items
+                yield this.PreMigrateItemData(game, entityUpdates);
+                if (this.m_Abort) {
+                    return Promise.reject(this.m_AbortReason);
                 }
-                yield entity.update(updateData, { enforceTypes: false });
-            }
-        });
-    }
-    /**
-     * Iterate through all scenes and migrate each if needed.
-     * @param game
-     * @param entityUpdates
-     */
-    IterateScenes(game, entityUpdates) {
-        return __awaiter(this, void 0, void 0, function* () {
-            for (const scene of game.scenes.entities) {
-                try {
-                    if (!(yield this.ShouldMigrateSceneData(scene))) {
-                        continue;
+                yield this.IterateItems(game, entityUpdates);
+                yield this.PostMigrateItemData(game, entityUpdates);
+                if (this.m_Abort) {
+                    return Promise.reject(this.m_AbortReason);
+                }
+                // Migrate World Actors
+                yield this.PreMigrateActorData(game, entityUpdates);
+                if (this.m_Abort) {
+                    return Promise.reject(this.m_AbortReason);
+                }
+                yield this.IterateActors(game, entityUpdates);
+                yield this.PostMigrateActorData(game, entityUpdates);
+                if (this.m_Abort) {
+                    return Promise.reject(this.m_AbortReason);
+                }
+                // Migrate Actor Tokens
+                yield this.PreMigrateSceneData(game, entityUpdates);
+                if (this.m_Abort) {
+                    return Promise.reject(this.m_AbortReason);
+                }
+                yield this.IterateScenes(game, entityUpdates);
+                yield this.PostMigrateSceneData(game, entityUpdates);
+                if (this.m_Abort) {
+                    return Promise.reject(this.m_AbortReason);
+                }
+                // Apply the updates, this should *always* work, now that parsing is complete.
+                yield this.Apply(entityUpdates);
+                yield game.settings.set(VersionMigration.MODULE_NAME, VersionMigration.KEY_DATA_VERSION, this.TargetVersion);
+                // @ts-ignore TODO Unignore when Foundry Types updates
+                ui.notifications.info(`Shadowrun system migration successfully migrated to version ${this.TargetVersion}.`, { permanent: true });
+            });
+        }
+        /**
+         * Applies the specified mapping of entities, iteratively updating each.
+         * @param entityUpdates A mapping of entity updateData pairs.
+         */
+        Apply(entityUpdates) {
+            return __awaiter(this, void 0, void 0, function* () {
+                for (const [entity, { updateData, embeddedItems }] of entityUpdates) {
+                    if (embeddedItems !== null) {
+                        const actor = entity;
+                        yield actor.updateOwnedItem(embeddedItems);
                     }
-                    if (scene._id === 'MAwSFhlXRipixOWw') {
-                        console.log('Scene Pre-Update');
-                        console.log(scene);
-                    }
-                    console.log(`Migrating Scene entity ${scene.name}`);
-                    const updateData = yield this.MigrateSceneData(duplicate(scene.data));
-                    let hasTokenUpdates = false;
-                    updateData.tokens = yield Promise.all(
-                    // @ts-ignore
-                    scene.data.tokens.map((token) => __awaiter(this, void 0, void 0, function* () {
-                        if (isObjectEmpty(token.actorData)) {
-                            return token;
+                    yield entity.update(updateData, { enforceTypes: false });
+                }
+            });
+        }
+        /**
+         * Iterate through all scenes and migrate each if needed.
+         * @param game
+         * @param entityUpdates
+         */
+        IterateScenes(game, entityUpdates) {
+            return __awaiter(this, void 0, void 0, function* () {
+                for (const scene of game.scenes.entities) {
+                    try {
+                        if (!(yield this.ShouldMigrateSceneData(scene))) {
+                            continue;
                         }
-                        let tokenDataUpdate = yield this.MigrateActorData(token.actorData);
-                        if (!isObjectEmpty(tokenDataUpdate)) {
-                            hasTokenUpdates = true;
-                            tokenDataUpdate['_id'] = token._id;
-                            const newToken = duplicate(token);
-                            newToken.actorData = yield mergeObject(token.actorData, tokenDataUpdate, {
+                        if (scene._id === 'MAwSFhlXRipixOWw') {
+                            console.log('Scene Pre-Update');
+                            console.log(scene);
+                        }
+                        console.log(`Migrating Scene entity ${scene.name}`);
+                        const updateData = yield this.MigrateSceneData(duplicate(scene.data));
+                        let hasTokenUpdates = false;
+                        updateData.tokens = yield Promise.all(
+                        // @ts-ignore
+                        scene.data.tokens.map((token) => __awaiter(this, void 0, void 0, function* () {
+                            if (isObjectEmpty(token.actorData)) {
+                                return token;
+                            }
+                            let tokenDataUpdate = yield this.MigrateActorData(token.actorData);
+                            if (!isObjectEmpty(tokenDataUpdate)) {
+                                hasTokenUpdates = true;
+                                tokenDataUpdate['_id'] = token._id;
+                                const newToken = duplicate(token);
+                                newToken.actorData = yield mergeObject(token.actorData, tokenDataUpdate, {
+                                    enforceTypes: false,
+                                    inplace: false,
+                                });
+                                console.log(newToken);
+                                return newToken;
+                            }
+                            else {
+                                return token;
+                            }
+                        })));
+                        if (scene._id === 'MAwSFhlXRipixOWw') {
+                            console.log('Scene Pre-Update');
+                            console.log(scene);
+                        }
+                        if (isObjectEmpty(updateData)) {
+                            continue;
+                        }
+                        expandObject(updateData);
+                        entityUpdates.set(scene, {
+                            updateData,
+                            embeddedItems: null,
+                        });
+                    }
+                    catch (error) {
+                        console.error(error);
+                        return Promise.reject(error);
+                    }
+                }
+            });
+        }
+        /**
+         * Iterate through all items and migrate each if needed.
+         * @param game The game to be updated.
+         * @param entityUpdates The current map of entity updates.
+         */
+        IterateItems(game, entityUpdates) {
+            return __awaiter(this, void 0, void 0, function* () {
+                for (const item of game.items.entities) {
+                    try {
+                        if (!(yield this.ShouldMigrateItemData(item.data))) {
+                            continue;
+                        }
+                        console.log(`Migrating Item: ${item.name}`);
+                        const updateData = yield this.MigrateItemData(item.data);
+                        if (isObjectEmpty(updateData)) {
+                            continue;
+                        }
+                        expandObject(updateData);
+                        entityUpdates.set(item, {
+                            updateData,
+                            embeddedItems: null,
+                        });
+                    }
+                    catch (error) {
+                        console.error(error);
+                        return Promise.reject(error);
+                    }
+                }
+            });
+        }
+        /**
+         * Iterate through all actors and migrate each if needed.
+         * @param game The game to be updated.
+         * @param entityUpdates The current map of entity updates.
+         */
+        IterateActors(game, entityUpdates) {
+            return __awaiter(this, void 0, void 0, function* () {
+                for (const actor of game.actors.entities) {
+                    try {
+                        if (!(yield this.ShouldMigrateActorData(actor.data))) {
+                            continue;
+                        }
+                        console.log(`Migrating Actor ${actor.name}`);
+                        console.log(actor);
+                        const updateData = yield this.MigrateActorData(duplicate(actor.data));
+                        console.log(updateData);
+                        let items = [];
+                        if (updateData.items) {
+                            items = updateData.items;
+                            delete updateData.items;
+                        }
+                        expandObject(updateData);
+                        entityUpdates.set(actor, {
+                            updateData,
+                            embeddedItems: items,
+                        });
+                    }
+                    catch (error) {
+                        console.error(error);
+                        return Promise.reject(error);
+                    }
+                }
+            });
+        }
+        /**
+         * Iterate over an actor's items, updating those that need updating.
+         * @param actorData The actor to iterate over
+         * @param updateData The existing update data to merge into
+         */
+        IterateActorItems(actorData, updateData) {
+            return __awaiter(this, void 0, void 0, function* () {
+                let hasItemUpdates = false;
+                // @ts-ignore
+                if (actorData.items !== undefined) {
+                    const items = yield Promise.all(
+                    // @ts-ignore
+                    actorData.items.map((item) => __awaiter(this, void 0, void 0, function* () {
+                        let itemUpdate = yield this.MigrateItemData(item);
+                        if (!isObjectEmpty(itemUpdate)) {
+                            hasItemUpdates = true;
+                            itemUpdate['_id'] = item._id;
+                            return yield mergeObject(item, itemUpdate, {
                                 enforceTypes: false,
                                 inplace: false,
                             });
-                            console.log(newToken);
-                            return newToken;
                         }
                         else {
-                            return token;
+                            return item;
                         }
                     })));
-                    if (scene._id === 'MAwSFhlXRipixOWw') {
-                        console.log('Scene Pre-Update');
-                        console.log(scene);
+                    if (hasItemUpdates) {
+                        updateData.items = items;
                     }
-                    if (isObjectEmpty(updateData)) {
-                        continue;
-                    }
-                    expandObject(updateData);
-                    entityUpdates.set(scene, {
-                        updateData,
-                        embeddedItems: null,
-                    });
                 }
-                catch (error) {
-                    console.error(error);
-                    return Promise.reject(error);
-                }
-            }
-        });
-    }
-    /**
-     * Iterate through all items and migrate each if needed.
-     * @param game The game to be updated.
-     * @param entityUpdates The current map of entity updates.
-     */
-    IterateItems(game, entityUpdates) {
-        return __awaiter(this, void 0, void 0, function* () {
-            for (const item of game.items.entities) {
-                try {
-                    if (!(yield this.ShouldMigrateItemData(item.data))) {
-                        continue;
-                    }
-                    console.log(`Migrating Item: ${item.name}`);
-                    const updateData = yield this.MigrateItemData(item.data);
-                    if (isObjectEmpty(updateData)) {
-                        continue;
-                    }
-                    expandObject(updateData);
-                    entityUpdates.set(item, {
-                        updateData,
-                        embeddedItems: null,
-                    });
-                }
-                catch (error) {
-                    console.error(error);
-                    return Promise.reject(error);
-                }
-            }
-        });
-    }
-    /**
-     * Iterate through all actors and migrate each if needed.
-     * @param game The game to be updated.
-     * @param entityUpdates The current map of entity updates.
-     */
-    IterateActors(game, entityUpdates) {
-        return __awaiter(this, void 0, void 0, function* () {
-            for (const actor of game.actors.entities) {
-                try {
-                    if (!(yield this.ShouldMigrateActorData(actor.data))) {
-                        continue;
-                    }
-                    console.log(`Migrating Actor ${actor.name}`);
-                    console.log(actor);
-                    const updateData = yield this.MigrateActorData(duplicate(actor.data));
-                    console.log(updateData);
-                    let items = [];
-                    if (updateData.items) {
-                        items = updateData.items;
-                        delete updateData.items;
-                    }
-                    expandObject(updateData);
-                    entityUpdates.set(actor, {
-                        updateData,
-                        embeddedItems: items,
-                    });
-                }
-                catch (error) {
-                    console.error(error);
-                    return Promise.reject(error);
-                }
-            }
-        });
-    }
-    /**
-     * Iterate over an actor's items, updating those that need updating.
-     * @param actorData The actor to iterate over
-     * @param updateData The existing update data to merge into
-     */
-    IterateActorItems(actorData, updateData) {
-        return __awaiter(this, void 0, void 0, function* () {
-            let hasItemUpdates = false;
-            // @ts-ignore
-            if (actorData.items !== undefined) {
-                const items = yield Promise.all(
-                // @ts-ignore
-                actorData.items.map((item) => __awaiter(this, void 0, void 0, function* () {
-                    let itemUpdate = yield this.MigrateItemData(item);
-                    if (!isObjectEmpty(itemUpdate)) {
-                        hasItemUpdates = true;
-                        itemUpdate['_id'] = item._id;
-                        return yield mergeObject(item, itemUpdate, {
-                            enforceTypes: false,
-                            inplace: false,
-                        });
-                    }
-                    else {
-                        return item;
-                    }
-                })));
-                if (hasItemUpdates) {
-                    updateData.items = items;
-                }
-            }
-            return updateData;
-        });
-    }
-    /**
-     * Check if a scene requires updates.
-     * @param scene The scene to check.
-     * @return A promise that resolves true or false.
-     */
-    ShouldMigrateSceneData(scene) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return false;
-        });
-    }
-    /**
-     * Migrate the specified scene's data.
-     * @param scene The scene to migrate.
-     * @return A promise that resolves with the update data.
-     */
-    MigrateSceneData(scene) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return {};
-        });
-    }
-    /**
-     * Do something right before scene data is migrated.
-     * @param game The game to be updated.
-     * @param entityUpdates The current map of entity updates.
-     */
-    PreMigrateSceneData(game, entityUpdates) {
-        return __awaiter(this, void 0, void 0, function* () { });
-    }
-    /**
-     * Do something right before scene data is migrated.
-     * @param game The game to be updated.
-     * @param entityUpdates The current map of entity updates.
-     */
-    PostMigrateSceneData(game, entityUpdates) {
-        return __awaiter(this, void 0, void 0, function* () { });
-    }
-    /**
-     * Check if an item requires updates.
-     * @param item The item to check.
-     * @return A promise that resolves true or false.
-     */
-    ShouldMigrateItemData(item) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return false;
-        });
-    }
-    /**
-     * Migrate the specified item's data.
-     * @param item The item to migrate.
-     * @return A promise that resolves with the update data.
-     */
-    MigrateItemData(item) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return {};
-        });
-    }
-    /**
-     * Do something right before item data is migrated.
-     * @param game The game to be updated.
-     * @param entityUpdates The current map of entity updates.
-     */
-    PreMigrateItemData(game, entityUpdates) {
-        return __awaiter(this, void 0, void 0, function* () { });
-    }
-    /**
-     * Do something right before item data is migrated.
-     * @param game The game to be updated.
-     * @param entityUpdates The current map of entity updates.
-     */
-    PostMigrateItemData(game, entityUpdates) {
-        return __awaiter(this, void 0, void 0, function* () { });
-    }
-    /**
-     * Check if an actor requires updates.
-     * @param actor The actor to check.
-     * @return A promise that resolves true or false.
-     */
-    ShouldMigrateActorData(actor) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return false;
-        });
-    }
-    /**
-     * Migrate the specified actor's data.
-     * @param actor The actor to migrate.
-     * @return A promise that resolves with the update data.
-     */
-    MigrateActorData(actor) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return {};
-        });
-    }
-    /**
-     * Do something right before actor data is migrated.
-     * @param game The game to be updated.
-     * @param entityUpdates The current map of entity updates.
-     */
-    PreMigrateActorData(game, entityUpdates) {
-        return __awaiter(this, void 0, void 0, function* () { });
-    }
-    /**
-     * Do something right after actor data is migrated.
-     * @param game The game to be updated.
-     * @param entityUpdates The current map of entity updates.
-     */
-    PostMigrateActorData(game, entityUpdates) {
-        return __awaiter(this, void 0, void 0, function* () { });
-    }
-    /**
-     * Migrate a compendium pack
-     * @param pack
-     */
-    MigrateCompendiumPack(pack) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const entity = pack.metadata.entity;
-            if (!['Actor', 'Item', 'Scene'].includes(entity))
-                return;
-            // Begin by requesting server-side data model migration and get the migrated content
-            yield pack.migrate({});
-            const content = yield pack.getContent();
-            // Iterate over compendium entries - applying fine-tuned migration functions
-            for (let ent of content) {
-                try {
-                    let updateData = null;
-                    if (entity === 'Item') {
-                        updateData = yield this.MigrateItemData(ent.data);
-                        if (isObjectEmpty(updateData)) {
-                            continue;
+                return updateData;
+            });
+        }
+        /**
+         * Check if a scene requires updates.
+         * @param scene The scene to check.
+         * @return A promise that resolves true or false.
+         */
+        ShouldMigrateSceneData(scene) {
+            return __awaiter(this, void 0, void 0, function* () {
+                return false;
+            });
+        }
+        /**
+         * Migrate the specified scene's data.
+         * @param scene The scene to migrate.
+         * @return A promise that resolves with the update data.
+         */
+        MigrateSceneData(scene) {
+            return __awaiter(this, void 0, void 0, function* () {
+                return {};
+            });
+        }
+        /**
+         * Do something right before scene data is migrated.
+         * @param game The game to be updated.
+         * @param entityUpdates The current map of entity updates.
+         */
+        PreMigrateSceneData(game, entityUpdates) {
+            return __awaiter(this, void 0, void 0, function* () { });
+        }
+        /**
+         * Do something right before scene data is migrated.
+         * @param game The game to be updated.
+         * @param entityUpdates The current map of entity updates.
+         */
+        PostMigrateSceneData(game, entityUpdates) {
+            return __awaiter(this, void 0, void 0, function* () { });
+        }
+        /**
+         * Check if an item requires updates.
+         * @param item The item to check.
+         * @return A promise that resolves true or false.
+         */
+        ShouldMigrateItemData(item) {
+            return __awaiter(this, void 0, void 0, function* () {
+                return false;
+            });
+        }
+        /**
+         * Migrate the specified item's data.
+         * @param item The item to migrate.
+         * @return A promise that resolves with the update data.
+         */
+        MigrateItemData(item) {
+            return __awaiter(this, void 0, void 0, function* () {
+                return {};
+            });
+        }
+        /**
+         * Do something right before item data is migrated.
+         * @param game The game to be updated.
+         * @param entityUpdates The current map of entity updates.
+         */
+        PreMigrateItemData(game, entityUpdates) {
+            return __awaiter(this, void 0, void 0, function* () { });
+        }
+        /**
+         * Do something right before item data is migrated.
+         * @param game The game to be updated.
+         * @param entityUpdates The current map of entity updates.
+         */
+        PostMigrateItemData(game, entityUpdates) {
+            return __awaiter(this, void 0, void 0, function* () { });
+        }
+        /**
+         * Check if an actor requires updates.
+         * @param actor The actor to check.
+         * @return A promise that resolves true or false.
+         */
+        ShouldMigrateActorData(actor) {
+            return __awaiter(this, void 0, void 0, function* () {
+                return false;
+            });
+        }
+        /**
+         * Migrate the specified actor's data.
+         * @param actor The actor to migrate.
+         * @return A promise that resolves with the update data.
+         */
+        MigrateActorData(actor) {
+            return __awaiter(this, void 0, void 0, function* () {
+                return {};
+            });
+        }
+        /**
+         * Do something right before actor data is migrated.
+         * @param game The game to be updated.
+         * @param entityUpdates The current map of entity updates.
+         */
+        PreMigrateActorData(game, entityUpdates) {
+            return __awaiter(this, void 0, void 0, function* () { });
+        }
+        /**
+         * Do something right after actor data is migrated.
+         * @param game The game to be updated.
+         * @param entityUpdates The current map of entity updates.
+         */
+        PostMigrateActorData(game, entityUpdates) {
+            return __awaiter(this, void 0, void 0, function* () { });
+        }
+        /**
+         * Migrate a compendium pack
+         * @param pack
+         */
+        MigrateCompendiumPack(pack) {
+            return __awaiter(this, void 0, void 0, function* () {
+                const entity = pack.metadata.entity;
+                if (!['Actor', 'Item', 'Scene'].includes(entity))
+                    return;
+                // Begin by requesting server-side data model migration and get the migrated content
+                yield pack.migrate({});
+                const content = yield pack.getContent();
+                // Iterate over compendium entries - applying fine-tuned migration functions
+                for (let ent of content) {
+                    try {
+                        let updateData = null;
+                        if (entity === 'Item') {
+                            updateData = yield this.MigrateItemData(ent.data);
+                            if (isObjectEmpty(updateData)) {
+                                continue;
+                            }
+                            expandObject(updateData);
+                            updateData['_id'] = ent._id;
+                            yield pack.updateEntity(updateData);
+                            // TODO: Uncomment when foundry allows embeddeds to be updated in packs
+                            // } else if (entity === 'Actor') {
+                            //     updateData = await this.MigrateActorData(ent.data);
+                            //
+                            //     if (isObjectEmpty(updateData)) {
+                            //         continue;
+                            //     }
+                            //
+                            //     updateData['_id'] = ent._id;
+                            //     await pack.updateEntity(updateData);
                         }
-                        expandObject(updateData);
-                        updateData['_id'] = ent._id;
-                        yield pack.updateEntity(updateData);
-                        // TODO: Uncomment when foundry allows embeddeds to be updated in packs
-                        // } else if (entity === 'Actor') {
-                        //     updateData = await this.MigrateActorData(ent.data);
-                        //
-                        //     if (isObjectEmpty(updateData)) {
-                        //         continue;
-                        //     }
-                        //
-                        //     updateData['_id'] = ent._id;
-                        //     await pack.updateEntity(updateData);
-                    }
-                    else if (entity === 'Scene') {
-                        updateData = yield this.MigrateSceneData(ent.data);
-                        if (isObjectEmpty(updateData)) {
-                            continue;
+                        else if (entity === 'Scene') {
+                            updateData = yield this.MigrateSceneData(ent.data);
+                            if (isObjectEmpty(updateData)) {
+                                continue;
+                            }
+                            expandObject(updateData);
+                            updateData['_id'] = ent._id;
+                            yield pack.updateEntity(updateData);
                         }
-                        expandObject(updateData);
-                        updateData['_id'] = ent._id;
-                        yield pack.updateEntity(updateData);
+                    }
+                    catch (err) {
+                        console.error(err);
                     }
                 }
-                catch (err) {
-                    console.error(err);
-                }
-            }
-            console.log(`Migrated all ${entity} entities from Compendium ${pack.collection}`);
-        });
+                console.log(`Migrated all ${entity} entities from Compendium ${pack.collection}`);
+            });
+        }
     }
-}
+    VersionMigration.MODULE_NAME = 'shadowrun5e';
+    VersionMigration.KEY_DATA_VERSION = 'systemMigrationVersion';
+    VersionMigration.NO_VERSION = '0';
+    return VersionMigration;
+})();
 exports.VersionMigration = VersionMigration;
-VersionMigration.MODULE_NAME = 'shadowrun5e';
-VersionMigration.KEY_DATA_VERSION = 'systemMigrationVersion';
-VersionMigration.NO_VERSION = '0';
-},{}],37:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -7446,7 +5937,7 @@ class LegacyMigration extends VersionMigration_1.VersionMigration {
     }
 }
 exports.LegacyMigration = LegacyMigration;
-},{"../VersionMigration":36}],38:[function(require,module,exports){
+},{"../VersionMigration":33}],35:[function(require,module,exports){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -7496,7 +5987,7 @@ class Version0_6_5 extends VersionMigration_1.VersionMigration {
     }
 }
 exports.Version0_6_5 = Version0_6_5;
-},{"../VersionMigration":36}],39:[function(require,module,exports){
+},{"../VersionMigration":33}],36:[function(require,module,exports){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -7738,7 +6229,7 @@ class ShadowrunRoller {
     }
 }
 exports.ShadowrunRoller = ShadowrunRoller;
-},{"../chat":25,"../constants":28,"../helpers":30}],40:[function(require,module,exports){
+},{"../chat":21,"../constants":24,"../helpers":26}],37:[function(require,module,exports){
 "use strict";
 // game settings for shadowrun 5e
 Object.defineProperty(exports, "__esModule", { value: true });
@@ -7792,7 +6283,7 @@ exports.registerSystemSettings = () => {
         default: '0',
     });
 };
-},{"./constants":28,"./migrator/VersionMigration":36}],41:[function(require,module,exports){
+},{"./constants":24,"./migrator/VersionMigration":33}],38:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 class Template extends MeasuredTemplate {
@@ -7892,6 +6383,13 @@ class Template extends MeasuredTemplate {
     }
 }
 exports.default = Template;
-},{}]},{},[34])
+},{}],"import":[function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.ImportApp = void 0;
+const import_app_1 = require("./app/import-app");
+Object.defineProperty(exports, "ImportApp", { enumerable: true, get: function () { return import_app_1.ImportApp; } });
+},{"./app/import-app":27}]},{},[31])("import")
+});
 
 //# sourceMappingURL=bundle.js.map
