@@ -17,6 +17,9 @@ export class SR5Die extends Die {
 }
 
 export class SR5Roll extends Roll {
+    // <editor-fold desc="Static Properties"></editor-fold>
+    // <editor-fold desc="Static Methods">
+
     /**
      * Build a formula for a Shadowrun dice roll.
      * Assumes roll will be valid (e.g. you pass a positive count).
@@ -50,20 +53,26 @@ export class SR5Roll extends Roll {
         return new SR5Roll(count, limit, explode).roll();
     }
 
+    // </editor-fold>
+    // <editor-fold desc="Properties"></editor-fold>
+    // <editor-fold desc="Constructor & Initialization"></editor-fold>
+    // <editor-fold desc="Getters & Setters"></editor-fold>
+    // <editor-fold desc="Instance Methods"></editor-fold>
+
     /**
      * The number of dice in this roll.
      */
-    protected m_Count: number;
+    protected _count: number;
 
     /**
      * The limit of this roll
      */
-    protected m_Limit: number;
+    protected _limit: number;
 
     /**
      * If the roll should explode or not
      */
-    protected m_Explode: boolean;
+    protected _explode: boolean;
 
     constructor(count: number, limit: number = -1, explode: boolean = false) {
         if (count <= 0) {
@@ -71,9 +80,9 @@ export class SR5Roll extends Roll {
         }
 
         super(SR5Roll.ToFormula(count, limit, explode));
-        this.m_Count = count;
-        this.m_Limit = limit;
-        this.m_Explode = explode;
+        this._count = count;
+        this._limit = limit;
+        this._explode = explode;
     }
 
     roll(): SR5Roll {
@@ -85,7 +94,7 @@ export class SR5Roll extends Roll {
     }
 
     reroll(): SR5Roll {
-        return new SR5Roll(this.m_Count, this.m_Limit, this.m_Explode).roll();
+        return new SR5Roll(this._count, this._limit, this._explode).roll();
     }
 
     // Override type...

@@ -6659,7 +6659,6 @@ exports.registerCustomElements = void 0;
 const SituationalModifierField_1 = require("../field/SituationalModifierField");
 const SkillField_1 = require("../field/SkillField");
 exports.registerCustomElements = () => {
-    console.warn(`Registering Custom HTML Elements`);
     window.customElements.define('sitmod-field', SituationalModifierField_1.SituationalModifierField);
     window.customElements.define('skill-field', SkillField_1.SkillField);
 };
