@@ -8,7 +8,7 @@
       "baseUrl": "src/module",
       "paths": {
         "import": [
-          "import/index.ts"
+          "./import/index.ts"
         ]
       }
     }
