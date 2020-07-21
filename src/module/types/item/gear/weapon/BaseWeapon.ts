@@ -1,13 +1,19 @@
-import { BaseItem, BaseItemDataContainer } from '../../BaseItem';
+import { IItem, IBaseItemDataContainer } from '../../IItem';
+import { AttributeName } from '../../../common/Attribute';
+import { IAvailability, IConcealability } from '../../../common/mixins/SimpleFields';
+import { DamageTrack } from '../../../common/mixins/DamageTrack';
+import { DamageType } from '../../../common/Damage';
 
-export interface BaseWeapon extends BaseItem {
+export interface BaseWeapon extends IItem {
     type: 'weapon';
     data: BaseWeaponDataContainer;
 }
 
-export interface BaseWeaponDataContainer extends BaseItemDataContainer {
+export interface BaseWeaponDataContainer extends IBaseItemDataContainer, IAvailability, IConcealability {
     // Second discriminate; will branch on this
-    weaponType: WeaponType;
+    type: WeaponType;
+
+    damageTrack: DamageTrack<DamageType.Matrix>;
 }
 
 // Weapon Properties
@@ -23,6 +29,7 @@ export interface WeaponRanges {
     medium: number;
     long: number;
     extreme: number;
+    attribute: AttributeName;
 }
 
 // Alias encase we change later

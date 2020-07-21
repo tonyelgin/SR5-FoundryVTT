@@ -1,12 +1,12 @@
-import { BaseItem, BaseItemDataContainer } from '../BaseItem';
+import { IItem, IBaseItemDataContainer } from '../IItem';
 import { BaseActionData } from './BaseActionData';
 
-export interface BaseAction extends BaseItem {
+export interface BaseAction extends IItem {
     type: 'action';
     data: BaseActionDataContainer;
 }
 
-export interface BaseActionDataContainer extends BaseItemDataContainer {
+export interface BaseActionDataContainer extends IBaseItemDataContainer {
     action: BaseActionData;
 }
 

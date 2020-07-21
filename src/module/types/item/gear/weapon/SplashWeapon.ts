@@ -6,7 +6,7 @@ export interface SplashWeapon extends BaseWeapon {
 }
 
 export interface SplashWeaponDataContainer extends BaseWeaponDataContainer {
-    weaponType: WeaponType.Splash;
-    blast_radius: number;
-    falloff_per_meter: number;
+    type: WeaponType.Splash;
+    blastRadius: number;
+    blastDropoff: number;
 }

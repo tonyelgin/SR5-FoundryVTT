@@ -1,14 +1,14 @@
 import { AttributeName, PhysicalAttributeName } from '../common/Attribute';
-import { BaseItem, BaseItemDataContainer } from './BaseItem';
+import { IItem, IBaseItemDataContainer } from './IItem';
 
 /**
  * A meta-type potentially modifies an attribute's values.
  */
-export type Metatype = BaseItem & {
+export type Metatype = IItem & {
     data: MetatypeDataContainer;
 };
 
-export interface MetatypeDataContainer extends BaseItemDataContainer {
+export interface MetatypeDataContainer extends IBaseItemDataContainer {
     // TODO: Ids from compendium or names to search for?
     qualities: never;
     modifiers: {

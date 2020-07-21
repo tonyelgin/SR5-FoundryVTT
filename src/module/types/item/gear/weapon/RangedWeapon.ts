@@ -3,7 +3,7 @@ import { BaseWeapon, BaseWeaponDataContainer, WeaponRecoil, WeaponModes, WeaponR
 export interface RangedWeapon extends BaseWeapon {}
 
 export interface RangedWeaponDataContainer extends BaseWeaponDataContainer {
-    weaponType: WeaponType.Ranged;
+    type: WeaponType.Ranged;
     recoilCompensation: WeaponRecoil;
     fireModes: WeaponModes;
     ranges: WeaponRanges;

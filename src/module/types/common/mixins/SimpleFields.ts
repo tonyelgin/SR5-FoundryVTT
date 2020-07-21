@@ -1,38 +1,48 @@
 // SINGULAR FIELDS THAT ARE TOO SMALL FOR THEIR OWN FILE
 
-export interface HasId {
-    _id: string;
+export interface IId {
+    id: string;
 }
 
-export interface HasSource {
+export interface ISource {
     source: string;
 }
 
-export interface HasDescription {
+/**
+ * TypeGuard: Does the object contain a description?
+ * @param o
+ */
+export function HasDescription(o: any): o is IDescription {
+    return o.hasOwnProperty('description');
+}
+export interface IDescription {
     description: string;
     // TODO: What is 'chat'?
 }
 
-export interface HasAvailability {
+/**
+ * TypeGuard: Does the object contain an availability?
+ * @param o
+ */
+export function HasAvailability(o: any): o is IAvailability {
+    return o.hasOwnProperty('availability');
+}
+export interface IAvailability {
     availability: string;
 }
 
-export interface HasRating {
+export interface IConcealability {
+    concealability: number;
+}
+
+export interface IRating {
     rating: number;
 }
 
-export interface CanSort {
+export interface ISort {
     sort: number;
 }
 
-export interface HasImage {
+export interface IImage {
     img: string;
-}
-
-export interface HasCost {
-    cost: number;
-}
-
-export interface HasQuantity {
-    quantity: number;
 }

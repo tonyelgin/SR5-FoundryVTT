@@ -8,7 +8,7 @@ export interface ThrownWeapon extends BaseWeapon {
 }
 
 export interface ThrownWeaponDataContainer extends BaseWeaponDataContainer {
-    weaponType: WeaponType.Splash;
+    type: WeaponType.Splash;
 
     weaponRanges: WeaponRanges;
     weaponRangesFactor: ScaleWithAttribute<AttributeName>;

@@ -1,4 +1,5 @@
 import { AttributeName } from './Attribute';
+import { NoneType } from './Constants';
 
 export enum DamageType {
     Physical = 'physical',
@@ -16,7 +17,7 @@ export enum DamageElement {
     // TODO: There are more elements I am sure
 }
 
-export interface ScaleWithAttribute<TValidKeys extends AttributeName> {
+export interface ScaleWithAttribute<TValidKeys extends AttributeName | NoneType> {
     baseValue: number;
     scaleWith: TValidKeys;
     scaleFactor: number;

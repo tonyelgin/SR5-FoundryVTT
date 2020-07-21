@@ -1,5 +1,5 @@
 import { AttributeName } from './common/Attribute';
-import { HasRating } from './common/mixins/SimpleFields';
+import { IRating } from './common/mixins/SimpleFields';
 
 export enum CombatSkillName {
     Archery = 'archery',
@@ -135,7 +135,7 @@ export enum SkillGroupName {
     Tasking = 'tasking',
 }
 
-export interface Skill extends HasRating {
+export interface Skill extends IRating {
     id: string;
     name: string;
 
