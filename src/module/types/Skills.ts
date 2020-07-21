@@ -1,5 +1,5 @@
 import { AttributeName } from './common/Attribute';
-import { IRating } from './common/mixins/SimpleFields';
+import { IRating } from './common/mixins/DataFields';
 
 export enum CombatSkillName {
     Archery = 'archery',
