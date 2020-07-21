@@ -1,10 +1,10 @@
-import { IItem, IBaseItemDataContainer } from '../../IItem';
+import { IBaseItem, IBaseItemDataContainer } from '../../IBaseItem';
 import { AttributeName } from '../../../common/Attribute';
 import { IAvailability, IConcealability } from '../../../common/mixins/DataFields';
 import { DamageTrack } from '../../../common/mixins/DamageTrack';
 import { DamageType } from '../../../common/Damage';
 
-export interface BaseWeapon extends IItem {
+export interface BaseWeapon extends IBaseItem {
     type: 'weapon';
     data: BaseWeaponDataContainer;
 }

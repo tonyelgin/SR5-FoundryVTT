@@ -1,4 +1,4 @@
-import { IItem } from './item/IItem';
+import { IBaseItem } from './item/IBaseItem';
 
 export interface Modifier {
     dataPath: string;

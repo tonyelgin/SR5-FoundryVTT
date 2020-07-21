@@ -1,10 +1,10 @@
 import { AttributeName, PhysicalAttributeName } from '../common/Attribute';
-import { IItem, IBaseItemDataContainer } from './IItem';
+import { IBaseItem, IBaseItemDataContainer } from './IBaseItem';
 
 /**
  * A meta-type potentially modifies an attribute's values.
  */
-export type Metatype = IItem & {
+export type Metatype = IBaseItem & {
     data: MetatypeDataContainer;
 };
 

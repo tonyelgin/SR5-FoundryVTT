@@ -1,6 +1,6 @@
 import { ISort, IDescription, IId, IImage, ISource } from '../common/mixins/DataFields';
 
-export interface IItem extends BaseEntityData, IId, IImage, ISort {
+export interface IBaseItem extends BaseEntityData, IId, IImage, ISort {
     data: IBaseItemDataContainer;
 }
 

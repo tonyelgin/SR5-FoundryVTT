@@ -1,7 +1,7 @@
-import { IItem, IBaseItemDataContainer } from '../IItem';
+import { IBaseItem, IBaseItemDataContainer } from '../IBaseItem';
 import { BaseActionData } from './BaseActionData';
 
-export interface BaseAction extends IItem {
+export interface BaseAction extends IBaseItem {
     type: 'action';
     data: BaseActionDataContainer;
 }

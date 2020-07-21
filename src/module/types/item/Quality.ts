@@ -1,7 +1,7 @@
-import { IItem } from './IItem';
+import { IBaseItem } from './IBaseItem';
 import { BaseActionDataContainer } from './action/BaseAction';
 
-export interface Quality extends IItem {
+export interface Quality extends IBaseItem {
     data: QualityDataContainer;
 }
 

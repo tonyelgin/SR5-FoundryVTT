@@ -1,8 +1,8 @@
-import { IBaseItemDataContainer, IItem } from '../IItem';
+import { IBaseItemDataContainer, IBaseItem } from '../IBaseItem';
 import { DamageElement, DamageType } from '../../common/Damage';
 import { NoneType } from '../../common/Constants';
 
-export interface IAmmunition extends IItem {
+export interface IAmmunition extends IBaseItem {
     data: IAmmunitionDataContainer;
 }
 
