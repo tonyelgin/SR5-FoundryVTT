@@ -16,7 +16,7 @@ export default class SR5ActorProxy extends Actor {
     constructor(data: ActorData, options?: any) {
         super(data, options);
 
-        switch (this.data.type) {
+        switch (data.type as ActorType) {
             case ActorType.Runner:
                 this._implementation = new SR5Runner(this, data, options);
                 break;
@@ -43,7 +43,6 @@ export default class SR5ActorProxy extends Actor {
     //  after the class has been constructed.
     /** @override */
     prepareData(): void {
-        console.warn(`PROXY prepareData`);
         if (this._implementation !== undefined) {
             this._implementation.prepareData();
         }
@@ -52,7 +51,6 @@ export default class SR5ActorProxy extends Actor {
     }
     /** @override */
     prepareEmbeddedEntities(): void {
-        console.warn(`PROXY prepareEmbeddedEntities`);
         if (this._implementation !== undefined) {
             this._implementation.prepareEmbeddedEntities();
         }

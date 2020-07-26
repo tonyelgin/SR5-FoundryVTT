@@ -1,17 +1,17 @@
-import SR5BaseActor, { SR5BaseActorData, SR5BaseActorDataContainer } from './SR5BaseActor';
+import SR5BaseActor, { ISR5BaseActorData, ISR5BaseActorDataContainer } from './SR5BaseActor';
 
-export interface SR5GruntDataContainer extends SR5BaseActorDataContainer {
-    data: SR5GruntData;
+export interface ISR5GruntDataContainer extends ISR5BaseActorDataContainer {
+    data: ISR5GruntData;
 }
-export interface SR5GruntData extends SR5BaseActorData {
-    professionalRating: number;
-}
+export interface ISR5GruntData extends ISR5BaseActorData {}
 
 export default class SR5Grunt extends SR5BaseActor {
     // <editor-fold desc="Static Properties"></editor-fold>
     // <editor-fold desc="Static Methods"></editor-fold>
     // <editor-fold desc="Properties">
-    data: SR5GruntDataContainer;
+
+    data: ISR5GruntDataContainer;
+
     // </editor-fold>
     // <editor-fold desc="Constructor & Initialization"></editor-fold>
     // <editor-fold desc="Getters & Setters"></editor-fold>
@@ -19,17 +19,9 @@ export default class SR5Grunt extends SR5BaseActor {
 
     prepareData() {
         super.prepareData();
-        console.warn(`SR5Grunt prepareData`);
-
-        this.data.data.professionalRating = this.name.length;
-
-        console.warn(`<end of call chain>`);
     }
 
     prepareEmbeddedEntities() {
         super.prepareEmbeddedEntities();
-        console.warn(`SR5Grunt prepareEmbeddedEntities`);
-
-        console.warn(`<end of call chain>`);
     }
 }

@@ -5,6 +5,11 @@ exports.SYSTEM_NAME = void 0;
 exports.SYSTEM_NAME = 'shadowrun5e';
 },{}],2:[function(require,module,exports){
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const Setup_1 = require("./Setup");
+Setup_1.default.run();
+},{"./Setup":3}],3:[function(require,module,exports){
+"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -16,9 +21,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const SR5ActorProxy_1 = require("./actor/SR5ActorProxy");
-const SR5BaseItem_1 = require("./item/SR5BaseItem");
 const Constants_1 = require("./Constants");
-const SR5BaseActorSheet_1 = require("./actor/SR5BaseActorSheet");
+const SR5BaseActorSheet_1 = require("./actor/sheet/SR5BaseActorSheet");
+const SR5ItemProxy_1 = require("./item/SR5ItemProxy");
+const SR5BaseItemSheet_1 = require("./item/sheet/SR5BaseItemSheet");
 class Setup {
     static run() {
         Hooks.once('init', this.init);
@@ -32,9 +38,9 @@ class Setup {
         Actors.unregisterSheet('core', ActorSheet);
         Actors.registerSheet(Constants_1.SYSTEM_NAME, SR5BaseActorSheet_1.default, { makeDefault: true });
         // Register item + sheets
-        CONFIG.Item.entityClass = SR5BaseItem_1.default;
+        CONFIG.Item.entityClass = SR5ItemProxy_1.default;
         Items.unregisterSheet('core', ItemSheet);
-        Items.registerSheet(Constants_1.SYSTEM_NAME, SR5BaseItem_1.default, { makeDefault: true });
+        Items.registerSheet(Constants_1.SYSTEM_NAME, SR5BaseItemSheet_1.default, { makeDefault: true });
         // Above code will run synchronously with Foundry
         // Async tasks can be done by returning a new Promise
         return Promise.resolve();
@@ -47,7 +53,7 @@ class Setup {
     }
 }
 exports.default = Setup;
-},{"./Constants":1,"./actor/SR5ActorProxy":3,"./actor/SR5BaseActorSheet":5,"./item/SR5BaseItem":9}],3:[function(require,module,exports){
+},{"./Constants":1,"./actor/SR5ActorProxy":4,"./actor/sheet/SR5BaseActorSheet":8,"./item/SR5ItemProxy":13,"./item/sheet/SR5BaseItemSheet":14}],4:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const SR5Runner_1 = require("./SR5Runner");
@@ -58,7 +64,7 @@ class SR5ActorProxy extends Actor {
     // <editor-fold desc="Constructor & Initialization">
     constructor(data, options) {
         super(data, options);
-        switch (this.data.type) {
+        switch (data.type) {
             case ActorType_1.ActorType.Runner:
                 this._implementation = new SR5Runner_1.default(this, data, options);
                 break;
@@ -84,7 +90,6 @@ class SR5ActorProxy extends Actor {
     //  after the class has been constructed.
     /** @override */
     prepareData() {
-        console.warn(`PROXY prepareData`);
         if (this._implementation !== undefined) {
             this._implementation.prepareData();
         }
@@ -92,7 +97,6 @@ class SR5ActorProxy extends Actor {
     }
     /** @override */
     prepareEmbeddedEntities() {
-        console.warn(`PROXY prepareEmbeddedEntities`);
         if (this._implementation !== undefined) {
             this._implementation.prepareEmbeddedEntities();
         }
@@ -173,7 +177,7 @@ class SR5ActorProxy extends Actor {
     }
 }
 exports.default = SR5ActorProxy;
-},{"./SR5Grunt":6,"./SR5Runner":7,"./types/ActorType":8}],4:[function(require,module,exports){
+},{"./SR5Grunt":6,"./SR5Runner":7,"./types/ActorType":9}],5:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 class SR5BaseActor extends Actor {
@@ -183,20 +187,40 @@ class SR5BaseActor extends Actor {
         super(data, options);
         this.data = data;
         this.proxy = proxy;
-        console.warn(`Created a new ${this.constructor.name}`);
-        console.warn(this);
     }
     prepareData() {
         super.prepareData();
-        console.warn(`SR5BaseActor prepareData`);
     }
     prepareEmbeddedEntities() {
         super.prepareEmbeddedEntities();
-        console.warn(`SR5BaseActor prepareEmbeddedEntities`);
     }
 }
 exports.default = SR5BaseActor;
-},{}],5:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const SR5BaseActor_1 = require("./SR5BaseActor");
+class SR5Grunt extends SR5BaseActor_1.default {
+    // </editor-fold>
+    // <editor-fold desc="Constructor & Initialization"></editor-fold>
+    // <editor-fold desc="Getters & Setters"></editor-fold>
+    // <editor-fold desc="Instance Methods"></editor-fold>
+    prepareData() {
+        super.prepareData();
+    }
+    prepareEmbeddedEntities() {
+        super.prepareEmbeddedEntities();
+    }
+}
+exports.default = SR5Grunt;
+},{"./SR5BaseActor":5}],7:[function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const SR5BaseActor_1 = require("./SR5BaseActor");
+class SR5Runner extends SR5BaseActor_1.default {
+}
+exports.default = SR5Runner;
+},{"./SR5BaseActor":5}],8:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 class SR5BaseActorSheet extends ActorSheet {
@@ -209,36 +233,7 @@ class SR5BaseActorSheet extends ActorSheet {
     }
 }
 exports.default = SR5BaseActorSheet;
-},{}],6:[function(require,module,exports){
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const SR5BaseActor_1 = require("./SR5BaseActor");
-class SR5Grunt extends SR5BaseActor_1.default {
-    // </editor-fold>
-    // <editor-fold desc="Constructor & Initialization"></editor-fold>
-    // <editor-fold desc="Getters & Setters"></editor-fold>
-    // <editor-fold desc="Instance Methods"></editor-fold>
-    prepareData() {
-        super.prepareData();
-        console.warn(`SR5Grunt prepareData`);
-        this.data.data.professionalRating = this.name.length;
-        console.warn(`<end of call chain>`);
-    }
-    prepareEmbeddedEntities() {
-        super.prepareEmbeddedEntities();
-        console.warn(`SR5Grunt prepareEmbeddedEntities`);
-        console.warn(`<end of call chain>`);
-    }
-}
-exports.default = SR5Grunt;
-},{"./SR5BaseActor":4}],7:[function(require,module,exports){
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const SR5BaseActor_1 = require("./SR5BaseActor");
-class SR5Runner extends SR5BaseActor_1.default {
-}
-exports.default = SR5Runner;
-},{"./SR5BaseActor":4}],8:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ActorType = void 0;
@@ -252,17 +247,85 @@ var ActorType;
     ActorType["Host"] = "Host";
     ActorType["IC"] = "IC";
 })(ActorType = exports.ActorType || (exports.ActorType = {}));
-},{}],9:[function(require,module,exports){
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-class SR5BaseItem extends Item {
-}
-exports.default = SR5BaseItem;
 },{}],10:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const Setup_1 = require("./Setup");
-Setup_1.default.run();
-},{"./Setup":2}]},{},[10])
+const SR5BaseItem_1 = require("./SR5BaseItem");
+class SR5Armor extends SR5BaseItem_1.default {
+}
+exports.default = SR5Armor;
+},{"./SR5BaseItem":11}],11:[function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+class SR5BaseItem extends Item {
+    // </editor-fold>
+    // <editor-fold desc="Constructor & Initialization">
+    constructor(data, options) {
+        super(data, options);
+        console.warn(`Created a new ${this.constructor.name}`);
+    }
+}
+exports.default = SR5BaseItem;
+},{}],12:[function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const SR5BaseItem_1 = require("./SR5BaseItem");
+class SR5BaseWeapon extends SR5BaseItem_1.default {
+}
+exports.default = SR5BaseWeapon;
+},{"./SR5BaseItem":11}],13:[function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const ItemType_1 = require("./types/ItemType");
+const SR5BaseWeapon_1 = require("./SR5BaseWeapon");
+const SR5Armor_1 = require("./SR5Armor");
+class SR5ItemProxy extends Item {
+    // </editor-fold>
+    // <editor-fold desc="Constructor & Initialization">
+    constructor(data, options) {
+        super(data, options);
+        switch (data.type) {
+            case ItemType_1.ItemType.Weapon:
+                this._implementation = new SR5BaseWeapon_1.default(data, options);
+                break;
+            case ItemType_1.ItemType.Armor:
+                this._implementation = new SR5Armor_1.default(data, options);
+                break;
+            case ItemType_1.ItemType.Device:
+                break;
+            case ItemType_1.ItemType.Program:
+                break;
+            case ItemType_1.ItemType.Ammunition:
+                break;
+        }
+    }
+    // </editor-fold>
+    // <editor-fold desc="Getters & Setters"></editor-fold>
+    // <editor-fold desc="Instance Methods">
+    /** @override */
+    update(data, options) {
+        return this._implementation.update(data, options);
+    }
+}
+exports.default = SR5ItemProxy;
+},{"./SR5Armor":10,"./SR5BaseWeapon":12,"./types/ItemType":15}],14:[function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+class SR5BaseItemSheet extends ItemSheet {
+}
+exports.default = SR5BaseItemSheet;
+},{}],15:[function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.ItemType = void 0;
+var ItemType;
+(function (ItemType) {
+    ItemType["Weapon"] = "Weapon";
+    ItemType["Armor"] = "Armor";
+    ItemType["Device"] = "Device";
+    ItemType["Program"] = "Program";
+    ItemType["Ammunition"] = "Ammunition";
+})(ItemType = exports.ItemType || (exports.ItemType = {}));
+},{}]},{},[2])
 
 //# sourceMappingURL=bundle.js.map

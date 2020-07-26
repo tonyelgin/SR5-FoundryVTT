@@ -1,12 +1,66 @@
 {
     "Actor": {
-        "types": ["Runner", "Grunt", "Spirit", "Sprite", "Vehicle", "Host", "IC"]
+        "types": ["Runner", "Grunt", "Contact", "Spirit", "Sprite", "Vehicle", "Critter", "Host", "IC"]
     },
     "Runner": {},
     "Grunt": {},
+    "Contact": {},
     "Spirit": {},
     "Sprite": {},
     "Vehicle": {},
+    "Critter": {},
     "Host": {},
-    "IC": {}
+    "IC": {},
+
+    "Item": {
+        "types": [
+            "Action",
+
+            "MeleeWeapon",
+            "RangedWeapon",
+            "ThrownWeapon",
+            "ExplosiveWeapon",
+
+            "Ammunition",
+            "Consumable",
+
+            "Armor",
+
+            "Spell",
+            "ComplexForm",
+
+            "Initiation",
+            "Submersion",
+
+            "Power",
+
+            "Commlink",
+            "Cyberdeck",
+            "RCC",
+
+            "Ware",
+
+            "Program",
+            "Autosoft",
+
+            "Drug",
+
+            "Equipment",
+
+            "Lifestyle",
+            "Credstick",
+            "SIN",
+
+            "Container",
+
+            "Miscellaneous"
+        ]
+    },
+    "Weapon": {},
+    "Armor": {},
+    "Device": {},
+    "Program": {},
+    "Ammunition": {},
+    "Gear": {},
+    "Explosive": {}
 }

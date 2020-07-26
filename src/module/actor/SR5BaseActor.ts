@@ -1,16 +1,17 @@
 import SR5ActorProxy from './SR5ActorProxy';
+import { ActorType } from './types/ActorType';
 
-export interface SR5BaseActorDataContainer extends ActorData {
-    data: SR5BaseActorData;
+export interface ISR5BaseActorDataContainer extends ActorData {
+    data: ISR5BaseActorData;
 }
-export interface SR5BaseActorData {}
+export interface ISR5BaseActorData {}
 
 export default class SR5BaseActor extends Actor {
     // <editor-fold desc="Static Properties"></editor-fold>
     // <editor-fold desc="Static Methods"></editor-fold>
     // <editor-fold desc="Properties">
 
-    public data: SR5BaseActorDataContainer;
+    public data: ISR5BaseActorDataContainer;
     public proxy: SR5ActorProxy;
 
     // </editor-fold>
@@ -21,19 +22,14 @@ export default class SR5BaseActor extends Actor {
 
         this.data = data;
         this.proxy = proxy;
-
-        console.warn(`Created a new ${this.constructor.name}`);
-        console.warn(this);
     }
 
     prepareData() {
         super.prepareData();
-        console.warn(`SR5BaseActor prepareData`);
     }
 
     prepareEmbeddedEntities() {
         super.prepareEmbeddedEntities();
-        console.warn(`SR5BaseActor prepareEmbeddedEntities`);
     }
 
     // </editor-fold>
