@@ -28,7 +28,7 @@ const destFolder = path.resolve(process.cwd(), distName);
 const jsBundle = 'bundle.js';
 
 const baseArgs = {
-    entries: ['./src/module/main.ts'],
+    entries: ['./src/module/Main.ts'],
     sourceType: 'module',
     debug: true,
 };
