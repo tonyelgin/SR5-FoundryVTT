@@ -28,18 +28,12 @@ export default class SR5BaseActor extends Actor {
 
     prepareData() {
         super.prepareData();
-
-        console.warn(this.data);
-
-        console.warn(`${this.constructor.name} prepareData`);
+        console.warn(`SR5BaseActor prepareData`);
     }
 
     prepareEmbeddedEntities() {
         super.prepareEmbeddedEntities();
-
-        console.warn(this.data);
-
-        console.warn(`${this.constructor.name} prepareEmbeddedEntities`);
+        console.warn(`SR5BaseActor prepareEmbeddedEntities`);
     }
 
     // </editor-fold>

@@ -8,7 +8,7 @@ export default class SR5ActorProxy extends Actor {
     // <editor-fold desc="Static Methods"></editor-fold>
     // <editor-fold desc="Properties">
 
-    private _implementation: SR5BaseActor;
+    private readonly _implementation: SR5BaseActor;
 
     // </editor-fold>
     // <editor-fold desc="Constructor & Initialization">
@@ -36,20 +36,36 @@ export default class SR5ActorProxy extends Actor {
         }
     }
 
+    // TODO: These can't be proxy'd because they're called in the constructor
+    //  of Actor or a parent class. However, that does mean our 'real' actor
+    //  also has it's data prepared in the constructor. Functionally, we might
+    //  (maybe even *should*) be OK simply only forwarding preparation requests
+    //  after the class has been constructed.
+    /** @override */
+    prepareData(): void {
+        console.warn(`PROXY prepareData`);
+        if (this._implementation !== undefined) {
+            this._implementation.prepareData();
+        }
+
+        return super.prepareData();
+    }
+    /** @override */
+    prepareEmbeddedEntities(): void {
+        console.warn(`PROXY prepareEmbeddedEntities`);
+        if (this._implementation !== undefined) {
+            this._implementation.prepareEmbeddedEntities();
+        }
+
+        return super.prepareEmbeddedEntities();
+    }
+
+    // TODO: These should be OK to proxy straight up.
+
     /** @override */
     get itemTypes(): { [key: string]: Item[] } {
         return this._implementation.itemTypes;
     }
-
-    // /** @override */
-    // prepareData(): void {
-    //     return this._implementation.prepareData();
-    // }
-    //
-    // /** @override */
-    // prepareEmbeddedEntities(): void {
-    //     return this._implementation.prepareEmbeddedEntities();
-    // }
 
     /** @override */
     get img(): string {

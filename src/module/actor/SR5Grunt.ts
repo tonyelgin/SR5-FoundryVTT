@@ -19,7 +19,17 @@ export default class SR5Grunt extends SR5BaseActor {
 
     prepareData() {
         super.prepareData();
+        console.warn(`SR5Grunt prepareData`);
 
         this.data.data.professionalRating = this.name.length;
+
+        console.warn(`<end of call chain>`);
+    }
+
+    prepareEmbeddedEntities() {
+        super.prepareEmbeddedEntities();
+        console.warn(`SR5Grunt prepareEmbeddedEntities`);
+
+        console.warn(`<end of call chain>`);
     }
 }

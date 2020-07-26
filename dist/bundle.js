@@ -77,19 +77,32 @@ class SR5ActorProxy extends Actor {
                 break;
         }
     }
+    // TODO: These can't be proxy'd because they're called in the constructor
+    //  of Actor or a parent class. However, that does mean our 'real' actor
+    //  also has it's data prepared in the constructor. Functionally, we might
+    //  (maybe even *should*) be OK simply only forwarding preparation requests
+    //  after the class has been constructed.
+    /** @override */
+    prepareData() {
+        console.warn(`PROXY prepareData`);
+        if (this._implementation !== undefined) {
+            this._implementation.prepareData();
+        }
+        return super.prepareData();
+    }
+    /** @override */
+    prepareEmbeddedEntities() {
+        console.warn(`PROXY prepareEmbeddedEntities`);
+        if (this._implementation !== undefined) {
+            this._implementation.prepareEmbeddedEntities();
+        }
+        return super.prepareEmbeddedEntities();
+    }
+    // TODO: These should be OK to proxy straight up.
     /** @override */
     get itemTypes() {
         return this._implementation.itemTypes;
     }
-    // /** @override */
-    // prepareData(): void {
-    //     return this._implementation.prepareData();
-    // }
-    //
-    // /** @override */
-    // prepareEmbeddedEntities(): void {
-    //     return this._implementation.prepareEmbeddedEntities();
-    // }
     /** @override */
     get img() {
         return this._implementation.img;
@@ -175,13 +188,11 @@ class SR5BaseActor extends Actor {
     }
     prepareData() {
         super.prepareData();
-        console.warn(this.data);
-        console.warn(`${this.constructor.name} prepareData`);
+        console.warn(`SR5BaseActor prepareData`);
     }
     prepareEmbeddedEntities() {
         super.prepareEmbeddedEntities();
-        console.warn(this.data);
-        console.warn(`${this.constructor.name} prepareEmbeddedEntities`);
+        console.warn(`SR5BaseActor prepareEmbeddedEntities`);
     }
 }
 exports.default = SR5BaseActor;
@@ -209,7 +220,14 @@ class SR5Grunt extends SR5BaseActor_1.default {
     // <editor-fold desc="Instance Methods"></editor-fold>
     prepareData() {
         super.prepareData();
+        console.warn(`SR5Grunt prepareData`);
         this.data.data.professionalRating = this.name.length;
+        console.warn(`<end of call chain>`);
+    }
+    prepareEmbeddedEntities() {
+        super.prepareEmbeddedEntities();
+        console.warn(`SR5Grunt prepareEmbeddedEntities`);
+        console.warn(`<end of call chain>`);
     }
 }
 exports.default = SR5Grunt;
