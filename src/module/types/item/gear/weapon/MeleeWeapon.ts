@@ -1,7 +1,7 @@
 import { BaseWeapon, BaseWeaponDataContainer, WeaponType } from './BaseWeapon';
-import { PhysicalAttributeName } from '../../../common/Attribute';
+import { PhysicalAttributeName } from '../../../../common/Attribute';
 import { ScaleWithAttribute } from '../../../common/Damage';
-import { NoneType } from '../../../common/Constants';
+import { NoneType } from '../../../../common/Constants';
 
 export interface MeleeWeapon extends BaseWeapon {
     data: MeleeWeaponDataContainer;

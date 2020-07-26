@@ -1,5 +1,4 @@
 import SR5ActorProxy from './actor/SR5ActorProxy';
-import SR5BaseItem from './item/SR5BaseItem';
 import { SYSTEM_NAME } from './Constants';
 import SR5BaseActorSheet from './actor/sheet/SR5BaseActorSheet';
 import SR5ItemProxy from './item/SR5ItemProxy';

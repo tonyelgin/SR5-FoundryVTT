@@ -1,5 +1,5 @@
 import { BaseWeapon, BaseWeaponDataContainer, WeaponRanges, WeaponType } from './BaseWeapon';
-import { AttributeName } from '../../../common/Attribute';
+import { AttributeName } from '../../../../common/Attribute';
 import { RangedWeapon, RangedWeaponDataContainer } from './RangedWeapon';
 import { ScaleWithAttribute } from '../../../common/Damage';
 

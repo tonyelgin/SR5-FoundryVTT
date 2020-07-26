@@ -1,5 +1,5 @@
 import { IBaseItem, IBaseItemDataContainer } from '../../IBaseItem';
-import { AttributeName } from '../../../common/Attribute';
+import { AttributeName } from '../../../../common/Attribute';
 import { IAvailability, IConcealability } from '../../../common/mixins/DataFields';
 import { DamageTrack } from '../../../common/mixins/DamageTrack';
 import { DamageType } from '../../../common/Damage';

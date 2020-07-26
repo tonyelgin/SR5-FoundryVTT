@@ -1,5 +1,5 @@
-import { AttributeName } from './Attribute';
-import { NoneType } from './Constants';
+import { AttributeName } from '../../common/Attribute';
+import { NoneType } from '../../common/Constants';
 
 export enum DamageType {
     Physical = 'physical',

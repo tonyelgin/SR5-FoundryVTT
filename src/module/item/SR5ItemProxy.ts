@@ -1,6 +1,6 @@
 import SR5BaseItem from './SR5BaseItem';
 import { ItemType } from './types/ItemType';
-import SR5BaseWeapon from './SR5BaseWeapon';
+import SR5Weapon from './SR5Weapon';
 import SR5Armor from './SR5Armor';
 
 export default class SR5ItemProxy extends Item {
@@ -17,7 +17,7 @@ export default class SR5ItemProxy extends Item {
 
         switch (data.type as ItemType) {
             case ItemType.Weapon:
-                this._implementation = new SR5BaseWeapon(data, options);
+                this._implementation = new SR5Weapon(data, options);
                 break;
             case ItemType.Armor:
                 this._implementation = new SR5Armor(data, options);

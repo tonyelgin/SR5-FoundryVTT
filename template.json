@@ -1,25 +1,29 @@
 {
     "Actor": {
-        "types": ["Runner", "Grunt", "Contact", "Spirit", "Sprite", "Vehicle", "Critter", "Host", "IC"]
+        "types": ["Runner", "Grunt", "Contact", "Spirit", "Sprite", "Vehicle", "Critter", "Host", "IC"],
+        "templates": {
+            "attributes": {
+                "attributes": {}
+            }
+        },
+        "Runner": {
+            "templates": ["attributes"]
+        },
+        "Grunt": {},
+        "Contact": {},
+        "Spirit": {},
+        "Sprite": {},
+        "Vehicle": {},
+        "Critter": {},
+        "Host": {},
+        "IC": {}
     },
-    "Runner": {},
-    "Grunt": {},
-    "Contact": {},
-    "Spirit": {},
-    "Sprite": {},
-    "Vehicle": {},
-    "Critter": {},
-    "Host": {},
-    "IC": {},
 
     "Item": {
         "types": [
             "Action",
 
-            "MeleeWeapon",
-            "RangedWeapon",
-            "ThrownWeapon",
-            "ExplosiveWeapon",
+            "Weapon",
 
             "Ammunition",
             "Consumable",
@@ -56,7 +60,13 @@
             "Miscellaneous"
         ]
     },
-    "Weapon": {},
+    "Action": {},
+
+    "MeleeWeapon": {},
+    "RangedWeapon": {},
+    "ThrownWeapon": {},
+    "ExplosiveWeapon": {},
+
     "Armor": {},
     "Device": {},
     "Program": {},
