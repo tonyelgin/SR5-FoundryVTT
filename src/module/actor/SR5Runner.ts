@@ -38,18 +38,6 @@ export default class SR5Runner extends SR5BaseActor {
                 name: AttributeName.Charisma,
                 value: 1,
             },
-            depth: {
-                name: AttributeName.Depth,
-                value: 1,
-            },
-            edge: {
-                name: AttributeName.Edge,
-                value: 1,
-            },
-            essence: {
-                name: AttributeName.Essence,
-                value: 1,
-            },
             intuition: {
                 name: AttributeName.Intuition,
                 value: 1,
@@ -58,16 +46,8 @@ export default class SR5Runner extends SR5BaseActor {
                 name: AttributeName.Logic,
                 value: 1,
             },
-            magic: {
-                name: AttributeName.Magic,
-                value: 1,
-            },
             reaction: {
                 name: AttributeName.Reaction,
-                value: 1,
-            },
-            resonance: {
-                name: AttributeName.Resonance,
                 value: 1,
             },
             strength: {
@@ -76,6 +56,30 @@ export default class SR5Runner extends SR5BaseActor {
             },
             willpower: {
                 name: AttributeName.Willpower,
+                value: 1,
+            },
+
+            edge: {
+                name: AttributeName.Edge,
+                value: 1,
+            },
+
+            magic: {
+                name: AttributeName.Magic,
+                value: 1,
+            },
+            resonance: {
+                name: AttributeName.Resonance,
+                value: 1,
+            },
+
+            essence: {
+                name: AttributeName.Essence,
+                value: 6,
+            },
+
+            depth: {
+                name: AttributeName.Depth,
                 value: 1,
             },
         };

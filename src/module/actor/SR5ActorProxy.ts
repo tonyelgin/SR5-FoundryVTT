@@ -9,17 +9,15 @@ export default class SR5ActorProxy extends Actor {
     // <editor-fold desc="Static Methods">
 
     static async create(data: IPreCreateActorData, options: IPreCreateActorOptions): Promise<Entity> {
-        // NOTE: This should be only 'leaf node' classes. The 'onPreCreate' methods
-        //  should then chain the call upward with super calls if needed.
+        // This should be only 'leaf node' classes. The 'getDefaultValues' methods
+        //  should then chain the call upward with super calls if needed and merge
+        //  results to create a finalized default value set.
         const CLASSES = [SR5Runner, SR5Grunt];
         const CLASS = CLASSES.find((CLASS) => CLASS.TYPE === data.type);
 
         if (CLASS) {
             // Default values are over-written with provided ones.
             const defaultValues = CLASS.getDefaultValues();
-            console.warn(`merged defaultValues`);
-            console.warn(defaultValues);
-
             data = {
                 name: data.name,
                 folder: data.folder,

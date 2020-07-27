@@ -90,15 +90,14 @@ class SR5ActorProxy extends Actor {
             create: { get: () => super.create }
         });
         return __awaiter(this, void 0, void 0, function* () {
-            // NOTE: This should be only 'leaf node' classes. The 'onPreCreate' methods
-            //  should then chain the call upward with super calls if needed.
+            // This should be only 'leaf node' classes. The 'getDefaultValues' methods
+            //  should then chain the call upward with super calls if needed and merge
+            //  results to create a finalized default value set.
             const CLASSES = [SR5Runner_1.default, SR5Grunt_1.default];
             const CLASS = CLASSES.find((CLASS) => CLASS.TYPE === data.type);
             if (CLASS) {
                 // Default values are over-written with provided ones.
                 const defaultValues = CLASS.getDefaultValues();
-                console.warn(`merged defaultValues`);
-                console.warn(defaultValues);
                 data = {
                     name: data.name,
                     folder: data.folder,
@@ -216,18 +215,6 @@ class SR5Runner extends SR5BaseActor_1.default {
                 name: Attribute_1.AttributeName.Charisma,
                 value: 1,
             },
-            depth: {
-                name: Attribute_1.AttributeName.Depth,
-                value: 1,
-            },
-            edge: {
-                name: Attribute_1.AttributeName.Edge,
-                value: 1,
-            },
-            essence: {
-                name: Attribute_1.AttributeName.Essence,
-                value: 1,
-            },
             intuition: {
                 name: Attribute_1.AttributeName.Intuition,
                 value: 1,
@@ -236,16 +223,8 @@ class SR5Runner extends SR5BaseActor_1.default {
                 name: Attribute_1.AttributeName.Logic,
                 value: 1,
             },
-            magic: {
-                name: Attribute_1.AttributeName.Magic,
-                value: 1,
-            },
             reaction: {
                 name: Attribute_1.AttributeName.Reaction,
-                value: 1,
-            },
-            resonance: {
-                name: Attribute_1.AttributeName.Resonance,
                 value: 1,
             },
             strength: {
@@ -254,6 +233,26 @@ class SR5Runner extends SR5BaseActor_1.default {
             },
             willpower: {
                 name: Attribute_1.AttributeName.Willpower,
+                value: 1,
+            },
+            edge: {
+                name: Attribute_1.AttributeName.Edge,
+                value: 1,
+            },
+            magic: {
+                name: Attribute_1.AttributeName.Magic,
+                value: 1,
+            },
+            resonance: {
+                name: Attribute_1.AttributeName.Resonance,
+                value: 1,
+            },
+            essence: {
+                name: Attribute_1.AttributeName.Essence,
+                value: 6,
+            },
+            depth: {
+                name: Attribute_1.AttributeName.Depth,
                 value: 1,
             },
         };

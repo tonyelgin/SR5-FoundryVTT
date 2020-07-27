@@ -1,5 +1,5 @@
-import { AttributeName } from '../common/Attribute';
-import { IRating } from './common/mixins/DataFields';
+import { AttributeName } from './Attribute';
+import { IRating } from '../types/common/mixins/DataFields';
 
 export enum CombatSkillName {
     Archery = 'archery',
@@ -139,7 +139,7 @@ export interface Skill extends IRating {
     id: string;
     name: string;
 
-    attribute: AttributeName;
+    defaultAttribute: AttributeName;
     specializations: Array<string>;
     canDefault: boolean;
 }
@@ -148,15 +148,14 @@ export interface ActiveSkill<TName extends ActiveSkillName> extends Skill {
     name: TName;
 }
 
-export enum KnowledgeType {
+export enum KnowledgeSkillType {
     Street = 'street',
     Academic = 'academic',
     Interest = 'interest',
     Language = 'language',
 }
 export interface KnowledgeSkill extends Skill {
-    type: KnowledgeType;
-    canDefault: true;
+    type: KnowledgeSkillType;
 }
 
 export type ActiveSkillList = {
