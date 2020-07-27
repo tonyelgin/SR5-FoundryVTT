@@ -3,6 +3,8 @@ import { SYSTEM_NAME } from './Constants';
 import SR5BaseActorSheet from './actor/sheet/SR5BaseActorSheet';
 import SR5ItemProxy from './item/SR5ItemProxy';
 import SR5BaseItemSheet from './item/sheet/SR5BaseItemSheet';
+import SR5RunnerSheet from './actor/sheet/SR5RunnerSheet';
+import SR5GruntSheet from './actor/sheet/SR5GruntSheet';
 
 export default class Setup {
     public static run(): void {
@@ -17,6 +19,8 @@ export default class Setup {
         CONFIG.Actor.entityClass = SR5ActorProxy;
         Actors.unregisterSheet('core', ActorSheet);
         Actors.registerSheet(SYSTEM_NAME, SR5BaseActorSheet, { makeDefault: true });
+        Actors.registerSheet(SYSTEM_NAME, SR5RunnerSheet, { makeDefault: false });
+        Actors.registerSheet(SYSTEM_NAME, SR5GruntSheet, { makeDefault: false });
 
         // Register item + sheets
         CONFIG.Item.entityClass = SR5ItemProxy;

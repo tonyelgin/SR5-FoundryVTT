@@ -1,0 +1,12 @@
+<!-- THIS IS PURELY TO EXAMINE DATA -->
+<div>
+    <h1>Attributes</h1>
+    {{#each data.attributes as |attribute|}}
+    <p>{{attribute.name}} {{attribute.value}}</p>
+    {{/each}}
+
+    <h1>Skills</h1>
+    {{#each data.skills.active as |skill|}}
+    <p>{{skill.name}}: {{skill.value}}, default: {{skill.canDefault}}, specs: {{skill.specializations}}, attribute: {{skill.defaultAttribute}}</p>
+    {{/each}}
+</div>

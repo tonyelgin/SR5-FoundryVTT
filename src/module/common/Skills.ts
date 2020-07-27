@@ -1,5 +1,4 @@
 import { AttributeName } from './Attribute';
-import { IRating } from '../types/common/mixins/DataFields';
 
 export enum CombatSkillName {
     Archery = 'archery',
@@ -92,10 +91,10 @@ export enum VehicleSkillName {
     Gunnery = 'gunnery',
     PilotAerospace = 'pilot_aerospace',
     PilotAircraft = 'pilot_aircraft',
-    PilotExoticVehicle = 'pilot_exotic_vehicle',
+    // TODO: PilotExoticVehicle = 'pilot_exotic_vehicle',
     PilotGroundCraft = 'pilot_ground_craft',
     PilotWalker = 'pilot_walker',
-    PilotWatercraft = 'pilot_watercraft',
+    PilotWaterCraft = 'pilot_water_craft',
 }
 
 export const ActiveSkillName = {
@@ -135,18 +134,16 @@ export enum SkillGroupName {
     Tasking = 'tasking',
 }
 
-export interface Skill extends IRating {
-    id: string;
-    name: string;
+export interface Skill<TName extends string> {
+    name: TName;
+    value: number;
 
     defaultAttribute: AttributeName;
     specializations: Array<string>;
     canDefault: boolean;
 }
 
-export interface ActiveSkill<TName extends ActiveSkillName> extends Skill {
-    name: TName;
-}
+export interface ActiveSkill<TName extends ActiveSkillName> extends Skill<TName> {}
 
 export enum KnowledgeSkillType {
     Street = 'street',
@@ -154,7 +151,7 @@ export enum KnowledgeSkillType {
     Interest = 'interest',
     Language = 'language',
 }
-export interface KnowledgeSkill extends Skill {
+export interface KnowledgeSkill extends Skill<string> {
     type: KnowledgeSkillType;
 }
 

@@ -1,6 +1,7 @@
 import SR5BaseActor, { ISR5BaseActorData, ISR5BaseActorDataContainer } from './SR5BaseActor';
 import SR5ActorProxy from './SR5ActorProxy';
 import { RunnerAttributes } from '../common/Attribute';
+import { ActiveSkillList, KnowledgeSkillList } from '../common/Skills';
 
 // TODO: Assumes Foundry will be enforcing types - as we can see here
 //  it's technically possible to get unexpected results.
@@ -9,6 +10,10 @@ export interface ISR5RunnerDataContainer extends ISR5BaseActorDataContainer {
 }
 export interface ISR5RunnerData extends ISR5BaseActorData {
     attributes: RunnerAttributes;
+    skills: {
+        active: ActiveSkillList;
+        knowledge: KnowledgeSkillList;
+    };
 }
 
 export default class SR5Runner extends SR5BaseActor {

@@ -35,10 +35,6 @@ export interface IConcealability {
     concealability: number;
 }
 
-export interface IRating {
-    rating: number;
-}
-
 export interface ISort {
     sort: number;
 }
