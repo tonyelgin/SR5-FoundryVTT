@@ -14,83 +14,8 @@ export interface ISR5RunnerData extends ISR5BaseActorData {
 }
 
 export default class SR5Runner extends SR5BaseActor {
-    // <editor-fold desc="Static Properties">
-
-    public static get TYPE() {
-        return ActorType.Runner;
-    }
-
-    // </editor-fold>
-    // <editor-fold desc="Static Methods">
-
-    public static getDefaultValues(): ISR5RunnerData {
-        console.warn(`SR5Runner getDefaultValues`);
-        let attributes: RunnerAttributes = {
-            body: {
-                name: AttributeName.Body,
-                value: 1,
-            },
-            agility: {
-                name: AttributeName.Agility,
-                value: 1,
-            },
-            charisma: {
-                name: AttributeName.Charisma,
-                value: 1,
-            },
-            intuition: {
-                name: AttributeName.Intuition,
-                value: 1,
-            },
-            logic: {
-                name: AttributeName.Logic,
-                value: 1,
-            },
-            reaction: {
-                name: AttributeName.Reaction,
-                value: 1,
-            },
-            strength: {
-                name: AttributeName.Strength,
-                value: 1,
-            },
-            willpower: {
-                name: AttributeName.Willpower,
-                value: 1,
-            },
-
-            edge: {
-                name: AttributeName.Edge,
-                value: 1,
-            },
-
-            magic: {
-                name: AttributeName.Magic,
-                value: 1,
-            },
-            resonance: {
-                name: AttributeName.Resonance,
-                value: 1,
-            },
-
-            essence: {
-                name: AttributeName.Essence,
-                value: 6,
-            },
-
-            depth: {
-                name: AttributeName.Depth,
-                value: 1,
-            },
-        };
-
-        return {
-            ...super.getDefaultValues(),
-            attributes,
-        };
-    }
-
-    // </editor-fold>
+    // <editor-fold desc="Static Properties"></editor-fold>
+    // <editor-fold desc="Static Methods"></editor-fold>
     // <editor-fold desc="Properties">
 
     data: ISR5RunnerDataContainer;

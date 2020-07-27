@@ -54,7 +54,7 @@ class Setup {
     }
 }
 exports.default = Setup;
-},{"./Constants":1,"./actor/SR5ActorProxy":4,"./actor/sheet/SR5BaseActorSheet":8,"./item/SR5ItemProxy":13,"./item/sheet/SR5BaseItemSheet":15}],4:[function(require,module,exports){
+},{"./Constants":1,"./actor/SR5ActorProxy":4,"./actor/sheet/SR5BaseActorSheet":12,"./item/SR5ItemProxy":17,"./item/sheet/SR5BaseItemSheet":19}],4:[function(require,module,exports){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -69,6 +69,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const SR5Runner_1 = require("./SR5Runner");
 const SR5Grunt_1 = require("./SR5Grunt");
 const ActorType_1 = require("./types/ActorType");
+const RunnerFactory_1 = require("./factory/RunnerFactory");
+const GruntFactory_1 = require("./factory/GruntFactory");
 class SR5ActorProxy extends Actor {
     // </editor-fold>
     // <editor-fold desc="Constructor & Initialization">
@@ -90,25 +92,23 @@ class SR5ActorProxy extends Actor {
             create: { get: () => super.create }
         });
         return __awaiter(this, void 0, void 0, function* () {
-            // This should be only 'leaf node' classes. The 'getDefaultValues' methods
-            //  should then chain the call upward with super calls if needed and merge
-            //  results to create a finalized default value set.
-            const CLASSES = [SR5Runner_1.default, SR5Grunt_1.default];
-            const CLASS = CLASSES.find((CLASS) => CLASS.TYPE === data.type);
-            if (CLASS) {
-                // Default values are over-written with provided ones.
-                const defaultValues = CLASS.getDefaultValues();
-                data = {
-                    name: data.name,
-                    folder: data.folder,
-                    type: data.type,
-                    data: defaultValues,
-                };
+            // We use a factory for default data instead of the template. This allows
+            // us to correctly syncronize our internal types - the data template is
+            // instead used only to create containers in which the data will be stored
+            // Handling this internally has a number of benefits. Mostly it allows strong
+            // and more thorough typing of data where the JSON template does not.
+            let factory;
+            switch (data.type) {
+                case ActorType_1.ActorType.Runner:
+                    factory = new RunnerFactory_1.default();
+                    break;
+                case ActorType_1.ActorType.Grunt:
+                    factory = new GruntFactory_1.default();
+                    break;
             }
-            else {
-                console.warn(`Unable to find default values for type ${data.type}.`);
-            }
-            return _super.create.call(this, data, options);
+            // This will only compile if *every* actor type is handled
+            const factoryData = factory.create(data);
+            return _super.create.call(this, factoryData, options);
         });
     }
     /** @override */
@@ -127,7 +127,7 @@ class SR5ActorProxy extends Actor {
     }
 }
 exports.default = SR5ActorProxy;
-},{"./SR5Grunt":6,"./SR5Runner":7,"./types/ActorType":9}],5:[function(require,module,exports){
+},{"./SR5Grunt":6,"./SR5Runner":7,"./factory/GruntFactory":10,"./factory/RunnerFactory":11,"./types/ActorType":13}],5:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 class SR5BaseActor extends Actor {
@@ -137,25 +137,6 @@ class SR5BaseActor extends Actor {
         super(data, options);
         this.data = data;
         this.proxy = proxy;
-    }
-    // <editor-fold desc="Static Properties">
-    /**
-     * When creating actors, the type is checked against this array. If a matching type is found
-     *  {@see onPreCreate} is called to initialize type-specific default data. Must be inherited.
-     */
-    static get TYPE() {
-        throw new Error('ACTOR_TYPE must be implemented.');
-    }
-    // </editor-fold>
-    // <editor-fold desc="Static Methods">
-    /**
-     * Initializes type-specific default data before the actor is sent to the server.
-     */
-    static getDefaultValues() {
-        console.warn(`SR5BaseActor getDefaultValues`);
-        return {
-            name: 'Hello!',
-        };
     }
 }
 exports.default = SR5BaseActor;
@@ -181,12 +162,10 @@ class SR5Grunt extends SR5BaseActor_1.default {
     }
 }
 exports.default = SR5Grunt;
-},{"./SR5BaseActor":5,"./types/ActorType":9}],7:[function(require,module,exports){
+},{"./SR5BaseActor":5,"./types/ActorType":13}],7:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const SR5BaseActor_1 = require("./SR5BaseActor");
-const Attribute_1 = require("../common/Attribute");
-const ActorType_1 = require("./types/ActorType");
 class SR5Runner extends SR5BaseActor_1.default {
     // </editor-fold>
     // <editor-fold desc="Constructor & Initialization">
@@ -194,14 +173,42 @@ class SR5Runner extends SR5BaseActor_1.default {
         super(proxy, data, options);
         console.warn(this);
     }
-    // <editor-fold desc="Static Properties">
-    static get TYPE() {
-        return ActorType_1.ActorType.Runner;
+}
+exports.default = SR5Runner;
+},{"./SR5BaseActor":5}],8:[function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+class AbstractActorFactory {
+}
+exports.default = AbstractActorFactory;
+},{}],9:[function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const AbstractActorFactory_1 = require("./AbstractActorFactory");
+class BaseActorFactory extends AbstractActorFactory_1.default {
+    create(data) {
+        return {};
     }
-    // </editor-fold>
-    // <editor-fold desc="Static Methods">
-    static getDefaultValues() {
-        console.warn(`SR5Runner getDefaultValues`);
+}
+exports.default = BaseActorFactory;
+},{"./AbstractActorFactory":8}],10:[function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const BaseActorFactory_1 = require("./BaseActorFactory");
+class GruntFactory extends BaseActorFactory_1.default {
+    create(data) {
+        return super.create(data);
+    }
+}
+exports.default = GruntFactory;
+},{"./BaseActorFactory":9}],11:[function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const Attribute_1 = require("../../common/Attribute");
+const BaseActorFactory_1 = require("./BaseActorFactory");
+class RunnerFactory extends BaseActorFactory_1.default {
+    create(data) {
+        const superData = super.create(data);
         let attributes = {
             body: {
                 name: Attribute_1.AttributeName.Body,
@@ -256,11 +263,11 @@ class SR5Runner extends SR5BaseActor_1.default {
                 value: 1,
             },
         };
-        return Object.assign(Object.assign({}, super.getDefaultValues()), { attributes });
+        return Object.assign(Object.assign({}, superData), { attributes });
     }
 }
-exports.default = SR5Runner;
-},{"../common/Attribute":10,"./SR5BaseActor":5,"./types/ActorType":9}],8:[function(require,module,exports){
+exports.default = RunnerFactory;
+},{"../../common/Attribute":14,"./BaseActorFactory":9}],12:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 class SR5BaseActorSheet extends ActorSheet {
@@ -273,7 +280,7 @@ class SR5BaseActorSheet extends ActorSheet {
     }
 }
 exports.default = SR5BaseActorSheet;
-},{}],9:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ActorType = void 0;
@@ -289,7 +296,7 @@ var ActorType;
     // Host = 'Host',
     // IC = 'IC',
 })(ActorType = exports.ActorType || (exports.ActorType = {}));
-},{}],10:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.RunnerAttributeName = exports.AttributeName = exports.MatrixAttributeName = exports.SpecialAttributeName = exports.MentalAttributeName = exports.PhysicalAttributeName = void 0;
@@ -330,14 +337,14 @@ exports.RunnerAttributeName = Object.assign(Object.assign(Object.assign({}, Phys
 //     LabelField & {
 //     limit?: string;
 // };
-},{}],11:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const SR5BaseItem_1 = require("./SR5BaseItem");
 class SR5Armor extends SR5BaseItem_1.default {
 }
 exports.default = SR5Armor;
-},{"./SR5BaseItem":12}],12:[function(require,module,exports){
+},{"./SR5BaseItem":16}],16:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 class SR5BaseItem extends Item {
@@ -349,7 +356,7 @@ class SR5BaseItem extends Item {
     }
 }
 exports.default = SR5BaseItem;
-},{}],13:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const ItemType_1 = require("./types/ItemType");
@@ -384,20 +391,20 @@ class SR5ItemProxy extends Item {
     }
 }
 exports.default = SR5ItemProxy;
-},{"./SR5Armor":11,"./SR5Weapon":14,"./types/ItemType":16}],14:[function(require,module,exports){
+},{"./SR5Armor":15,"./SR5Weapon":18,"./types/ItemType":20}],18:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const SR5BaseItem_1 = require("./SR5BaseItem");
 class SR5Weapon extends SR5BaseItem_1.default {
 }
 exports.default = SR5Weapon;
-},{"./SR5BaseItem":12}],15:[function(require,module,exports){
+},{"./SR5BaseItem":16}],19:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 class SR5BaseItemSheet extends ItemSheet {
 }
 exports.default = SR5BaseItemSheet;
-},{}],16:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ItemType = void 0;

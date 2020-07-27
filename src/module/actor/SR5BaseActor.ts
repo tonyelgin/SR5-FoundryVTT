@@ -8,30 +8,8 @@ export interface ISR5BaseActorDataContainer extends ActorData {
 export interface ISR5BaseActorData {}
 
 export default abstract class SR5BaseActor extends Actor {
-    // <editor-fold desc="Static Properties">
-
-    /**
-     * When creating actors, the type is checked against this array. If a matching type is found
-     *  {@see onPreCreate} is called to initialize type-specific default data. Must be inherited.
-     */
-    public static get TYPE(): ActorType {
-        throw new Error('ACTOR_TYPE must be implemented.');
-    }
-
-    // </editor-fold>
-    // <editor-fold desc="Static Methods">
-
-    /**
-     * Initializes type-specific default data before the actor is sent to the server.
-     */
-    public static getDefaultValues(): ISR5BaseActorData {
-        console.warn(`SR5BaseActor getDefaultValues`);
-        return {
-            name: 'Hello!',
-        };
-    }
-
-    // </editor-fold>
+    // <editor-fold desc="Static Properties"></editor-fold>
+    // <editor-fold desc="Static Methods"></editor-fold>
     // <editor-fold desc="Properties">
 
     public data: ISR5BaseActorDataContainer;

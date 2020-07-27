@@ -1,33 +1,34 @@
 import SR5Runner from './SR5Runner';
 import SR5Grunt from './SR5Grunt';
 import { ActorType } from './types/ActorType';
-import SR5BaseActor from './SR5BaseActor';
+import SR5BaseActor, { ISR5BaseActorData } from './SR5BaseActor';
 import { IPreCreateActorData, IPreCreateActorOptions } from '../common/Hooks';
+import AbstractActorFactory from './factory/AbstractActorFactory';
+import RunnerFactory from './factory/RunnerFactory';
+import GruntFactory from './factory/GruntFactory';
 
 export default class SR5ActorProxy extends Actor {
     // <editor-fold desc="Static Properties"></editor-fold>
     // <editor-fold desc="Static Methods">
 
     static async create(data: IPreCreateActorData, options: IPreCreateActorOptions): Promise<Entity> {
-        // This should be only 'leaf node' classes. The 'getDefaultValues' methods
-        //  should then chain the call upward with super calls if needed and merge
-        //  results to create a finalized default value set.
-        const CLASSES = [SR5Runner, SR5Grunt];
-        const CLASS = CLASSES.find((CLASS) => CLASS.TYPE === data.type);
-
-        if (CLASS) {
-            // Default values are over-written with provided ones.
-            const defaultValues = CLASS.getDefaultValues();
-            data = {
-                name: data.name,
-                folder: data.folder,
-                type: data.type,
-                data: defaultValues,
-            };
-        } else {
-            console.warn(`Unable to find default values for type ${data.type}.`);
+        // We use a factory for default data instead of the template. This allows
+        // us to correctly syncronize our internal types - the data template is
+        // instead used only to create containers in which the data will be stored
+        // Handling this internally has a number of benefits. Mostly it allows strong
+        // and more thorough typing of data where the JSON template does not.
+        let factory: AbstractActorFactory<ISR5BaseActorData>;
+        switch (data.type) {
+            case ActorType.Runner:
+                factory = new RunnerFactory();
+                break;
+            case ActorType.Grunt:
+                factory = new GruntFactory();
+                break;
         }
-        return super.create(data, options);
+        // This will only compile if *every* actor type is handled
+        const factoryData = factory.create(data);
+        return super.create(factoryData, options);
     }
 
     // </editor-fold>
