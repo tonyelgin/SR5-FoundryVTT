@@ -1,4 +1,3 @@
-import { ThrownWeapon, ThrownWeaponDataContainer } from './ThrownWeapon';
 import { BaseWeapon, BaseWeaponDataContainer, WeaponType } from './BaseWeapon';
 
 export interface SplashWeapon extends BaseWeapon {

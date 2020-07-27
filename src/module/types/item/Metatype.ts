@@ -1,4 +1,4 @@
-import { AttributeName, PhysicalAttributeName } from '../../common/Attribute';
+import { AttributeName} from '../../common/Attribute';
 import { IBaseItem, IBaseItemDataContainer } from './IBaseItem';
 
 /**

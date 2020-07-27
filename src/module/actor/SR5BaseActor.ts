@@ -1,6 +1,4 @@
 import SR5ActorProxy from './SR5ActorProxy';
-import { IPreCreateActorData, IPreCreateActorOptions } from '../common/Hooks';
-import { ActorType } from './types/ActorType';
 
 export interface ISR5BaseActorDataContainer extends ActorData {
     data: ISR5BaseActorData;

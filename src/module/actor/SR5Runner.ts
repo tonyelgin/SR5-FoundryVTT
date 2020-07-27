@@ -1,8 +1,6 @@
 import SR5BaseActor, { ISR5BaseActorData, ISR5BaseActorDataContainer } from './SR5BaseActor';
 import SR5ActorProxy from './SR5ActorProxy';
-import { AttributeName, PhysicalAttributeName, RunnerAttributeName, RunnerAttributes } from '../common/Attribute';
-import { ActorType } from './types/ActorType';
-import { IPreCreateActorData, IPreCreateActorOptions } from '../common/Hooks';
+import { RunnerAttributes } from '../common/Attribute';
 
 // TODO: Assumes Foundry will be enforcing types - as we can see here
 //  it's technically possible to get unexpected results.

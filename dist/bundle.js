@@ -187,7 +187,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const AbstractActorFactory_1 = require("./AbstractActorFactory");
 class BaseActorFactory extends AbstractActorFactory_1.default {
     create(data) {
-        return {};
+        return {
+            data: {},
+            flags: {},
+            img: '',
+            name: data.name,
+            type: data.type,
+        };
     }
 }
 exports.default = BaseActorFactory;
@@ -263,7 +269,9 @@ class RunnerFactory extends BaseActorFactory_1.default {
                 value: 1,
             },
         };
-        return Object.assign(Object.assign({}, superData), { attributes });
+        return Object.assign(Object.assign({}, superData), { data: {
+                attributes,
+            } });
     }
 }
 exports.default = RunnerFactory;

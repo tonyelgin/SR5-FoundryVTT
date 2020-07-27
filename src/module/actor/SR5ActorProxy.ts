@@ -1,7 +1,7 @@
 import SR5Runner from './SR5Runner';
 import SR5Grunt from './SR5Grunt';
 import { ActorType } from './types/ActorType';
-import SR5BaseActor, { ISR5BaseActorData } from './SR5BaseActor';
+import SR5BaseActor, { ISR5BaseActorDataContainer } from './SR5BaseActor';
 import { IPreCreateActorData, IPreCreateActorOptions } from '../common/Hooks';
 import AbstractActorFactory from './factory/AbstractActorFactory';
 import RunnerFactory from './factory/RunnerFactory';
@@ -17,7 +17,7 @@ export default class SR5ActorProxy extends Actor {
         // instead used only to create containers in which the data will be stored
         // Handling this internally has a number of benefits. Mostly it allows strong
         // and more thorough typing of data where the JSON template does not.
-        let factory: AbstractActorFactory<ISR5BaseActorData>;
+        let factory: AbstractActorFactory<ISR5BaseActorDataContainer>;
         switch (data.type) {
             case ActorType.Runner:
                 factory = new RunnerFactory();
@@ -71,5 +71,12 @@ export default class SR5ActorProxy extends Actor {
 
     // </editor-fold>
     // <editor-fold desc="Getters & Setters"></editor-fold>
-    // <editor-fold desc="Instance Methods"></editor-fold>
+    // <editor-fold desc="Instance Methods">
+
+    // TODO:
+    //  I think there shouldn't need to be any more methods proxied.
+    //  However we may notice data not updating properly. If so, we
+    //  can simply proxy update to the actor implementation.
+
+    // </editor-fold>
 }

@@ -1,11 +1,11 @@
-import AbstractActorFactory from './AbstractActorFactory';
-import { ISR5RunnerData } from '../SR5Runner';
+import { ActorFactoryData } from './AbstractActorFactory';
+import { ISR5RunnerDataContainer } from '../SR5Runner';
 import { IPreCreateActorData } from '../../common/Hooks';
-import { AttributeName, RunnerAttributeName, RunnerAttributes } from '../../common/Attribute';
+import { AttributeName, RunnerAttributes } from '../../common/Attribute';
 import BaseActorFactory from './BaseActorFactory';
 
 export default class RunnerFactory extends BaseActorFactory {
-    create(data: IPreCreateActorData): ISR5RunnerData {
+    create(data: IPreCreateActorData): ActorFactoryData<ISR5RunnerDataContainer> {
         const superData = super.create(data);
         let attributes: RunnerAttributes = {
             body: {
@@ -68,7 +68,9 @@ export default class RunnerFactory extends BaseActorFactory {
 
         return {
             ...superData,
-            attributes,
+            data: {
+                attributes,
+            },
         };
     }
 }
