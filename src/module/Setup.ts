@@ -27,6 +27,45 @@ export default class Setup {
         Items.unregisterSheet('core', ItemSheet);
         Items.registerSheet(SYSTEM_NAME, SR5BaseItemSheet, { makeDefault: true });
 
+        // Register Handlebars Helpers
+        // if equal
+        Handlebars.registerHelper('ife', function (v1, v2, options) {
+            console.warn(v1);
+            console.warn(v2);
+            if (v1 === v2) return options.fn(this);
+            else return options.inverse(this);
+        });
+        // if not equal
+        Handlebars.registerHelper('ifne', function (v1, v2, options) {
+            if (v1 !== v2) return options.fn(this);
+            else return options.inverse(this);
+        });
+        // if greater than
+        Handlebars.registerHelper('ifgt', function (v1, v2, options) {
+            if (v1 > v2) return options.fn(this);
+            else return options.inverse(this);
+        });
+        // if greater than equal to
+        Handlebars.registerHelper('ifge', function (v1, v2, options) {
+            if (v1 >= v2) return options.fn(this);
+            else return options.inverse(this);
+        });
+        // if less than
+        Handlebars.registerHelper('iflt', function (v1, v2, options) {
+            if (v1 < v2) return options.fn(this);
+            else return options.inverse(this);
+        });
+        // if less than equal to
+        Handlebars.registerHelper('ifle', function (v1, v2, options) {
+            if (v1 <= v2) return options.fn(this);
+            else return options.inverse(this);
+        });
+        // if includes
+        Handlebars.registerHelper('ifin', function (val, arr, options) {
+            if (arr.includes(val)) return options.fn(this);
+            else return options.inverse(this);
+        });
+
         // Above code will run synchronously with Foundry
         // Async tasks can be done by returning a new Promise
         return Promise.resolve();

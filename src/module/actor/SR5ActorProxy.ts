@@ -70,7 +70,13 @@ export default class SR5ActorProxy extends Actor {
     }
 
     // </editor-fold>
-    // <editor-fold desc="Getters & Setters"></editor-fold>
+    // <editor-fold desc="Getters & Setters">
+
+    public get Impl(): SR5BaseActor {
+        return this._implementation;
+    }
+
+    // </editor-fold>
     // <editor-fold desc="Instance Methods">
 
     // TODO:

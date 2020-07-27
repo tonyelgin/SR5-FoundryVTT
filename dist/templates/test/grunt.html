@@ -6,20 +6,11 @@
     this boilerplate. We might decide to just do one template that does a case by case branch to the
     right template.
     -->
-    {{#ifne actor.type CONST.ActorType.Runner}}
+    {{#ifne actor.type CONST.ActorType.Grunt}}
 
     <p>This actor should use the {{actor.type}} sheet.</p>
 
     {{else}}
-    <h1>Runner</h1>
-
-    <h2>Attributes</h2>
-    {{#each data.attributes as |attribute|}}
-    <p>{{attribute.name}} {{attribute.value}}</p>
-    {{/each}}
-
-    <h2>Skills</h2>
-    {{#each data.skills.active as |skill|}}
-    <p>{{skill.name}}: {{skill.value}}, default: {{skill.canDefault}}, specs: {{skill.specializations}}, attribute: {{skill.defaultAttribute}}</p>
-    {{/each}} {{/ifne}}
+    <h1>Grunt</h1>
+    {{/ifne}}
 </div>

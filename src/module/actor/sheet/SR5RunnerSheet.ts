@@ -1,6 +1,8 @@
 import SR5BaseActorSheet from './SR5BaseActorSheet';
+import SR5Runner from '../SR5Runner';
+import { ActorType } from '../types/ActorType';
 
-export default class SR5RunnerSheet extends SR5BaseActorSheet {
+export default class SR5RunnerSheet extends SR5BaseActorSheet<SR5Runner> {
     // <editor-fold desc="Static Properties"></editor-fold>
     // <editor-fold desc="Static Methods"></editor-fold>
     // <editor-fold desc="Properties"></editor-fold>
@@ -8,8 +10,6 @@ export default class SR5RunnerSheet extends SR5BaseActorSheet {
 
     constructor(data: BaseEntityData, options?: any) {
         super(data, options);
-
-        console.warn(`A new ${this.constructor.name} has been created.`);
     }
 
     // </editor-fold>
@@ -20,5 +20,12 @@ export default class SR5RunnerSheet extends SR5BaseActorSheet {
     }
 
     // </editor-fold>
-    // <editor-fold desc="Instance Methods"></editor-fold>
+    // <editor-fold desc="Instance Methods">
+
+    getData(): ActorSheetData {
+        const data = super.getData();
+        return data;
+    }
+
+    // </editor-fold>
 }

@@ -7,13 +7,7 @@ export interface ISR5GruntDataContainer extends ISR5BaseActorDataContainer {
 export interface ISR5GruntData extends ISR5BaseActorData {}
 
 export default class SR5Grunt extends SR5BaseActor {
-    // <editor-fold desc="Static Properties">
-
-    public static get TYPE() {
-        return ActorType.Grunt;
-    }
-
-    // </editor-fold>
+    // <editor-fold desc="Static Properties"></editor-fold>
     // <editor-fold desc="Static Methods"></editor-fold>
     // <editor-fold desc="Properties">
 
@@ -31,4 +25,8 @@ export default class SR5Grunt extends SR5BaseActor {
     prepareEmbeddedEntities() {
         super.prepareEmbeddedEntities();
     }
+}
+
+export function isGrunt(actor: Actor): actor is SR5Grunt {
+    return actor.data.type === ActorType.Grunt;
 }

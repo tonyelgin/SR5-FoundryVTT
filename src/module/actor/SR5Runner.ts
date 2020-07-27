@@ -2,6 +2,8 @@ import SR5BaseActor, { ISR5BaseActorData, ISR5BaseActorDataContainer } from './S
 import SR5ActorProxy from './SR5ActorProxy';
 import { RunnerAttributes } from '../common/Attribute';
 import { ActiveSkillList, KnowledgeSkillList } from '../common/Skills';
+import { ActorType } from './types/ActorType';
+import SR5Grunt from './SR5Grunt';
 
 // TODO: Assumes Foundry will be enforcing types - as we can see here
 //  it's technically possible to get unexpected results.
@@ -35,4 +37,8 @@ export default class SR5Runner extends SR5BaseActor {
     // </editor-fold>
     // <editor-fold desc="Getters & Setters"></editor-fold>
     // <editor-fold desc="Instance Methods"></editor-fold>
+}
+
+export function isRunner(actor: Actor): actor is SR5Runner {
+    return actor.data.type === ActorType.Runner;
 }

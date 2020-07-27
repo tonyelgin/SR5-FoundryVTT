@@ -46,6 +46,58 @@ class Setup {
         CONFIG.Item.entityClass = SR5ItemProxy_1.default;
         Items.unregisterSheet('core', ItemSheet);
         Items.registerSheet(Constants_1.SYSTEM_NAME, SR5BaseItemSheet_1.default, { makeDefault: true });
+        // Register Handlebars Helpers
+        // if equal
+        Handlebars.registerHelper('ife', function (v1, v2, options) {
+            console.warn(v1);
+            console.warn(v2);
+            if (v1 === v2)
+                return options.fn(this);
+            else
+                return options.inverse(this);
+        });
+        // if not equal
+        Handlebars.registerHelper('ifne', function (v1, v2, options) {
+            if (v1 !== v2)
+                return options.fn(this);
+            else
+                return options.inverse(this);
+        });
+        // if greater than
+        Handlebars.registerHelper('ifgt', function (v1, v2, options) {
+            if (v1 > v2)
+                return options.fn(this);
+            else
+                return options.inverse(this);
+        });
+        // if greater than equal to
+        Handlebars.registerHelper('ifge', function (v1, v2, options) {
+            if (v1 >= v2)
+                return options.fn(this);
+            else
+                return options.inverse(this);
+        });
+        // if less than
+        Handlebars.registerHelper('iflt', function (v1, v2, options) {
+            if (v1 < v2)
+                return options.fn(this);
+            else
+                return options.inverse(this);
+        });
+        // if less than equal to
+        Handlebars.registerHelper('ifle', function (v1, v2, options) {
+            if (v1 <= v2)
+                return options.fn(this);
+            else
+                return options.inverse(this);
+        });
+        // if includes
+        Handlebars.registerHelper('ifin', function (val, arr, options) {
+            if (arr.includes(val))
+                return options.fn(this);
+            else
+                return options.inverse(this);
+        });
         // Above code will run synchronously with Foundry
         // Async tasks can be done by returning a new Promise
         return Promise.resolve();
@@ -129,31 +181,45 @@ class SR5ActorProxy extends Actor {
         }
         return super.prepareEmbeddedEntities();
     }
+    // </editor-fold>
+    // <editor-fold desc="Getters & Setters">
+    get Impl() {
+        return this._implementation;
+    }
 }
 exports.default = SR5ActorProxy;
 },{"./SR5Grunt":6,"./SR5Runner":7,"./factory/GruntFactory":10,"./factory/RunnerFactory":11,"./types/ActorType":15}],5:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.isActorOfType = void 0;
 class SR5BaseActor extends Actor {
     // </editor-fold>
     // <editor-fold desc="Constructor & Initialization">
     constructor(proxy, data, options) {
         super(data, options);
+        // TODO: Safer cast. Should be true atm.
         this.data = data;
         this.proxy = proxy;
     }
+    // </editor-fold>
+    // <editor-fold desc="Getters & Setters">
+    get sheet() {
+        // TODO: Figure out safe cast.
+        return this.proxy.sheet;
+    }
 }
 exports.default = SR5BaseActor;
+function isActorOfType(actor) {
+    return true;
+}
+exports.isActorOfType = isActorOfType;
 },{}],6:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.isGrunt = void 0;
 const SR5BaseActor_1 = require("./SR5BaseActor");
 const ActorType_1 = require("./types/ActorType");
 class SR5Grunt extends SR5BaseActor_1.default {
-    // <editor-fold desc="Static Properties">
-    static get TYPE() {
-        return ActorType_1.ActorType.Grunt;
-    }
     // </editor-fold>
     // <editor-fold desc="Constructor & Initialization"></editor-fold>
     // <editor-fold desc="Getters & Setters"></editor-fold>
@@ -166,10 +232,16 @@ class SR5Grunt extends SR5BaseActor_1.default {
     }
 }
 exports.default = SR5Grunt;
+function isGrunt(actor) {
+    return actor.data.type === ActorType_1.ActorType.Grunt;
+}
+exports.isGrunt = isGrunt;
 },{"./SR5BaseActor":5,"./types/ActorType":15}],7:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.isRunner = void 0;
 const SR5BaseActor_1 = require("./SR5BaseActor");
+const ActorType_1 = require("./types/ActorType");
 class SR5Runner extends SR5BaseActor_1.default {
     // </editor-fold>
     // <editor-fold desc="Constructor & Initialization">
@@ -179,7 +251,11 @@ class SR5Runner extends SR5BaseActor_1.default {
     }
 }
 exports.default = SR5Runner;
-},{"./SR5BaseActor":5}],8:[function(require,module,exports){
+function isRunner(actor) {
+    return actor.data.type === ActorType_1.ActorType.Runner;
+}
+exports.isRunner = isRunner;
+},{"./SR5BaseActor":5,"./types/ActorType":15}],8:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 class AbstractActorFactory {
@@ -800,6 +876,7 @@ exports.default = RunnerFactory;
 },{"../../common/Attribute":16,"../../common/Skills":17,"./BaseActorFactory":9}],12:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const ActorType_1 = require("../types/ActorType");
 class SR5BaseActorSheet extends ActorSheet {
     // <editor-fold desc="Static Properties"></editor-fold>
     // <editor-fold desc="Static Methods"></editor-fold>
@@ -808,9 +885,38 @@ class SR5BaseActorSheet extends ActorSheet {
     constructor(...args) {
         super(...args);
     }
+    // </editor-fold>
+    // <editor-fold desc="Getters & Setters">
+    get actor() {
+        // TODO: Figure out how to more safely cast this.
+        return super.actor.Impl;
+    }
+    get id() {
+        return `actor-${this.actor.id}`;
+    }
+    // </editor-fold>
+    // <editor-fold desc="Instance Methods">
+    getData() {
+        const data = super.getData();
+        data['CONST'] = {
+            ActorType: ActorType_1.ActorType,
+        };
+        console.warn(`Sheet is of type ${this.constructor.name}`);
+        console.warn(data);
+        console.warn(super.actor);
+        return data;
+    }
+    activateListeners(html) {
+        console.warn(html);
+        super.activateListeners(html);
+    }
+    close() {
+        console.warn(this.form);
+        return super.close();
+    }
 }
 exports.default = SR5BaseActorSheet;
-},{}],13:[function(require,module,exports){
+},{"../types/ActorType":15}],13:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const SR5BaseActorSheet_1 = require("./SR5BaseActorSheet");
@@ -821,7 +927,11 @@ class SR5GruntSheet extends SR5BaseActorSheet_1.default {
     // <editor-fold desc="Constructor & Initialization">
     constructor(...args) {
         super(...args);
-        console.warn(`A new ${this.constructor.name} has been created.`);
+    }
+    // </editor-fold>
+    // <editor-fold desc="Getters & Setters">
+    get template() {
+        return `systems/shadowrun5e/dist/templates/test/grunt.html`;
     }
 }
 exports.default = SR5GruntSheet;
@@ -836,12 +946,17 @@ class SR5RunnerSheet extends SR5BaseActorSheet_1.default {
     // <editor-fold desc="Constructor & Initialization">
     constructor(data, options) {
         super(data, options);
-        console.warn(`A new ${this.constructor.name} has been created.`);
     }
     // </editor-fold>
     // <editor-fold desc="Getters & Setters">
     get template() {
         return `systems/shadowrun5e/dist/templates/test/runner.html`;
+    }
+    // </editor-fold>
+    // <editor-fold desc="Instance Methods">
+    getData() {
+        const data = super.getData();
+        return data;
     }
 }
 exports.default = SR5RunnerSheet;
