@@ -1,0 +1,25 @@
+<form>
+    <!--
+    ATM there's no way to allow certain sheets for actors of a type, because Foundry doesn't support
+    multiple actor types and we're tricking it more or less. If the user selects an invalid sheet, we
+    should simply display an error and ask them to swap the sheet. Ideally we can find a way around
+    this boilerplate. We might decide to just do one template that does a case by case branch to the
+    right template.
+    -->
+    {{#ifne actor.type CONST.ActorType.Runner}}
+
+    <p>This actor should use the {{actor.type}} sheet.</p>
+
+    {{else}}
+    <h1>Runner</h1>
+
+    {{> "systems/shadowrun5e/dist/templates/common/parts/attributes.html"}}
+
+    <h2>Skills</h2>
+    {{#each data.skills.active as |skill|}}
+    <div>
+        <label></label>
+        {{skill.name}}: {{skill.value}}, default: {{skill.canDefault}}, specs: {{skill.specializations}}, attribute: {{skill.defaultAttribute}}
+    </div>
+    {{/each}} {{/ifne}}
+</form>

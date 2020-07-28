@@ -30,8 +30,6 @@ export default class SR5Runner extends SR5BaseActor {
 
     constructor(proxy: SR5ActorProxy, data: ActorData, options: any) {
         super(proxy, data, options);
-
-        console.warn(this);
     }
 
     // </editor-fold>

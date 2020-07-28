@@ -51,6 +51,7 @@
 
             "Equipment",
 
+            "Metatype",
             "Lifestyle",
             "Credstick",
             "SIN",
@@ -59,18 +60,5 @@
 
             "Miscellaneous"
         ]
-    },
-    "Action": {},
-
-    "MeleeWeapon": {},
-    "RangedWeapon": {},
-    "ThrownWeapon": {},
-    "ExplosiveWeapon": {},
-
-    "Armor": {},
-    "Device": {},
-    "Program": {},
-    "Ammunition": {},
-    "Gear": {},
-    "Explosive": {}
+    }
 }

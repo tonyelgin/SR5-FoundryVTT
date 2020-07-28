@@ -5,6 +5,10 @@ import ArmorFactory from './factory/ArmorFactory';
 import WeaponFactory from './factory/WeaponFactory';
 import AmmunitionFactory from './factory/AmmunitionFactory';
 import MetatypeFactory from './factory/MetatypeFactory';
+import SR5Weapon from './SR5Weapon';
+import SR5Metatype from './SR5Metatype';
+import SR5Ammunition from './SR5Ammunition';
+import SR5Armor from './SR5Armor';
 
 export default class SR5ItemProxy extends Item {
     // <editor-fold desc="Static Properties"></editor-fold>
@@ -38,8 +42,29 @@ export default class SR5ItemProxy extends Item {
         }
         // This will only compile if *every* actor type is handled
         const factoryData = factory.create(data);
+        console.warn(`factoryData for ${data.name}`);
+        console.warn(factoryData);
         return super.create(factoryData, options);
     }
+    constructor(data: BaseEntityData, options?: any) {
+        super(data, options);
+
+        switch (data.type as ItemType) {
+            case ItemType.Weapon:
+                this._implementation = new SR5Weapon(data, options);
+                break;
+            case ItemType.Armor:
+                this._implementation = new SR5Armor(data, options);
+                break;
+            case ItemType.Ammunition:
+                this._implementation = new SR5Ammunition(data, options);
+                break;
+            case ItemType.Metatype:
+                this._implementation = new SR5Metatype(data, options);
+                break;
+        }
+    }
+
     // </editor-fold>
     // <editor-fold desc="Getters & Setters"></editor-fold>
     // <editor-fold desc="Instance Methods">

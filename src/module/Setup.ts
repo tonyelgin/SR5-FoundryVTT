@@ -5,6 +5,9 @@ import SR5ItemProxy from './item/SR5ItemProxy';
 import SR5BaseItemSheet from './item/sheet/SR5BaseItemSheet';
 import SR5RunnerSheet from './actor/sheet/SR5RunnerSheet';
 import SR5GruntSheet from './actor/sheet/SR5GruntSheet';
+import SR5ArmorSheet from './item/sheet/SR5ArmorSheet';
+import { ValidModifier } from './common/Modifier';
+import SR5MetatypeSheet from './item/sheet/SR5MetatypeSheet';
 
 export default class Setup {
     public static run(): void {
@@ -25,13 +28,24 @@ export default class Setup {
         // Register item + sheets
         CONFIG.Item.entityClass = SR5ItemProxy;
         Items.unregisterSheet('core', ItemSheet);
-        Items.registerSheet(SYSTEM_NAME, SR5BaseItemSheet, { makeDefault: true });
+        Items.registerSheet(SYSTEM_NAME, SR5ArmorSheet, { makeDefault: true });
+        Items.registerSheet(SYSTEM_NAME, SR5MetatypeSheet, { makeDefault: false });
 
         Hooks.on('preCreateItem', (...args) => {
             console.warn(args);
         });
 
         // Register Handlebars Helpers
+        Setup.handlebarsHelpers();
+
+        // Above code will run synchronously with Foundry
+        // Async tasks can be done by returning a new Promise
+        return Setup.handlebarsPartials();
+    }
+    protected static async setup(): Promise<void> {}
+    protected static async ready(): Promise<void> {}
+
+    protected static handlebarsHelpers(): void {
         // if equal
         Handlebars.registerHelper('ife', function (v1, v2, options) {
             console.warn(v1);
@@ -69,11 +83,8 @@ export default class Setup {
             if (arr.includes(val)) return options.fn(this);
             else return options.inverse(this);
         });
-
-        // Above code will run synchronously with Foundry
-        // Async tasks can be done by returning a new Promise
-        return Promise.resolve();
     }
-    protected static async setup(): Promise<void> {}
-    protected static async ready(): Promise<void> {}
+    protected static async handlebarsPartials(): Promise<void> {
+        return loadTemplates(['systems/shadowrun5e/dist/templates/common/parts/attributes.html']);
+    }
 }

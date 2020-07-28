@@ -16,7 +16,7 @@ export default class SR5RunnerSheet extends SR5BaseActorSheet<SR5Runner> {
     // <editor-fold desc="Getters & Setters">
 
     get template(): string {
-        return `systems/shadowrun5e/dist/templates/test/runner.html`;
+        return `systems/shadowrun5e/dist/templates/actor/runner.html`;
     }
 
     // </editor-fold>

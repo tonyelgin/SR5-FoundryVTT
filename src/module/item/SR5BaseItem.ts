@@ -1,4 +1,9 @@
-export interface ISR5BaseItemDataContainer extends BaseEntityData {}
+import { ItemType } from './types/ItemType';
+
+export interface ISR5BaseItemDataContainer extends BaseEntityData {
+    data: ISR5BaseItemData;
+    type: ItemType;
+}
 
 export interface ISR5BaseItemData {}
 
@@ -14,8 +19,6 @@ export default class SR5BaseItem extends Item {
 
     constructor(data: BaseEntityData, options?: any) {
         super(data, options);
-
-        console.warn(`Created a new ${this.constructor.name}`);
     }
 
     // </editor-fold>

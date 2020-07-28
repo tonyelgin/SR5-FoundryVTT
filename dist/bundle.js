@@ -25,9 +25,10 @@ const SR5ActorProxy_1 = require("./actor/SR5ActorProxy");
 const Constants_1 = require("./Constants");
 const SR5BaseActorSheet_1 = require("./actor/sheet/SR5BaseActorSheet");
 const SR5ItemProxy_1 = require("./item/SR5ItemProxy");
-const SR5BaseItemSheet_1 = require("./item/sheet/SR5BaseItemSheet");
 const SR5RunnerSheet_1 = require("./actor/sheet/SR5RunnerSheet");
 const SR5GruntSheet_1 = require("./actor/sheet/SR5GruntSheet");
+const SR5ArmorSheet_1 = require("./item/sheet/SR5ArmorSheet");
+const SR5MetatypeSheet_1 = require("./item/sheet/SR5MetatypeSheet");
 class Setup {
     static run() {
         Hooks.once('init', this.init);
@@ -45,11 +46,25 @@ class Setup {
         // Register item + sheets
         CONFIG.Item.entityClass = SR5ItemProxy_1.default;
         Items.unregisterSheet('core', ItemSheet);
-        Items.registerSheet(Constants_1.SYSTEM_NAME, SR5BaseItemSheet_1.default, { makeDefault: true });
+        Items.registerSheet(Constants_1.SYSTEM_NAME, SR5ArmorSheet_1.default, { makeDefault: true });
+        Items.registerSheet(Constants_1.SYSTEM_NAME, SR5MetatypeSheet_1.default, { makeDefault: false });
         Hooks.on('preCreateItem', (...args) => {
             console.warn(args);
         });
         // Register Handlebars Helpers
+        Setup.handlebarsHelpers();
+        // Above code will run synchronously with Foundry
+        // Async tasks can be done by returning a new Promise
+        return Setup.handlebarsPartials();
+    }
+    static setup() {
+        return __awaiter(this, void 0, void 0, function* () { });
+    }
+    static ready() {
+        return __awaiter(this, void 0, void 0, function* () {
+        });
+    }
+    static handlebarsHelpers() {
         // if equal
         Handlebars.registerHelper('ife', function (v1, v2, options) {
             console.warn(v1);
@@ -101,19 +116,15 @@ class Setup {
             else
                 return options.inverse(this);
         });
-        // Above code will run synchronously with Foundry
-        // Async tasks can be done by returning a new Promise
-        return Promise.resolve();
     }
-    static setup() {
-        return __awaiter(this, void 0, void 0, function* () { });
-    }
-    static ready() {
-        return __awaiter(this, void 0, void 0, function* () { });
+    static handlebarsPartials() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return loadTemplates(['systems/shadowrun5e/dist/templates/common/parts/attributes.html']);
+        });
     }
 }
 exports.default = Setup;
-},{"./Constants":1,"./actor/SR5ActorProxy":4,"./actor/sheet/SR5BaseActorSheet":12,"./actor/sheet/SR5GruntSheet":13,"./actor/sheet/SR5RunnerSheet":14,"./item/SR5ItemProxy":18,"./item/sheet/SR5BaseItemSheet":25}],4:[function(require,module,exports){
+},{"./Constants":1,"./actor/SR5ActorProxy":4,"./actor/sheet/SR5BaseActorSheet":12,"./actor/sheet/SR5GruntSheet":13,"./actor/sheet/SR5RunnerSheet":14,"./item/SR5ItemProxy":21,"./item/sheet/SR5ArmorSheet":31,"./item/sheet/SR5MetatypeSheet":34}],4:[function(require,module,exports){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -250,7 +261,6 @@ class SR5Runner extends SR5BaseActor_1.default {
     // <editor-fold desc="Constructor & Initialization">
     constructor(proxy, data, options) {
         super(proxy, data, options);
-        console.warn(this);
     }
 }
 exports.default = SR5Runner;
@@ -935,7 +945,7 @@ class SR5GruntSheet extends SR5BaseActorSheet_1.default {
     // </editor-fold>
     // <editor-fold desc="Getters & Setters">
     get template() {
-        return `systems/shadowrun5e/dist/templates/test/grunt.html`;
+        return `systems/shadowrun5e/dist/templates/actor/grunt.html`;
     }
 }
 exports.default = SR5GruntSheet;
@@ -954,7 +964,7 @@ class SR5RunnerSheet extends SR5BaseActorSheet_1.default {
     // </editor-fold>
     // <editor-fold desc="Getters & Setters">
     get template() {
-        return `systems/shadowrun5e/dist/templates/test/runner.html`;
+        return `systems/shadowrun5e/dist/templates/actor/runner.html`;
     }
     // </editor-fold>
     // <editor-fold desc="Instance Methods">
@@ -1150,6 +1160,31 @@ var KnowledgeSkillType;
 })(KnowledgeSkillType = exports.KnowledgeSkillType || (exports.KnowledgeSkillType = {}));
 },{}],18:[function(require,module,exports){
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const SR5BaseItem_1 = require("./SR5BaseItem");
+class SR5Ammunition extends SR5BaseItem_1.default {
+}
+exports.default = SR5Ammunition;
+},{"./SR5BaseItem":20}],19:[function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const SR5BaseItem_1 = require("./SR5BaseItem");
+class SR5Armor extends SR5BaseItem_1.default {
+}
+exports.default = SR5Armor;
+},{"./SR5BaseItem":20}],20:[function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+class SR5BaseItem extends Item {
+    // </editor-fold>
+    // <editor-fold desc="Constructor & Initialization">
+    constructor(data, options) {
+        super(data, options);
+    }
+}
+exports.default = SR5BaseItem;
+},{}],21:[function(require,module,exports){
+"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -1165,7 +1200,28 @@ const ArmorFactory_1 = require("./factory/ArmorFactory");
 const WeaponFactory_1 = require("./factory/WeaponFactory");
 const AmmunitionFactory_1 = require("./factory/AmmunitionFactory");
 const MetatypeFactory_1 = require("./factory/MetatypeFactory");
+const SR5Weapon_1 = require("./SR5Weapon");
+const SR5Metatype_1 = require("./SR5Metatype");
+const SR5Ammunition_1 = require("./SR5Ammunition");
+const SR5Armor_1 = require("./SR5Armor");
 class SR5ItemProxy extends Item {
+    constructor(data, options) {
+        super(data, options);
+        switch (data.type) {
+            case ItemType_1.ItemType.Weapon:
+                this._implementation = new SR5Weapon_1.default(data, options);
+                break;
+            case ItemType_1.ItemType.Armor:
+                this._implementation = new SR5Armor_1.default(data, options);
+                break;
+            case ItemType_1.ItemType.Ammunition:
+                this._implementation = new SR5Ammunition_1.default(data, options);
+                break;
+            case ItemType_1.ItemType.Metatype:
+                this._implementation = new SR5Metatype_1.default(data, options);
+                break;
+        }
+    }
     // </editor-fold>
     // <editor-fold desc="Constructor & Initialization">
     static create(data, options) {
@@ -1195,6 +1251,8 @@ class SR5ItemProxy extends Item {
             }
             // This will only compile if *every* actor type is handled
             const factoryData = factory.create(data);
+            console.warn(`factoryData for ${data.name}`);
+            console.warn(factoryData);
             return _super.create.call(this, factoryData, options);
         });
     }
@@ -1207,13 +1265,35 @@ class SR5ItemProxy extends Item {
     }
 }
 exports.default = SR5ItemProxy;
-},{"./factory/AmmunitionFactory":20,"./factory/ArmorFactory":21,"./factory/MetatypeFactory":23,"./factory/WeaponFactory":24,"./types/ItemType":26}],19:[function(require,module,exports){
+},{"./SR5Ammunition":18,"./SR5Armor":19,"./SR5Metatype":22,"./SR5Weapon":23,"./factory/AmmunitionFactory":25,"./factory/ArmorFactory":26,"./factory/MetatypeFactory":29,"./factory/WeaponFactory":30,"./types/ItemType":35}],22:[function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const SR5BaseItem_1 = require("./SR5BaseItem");
+class SR5Metatype extends SR5BaseItem_1.default {
+}
+exports.default = SR5Metatype;
+},{"./SR5BaseItem":20}],23:[function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.WeaponType = void 0;
+const SR5BaseItem_1 = require("./SR5BaseItem");
+var WeaponType;
+(function (WeaponType) {
+    WeaponType["Ranged"] = "ranged_weapon";
+    WeaponType["Melee"] = "melee_weapon";
+    WeaponType["Thrown"] = "thrown_weapon";
+    WeaponType["Splash"] = "splash_weapon";
+})(WeaponType = exports.WeaponType || (exports.WeaponType = {}));
+class SR5Weapon extends SR5BaseItem_1.default {
+}
+exports.default = SR5Weapon;
+},{"./SR5BaseItem":20}],24:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 class AbstractItemFactory {
 }
 exports.default = AbstractItemFactory;
-},{}],20:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const BaseItemFactory_1 = require("./BaseItemFactory");
@@ -1224,18 +1304,48 @@ class AmmunitionFactory extends BaseItemFactory_1.default {
     }
 }
 exports.default = AmmunitionFactory;
-},{"../types/ItemType":26,"./BaseItemFactory":22}],21:[function(require,module,exports){
+},{"../types/ItemType":35,"./BaseItemFactory":27}],26:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const BaseItemFactory_1 = require("./BaseItemFactory");
 const ItemType_1 = require("../types/ItemType");
-class ArmorFactory extends BaseItemFactory_1.default {
+const Damage_1 = require("../../types/common/Damage");
+const ItemWithEmbedsFactory_1 = require("./ItemWithEmbedsFactory");
+class ArmorFactory extends ItemWithEmbedsFactory_1.default {
     create(data) {
-        return Object.assign(Object.assign({}, super.create(data)), { type: ItemType_1.ItemType.Armor });
+        const superData = super.create(data);
+        return {
+            name: superData.name,
+            type: ItemType_1.ItemType.Armor,
+            data: Object.assign(Object.assign({}, superData.data), { armor: {
+                    value: 12,
+                    stacks: false,
+                    element: {
+                        [Damage_1.DamageElement.Physical]: {
+                            value: 0,
+                        },
+                        [Damage_1.DamageElement.Fire]: {
+                            value: 0,
+                        },
+                        [Damage_1.DamageElement.Cold]: {
+                            value: 0,
+                        },
+                        [Damage_1.DamageElement.Electricity]: {
+                            value: 0,
+                        },
+                        [Damage_1.DamageElement.Radiation]: {
+                            value: 0,
+                        },
+                        [Damage_1.DamageElement.Pollution]: {
+                            value: 0,
+                        },
+                    },
+                } }),
+            flags: superData.flags
+        };
     }
 }
 exports.default = ArmorFactory;
-},{"../types/ItemType":26,"./BaseItemFactory":22}],22:[function(require,module,exports){
+},{"../../types/common/Damage":36,"../types/ItemType":35,"./ItemWithEmbedsFactory":28}],27:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const AbstractItemFactory_1 = require("./AbstractItemFactory");
@@ -1250,18 +1360,37 @@ class BaseItemFactory extends AbstractItemFactory_1.default {
     }
 }
 exports.default = BaseItemFactory;
-},{"./AbstractItemFactory":19}],23:[function(require,module,exports){
+},{"./AbstractItemFactory":24}],28:[function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const BaseItemFactory_1 = require("./BaseItemFactory");
+class ItemWithEmbedsFactory extends BaseItemFactory_1.default {
+    create(data) {
+        const superData = super.create(data);
+        return Object.assign(Object.assign({}, superData), { flags: Object.assign(Object.assign({}, superData.flags), { embeddedItems: [] }) });
+    }
+}
+exports.default = ItemWithEmbedsFactory;
+},{"./BaseItemFactory":27}],29:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const BaseItemFactory_1 = require("./BaseItemFactory");
 const ItemType_1 = require("../types/ItemType");
+const Attribute_1 = require("../../common/Attribute");
 class MetatypeFactory extends BaseItemFactory_1.default {
     create(data) {
-        return Object.assign(Object.assign({}, super.create(data)), { type: ItemType_1.ItemType.Metatype });
+        return Object.assign(Object.assign({}, super.create(data)), { type: ItemType_1.ItemType.Metatype, data: {
+                max_attribute: {
+                    body: {
+                        name: Attribute_1.AttributeName.Body,
+                        value: 1,
+                    },
+                },
+            } });
     }
 }
 exports.default = MetatypeFactory;
-},{"../types/ItemType":26,"./BaseItemFactory":22}],24:[function(require,module,exports){
+},{"../../common/Attribute":16,"../types/ItemType":35,"./BaseItemFactory":27}],30:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const BaseItemFactory_1 = require("./BaseItemFactory");
@@ -1272,16 +1401,143 @@ class WeaponFactory extends BaseItemFactory_1.default {
     }
 }
 exports.default = WeaponFactory;
-},{"../types/ItemType":26,"./BaseItemFactory":22}],25:[function(require,module,exports){
+},{"../types/ItemType":35,"./BaseItemFactory":27}],31:[function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const SR5ItemWithEmbedsSheet_1 = require("./SR5ItemWithEmbedsSheet");
+const ItemType_1 = require("../types/ItemType");
+class SR5ArmorSheet extends SR5ItemWithEmbedsSheet_1.default {
+    // <editor-fold desc="Static Properties"></editor-fold>
+    // <editor-fold desc="Static Methods"></editor-fold>
+    // <editor-fold desc="Properties"></editor-fold>
+    // <editor-fold desc="Constructor & Initialization"></editor-fold>
+    // <editor-fold desc="Getters & Setters">
+    get validDropTypes() {
+        return [ItemType_1.ItemType.Metatype];
+    }
+    get template() {
+        return `systems/shadowrun5e/dist/templates/item/armor.html`;
+    }
+    // </editor-fold>
+    // <editor-fold desc="Instance Methods">
+    getData() {
+        const data = super.getData();
+        console.warn(`SR5ArmorSheet data for ${this.item.name}`);
+        console.warn(data);
+        return data;
+    }
+}
+exports.default = SR5ArmorSheet;
+},{"../types/ItemType":35,"./SR5ItemWithEmbedsSheet":33}],32:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 class SR5BaseItemSheet extends ItemSheet {
+    // <editor-fold desc="Static Properties"></editor-fold>
+    // <editor-fold desc="Static Methods"></editor-fold>
+    // <editor-fold desc="Properties"></editor-fold>
+    // <editor-fold desc="Constructor & Initialization"></editor-fold>
+    // <editor-fold desc="Getters & Setters"></editor-fold>
+    // <editor-fold desc="Instance Methods">
+    getData() {
+        const data = super.getData();
+        console.warn(`SR5BaseItemSheet data for ${this.item.name}`);
+        console.warn(data);
+        return data;
+    }
 }
 exports.default = SR5BaseItemSheet;
-},{}],26:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ItemType = void 0;
+const SR5BaseItemSheet_1 = require("./SR5BaseItemSheet");
+const ItemType_1 = require("../types/ItemType");
+class SR5ItemWithEmbedsSheet extends SR5BaseItemSheet_1.default {
+    _onDragOver(event) {
+        event.preventDefault();
+        console.warn(event);
+        return false;
+    }
+    _onDragStart(event) {
+        console.warn('onDragStart');
+        super._onDragStart(event);
+    }
+    _onDrop(event) {
+        event.preventDefault();
+        event.stopPropagation();
+        console.warn(`_onDrop`);
+        console.warn(event);
+        if (!event.dataTransfer) {
+            return;
+        }
+        let data;
+        let type;
+        try {
+            data = JSON.parse(event.dataTransfer.getData('text/plain'));
+            if (!ItemType_1.isItemType(data.type)) {
+                console.log('Shadowrun5e | Can only drop Items');
+                return;
+            }
+            type = data.type;
+        }
+        catch (err) {
+            console.error('Error Dropping Entity');
+            console.error(event);
+            return;
+        }
+        console.warn(data);
+        console.warn(type);
+        // let item;
+        //
+        // // Case 1 - Data explicitly provided
+        // if (data.data) {
+        //     // TODO test
+        //     if (this.item.isOwned && data.actorId === this.item.actor?._id && data.data._id === this.item._id) {
+        //         console.log('Shadowrun5e | Cant drop item on itself');
+        //         // @ts-ignore
+        //         ui.notifications.error('Are you trying to break the game??');
+        //     }
+        //     item = data;
+        // } else if (data.pack) {
+        //     console.log(data);
+        //     // Case 2 - From a Compendium Pack
+        //     // TODO test
+        //     item = await this._getItemFromCollection(data.pack, data.id);
+        // } else {
+        //     // Case 3 - From a World Entity
+        //     item = game.items.get(data.id);
+        // }
+        //
+        // this.item.createOwnedItem(item.data);
+    }
+}
+exports.default = SR5ItemWithEmbedsSheet;
+},{"../types/ItemType":35,"./SR5BaseItemSheet":32}],34:[function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const SR5BaseItemSheet_1 = require("./SR5BaseItemSheet");
+class SR5MetatypeSheet extends SR5BaseItemSheet_1.default {
+    // <editor-fold desc="Static Properties"></editor-fold>
+    // <editor-fold desc="Static Methods"></editor-fold>
+    // <editor-fold desc="Properties"></editor-fold>
+    // <editor-fold desc="Constructor & Initialization"></editor-fold>
+    // <editor-fold desc="Getters & Setters">
+    get template() {
+        return `systems/shadowrun5e/dist/templates/item/metatype.html`;
+    }
+    // </editor-fold>
+    // <editor-fold desc="Instance Methods">
+    getData() {
+        const data = super.getData();
+        console.warn(`${this.constructor.name} data for ${this.item.name}`);
+        console.warn(data);
+        return data;
+    }
+}
+exports.default = SR5MetatypeSheet;
+},{"./SR5BaseItemSheet":32}],35:[function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.isItemType = exports.ItemType = void 0;
 var ItemType;
 (function (ItemType) {
     ItemType["Weapon"] = "Weapon";
@@ -1291,6 +1547,39 @@ var ItemType;
     ItemType["Ammunition"] = "Ammunition";
     ItemType["Metatype"] = "Metatype";
 })(ItemType = exports.ItemType || (exports.ItemType = {}));
+/**
+ * Type Guard. Returns the string as an item type if possible.
+ * @param value
+ */
+function isItemType(value) {
+    for (const type of Object.values(ItemType)) {
+        if (type.toString() === value) {
+            return true;
+        }
+    }
+    return false;
+}
+exports.isItemType = isItemType;
+},{}],36:[function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.DamageElement = exports.DamageType = void 0;
+var DamageType;
+(function (DamageType) {
+    DamageType["Physical"] = "physical";
+    DamageType["Stun"] = "stun";
+    DamageType["Matrix"] = "matrix";
+})(DamageType = exports.DamageType || (exports.DamageType = {}));
+var DamageElement;
+(function (DamageElement) {
+    DamageElement["Physical"] = "physical";
+    DamageElement["Fire"] = "fire";
+    DamageElement["Cold"] = "cold";
+    DamageElement["Electricity"] = "electricity";
+    DamageElement["Radiation"] = "radiation";
+    DamageElement["Pollution"] = "pollution";
+    // TODO: There are more elements I am sure
+})(DamageElement = exports.DamageElement || (exports.DamageElement = {}));
 },{}]},{},[2])
 
 //# sourceMappingURL=bundle.js.map

@@ -1,6 +1,6 @@
 import SR5BaseItem, { ISR5BaseItemData, ISR5BaseItemDataContainer } from './SR5BaseItem';
-import { ItemType } from './types/ItemType';
 import { AttributeName } from '../common/Attribute';
+import { ItemType } from './types/ItemType';
 
 // Weapon Properties
 export interface WeaponModes {

@@ -1,12 +1,17 @@
 import SR5BaseItem, { ISR5BaseItemData, ISR5BaseItemDataContainer } from './SR5BaseItem';
 import { ItemType } from './types/ItemType';
+import { Attribute, AttributeName, PhysicalAttributeName, RunnerAttributes } from '../common/Attribute';
 
 export interface ISR5MetatypeDataContainer extends ISR5BaseItemDataContainer {
     data: ISR5MetatypeData;
     type: ItemType.Metatype;
 }
 
-export interface ISR5MetatypeData extends ISR5BaseItemData {}
+export interface ISR5MetatypeData extends ISR5BaseItemData {
+    max_attribute: {
+        body: Attribute<PhysicalAttributeName.Body>;
+    };
+}
 
 export default class SR5Metatype extends SR5BaseItem {
     // <editor-fold desc="Static Properties"></editor-fold>
