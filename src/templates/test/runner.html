@@ -1,4 +1,4 @@
-<div>
+<form>
     <!--
     ATM there's no way to allow certain sheets for actors of a type, because Foundry doesn't support
     multiple actor types and we're tricking it more or less. If the user selects an invalid sheet, we
@@ -22,4 +22,4 @@
     {{#each data.skills.active as |skill|}}
     <p>{{skill.name}}: {{skill.value}}, default: {{skill.canDefault}}, specs: {{skill.specializations}}, attribute: {{skill.defaultAttribute}}</p>
     {{/each}} {{/ifne}}
-</div>
+</form>

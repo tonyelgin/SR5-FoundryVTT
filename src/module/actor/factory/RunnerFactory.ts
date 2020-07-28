@@ -1,9 +1,9 @@
-import { ActorFactoryData } from './AbstractActorFactory';
-import { ISR5RunnerDataContainer } from '../SR5Runner';
-import { IPreCreateActorData } from '../../common/Hooks';
+
 import { AttributeName, RunnerAttributes } from '../../common/Attribute';
-import BaseActorFactory from './BaseActorFactory';
 import { ActiveSkillList, ActiveSkillName } from '../../common/Skills';
+import BaseActorFactory from './BaseActorFactory';
+import { ISR5RunnerDataContainer } from '../SR5Runner';
+import { ActorFactoryData, IPreCreateActorData } from './AbstractActorFactory';
 
 export default class RunnerFactory extends BaseActorFactory {
     create(data: IPreCreateActorData): ActorFactoryData<ISR5RunnerDataContainer> {

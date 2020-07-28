@@ -1,6 +1,5 @@
-import AbstractActorFactory, { ActorFactoryData } from './AbstractActorFactory';
 import { ISR5BaseActorDataContainer } from '../SR5BaseActor';
-import { IPreCreateActorData } from '../../common/Hooks';
+import AbstractActorFactory, { ActorFactoryData, IPreCreateActorData } from './AbstractActorFactory';
 
 export default abstract class BaseActorFactory extends AbstractActorFactory<ISR5BaseActorDataContainer> {
     public create(data: IPreCreateActorData): ActorFactoryData<ISR5BaseActorDataContainer> {

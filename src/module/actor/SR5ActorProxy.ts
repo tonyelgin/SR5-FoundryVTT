@@ -2,8 +2,7 @@ import SR5Runner from './SR5Runner';
 import SR5Grunt from './SR5Grunt';
 import { ActorType } from './types/ActorType';
 import SR5BaseActor, { ISR5BaseActorDataContainer } from './SR5BaseActor';
-import { IPreCreateActorData, IPreCreateActorOptions } from '../common/Hooks';
-import AbstractActorFactory from './factory/AbstractActorFactory';
+import AbstractActorFactory, { IPreCreateActorData, IPreCreateActorOptions } from './factory/AbstractActorFactory';
 import RunnerFactory from './factory/RunnerFactory';
 import GruntFactory from './factory/GruntFactory';
 
@@ -13,7 +12,7 @@ export default class SR5ActorProxy extends Actor {
 
     static async create(data: IPreCreateActorData, options: IPreCreateActorOptions): Promise<Entity> {
         // We use a factory for default data instead of the template. This allows
-        // us to correctly syncronize our internal types - the data template is
+        // us to correctly synchronize our internal types - the data template is
         // instead used only to create containers in which the data will be stored
         // Handling this internally has a number of benefits. Mostly it allows strong
         // and more thorough typing of data where the JSON template does not.

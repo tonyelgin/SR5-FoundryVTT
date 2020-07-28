@@ -1,7 +1,7 @@
 export enum ItemType {
     Weapon = 'Weapon',
     Armor = 'Armor',
-    Device = 'Device',
-    Program = 'Program',
+    // Device = 'Device',
+    // Program = 'Program',
     Ammunition = 'Ammunition',
 }

@@ -46,6 +46,9 @@ class Setup {
         CONFIG.Item.entityClass = SR5ItemProxy_1.default;
         Items.unregisterSheet('core', ItemSheet);
         Items.registerSheet(Constants_1.SYSTEM_NAME, SR5BaseItemSheet_1.default, { makeDefault: true });
+        Hooks.on('preCreateItem', (...args) => {
+            console.warn(args);
+        });
         // Register Handlebars Helpers
         // if equal
         Handlebars.registerHelper('ife', function (v1, v2, options) {
@@ -110,7 +113,7 @@ class Setup {
     }
 }
 exports.default = Setup;
-},{"./Constants":1,"./actor/SR5ActorProxy":4,"./actor/sheet/SR5BaseActorSheet":12,"./actor/sheet/SR5GruntSheet":13,"./actor/sheet/SR5RunnerSheet":14,"./item/SR5ItemProxy":20,"./item/sheet/SR5BaseItemSheet":22}],4:[function(require,module,exports){
+},{"./Constants":1,"./actor/SR5ActorProxy":4,"./actor/sheet/SR5BaseActorSheet":12,"./actor/sheet/SR5GruntSheet":13,"./actor/sheet/SR5RunnerSheet":14,"./item/SR5ItemProxy":18,"./item/sheet/SR5BaseItemSheet":24}],4:[function(require,module,exports){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -149,7 +152,7 @@ class SR5ActorProxy extends Actor {
         });
         return __awaiter(this, void 0, void 0, function* () {
             // We use a factory for default data instead of the template. This allows
-            // us to correctly syncronize our internal types - the data template is
+            // us to correctly synchronize our internal types - the data template is
             // instead used only to create containers in which the data will be stored
             // Handling this internally has a number of benefits. Mostly it allows strong
             // and more thorough typing of data where the JSON template does not.
@@ -291,8 +294,8 @@ exports.default = GruntFactory;
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const Attribute_1 = require("../../common/Attribute");
-const BaseActorFactory_1 = require("./BaseActorFactory");
 const Skills_1 = require("../../common/Skills");
+const BaseActorFactory_1 = require("./BaseActorFactory");
 class RunnerFactory extends BaseActorFactory_1.default {
     create(data) {
         const superData = super.create(data);
@@ -1146,48 +1149,49 @@ var KnowledgeSkillType;
 })(KnowledgeSkillType = exports.KnowledgeSkillType || (exports.KnowledgeSkillType = {}));
 },{}],18:[function(require,module,exports){
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const SR5BaseItem_1 = require("./SR5BaseItem");
-class SR5Armor extends SR5BaseItem_1.default {
-}
-exports.default = SR5Armor;
-},{"./SR5BaseItem":19}],19:[function(require,module,exports){
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-class SR5BaseItem extends Item {
-    // </editor-fold>
-    // <editor-fold desc="Constructor & Initialization">
-    constructor(data, options) {
-        super(data, options);
-        console.warn(`Created a new ${this.constructor.name}`);
-    }
-}
-exports.default = SR5BaseItem;
-},{}],20:[function(require,module,exports){
-"use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const ItemType_1 = require("./types/ItemType");
-const SR5Weapon_1 = require("./SR5Weapon");
-const SR5Armor_1 = require("./SR5Armor");
+const ArmorFactory_1 = require("./factory/ArmorFactory");
+const WeaponFactory_1 = require("./factory/WeaponFactory");
+const AmmunitionFactory_1 = require("./factory/AmmunitionFactory");
 class SR5ItemProxy extends Item {
     // </editor-fold>
     // <editor-fold desc="Constructor & Initialization">
-    constructor(data, options) {
-        super(data, options);
-        switch (data.type) {
-            case ItemType_1.ItemType.Weapon:
-                this._implementation = new SR5Weapon_1.default(data, options);
-                break;
-            case ItemType_1.ItemType.Armor:
-                this._implementation = new SR5Armor_1.default(data, options);
-                break;
-            case ItemType_1.ItemType.Device:
-                break;
-            case ItemType_1.ItemType.Program:
-                break;
-            case ItemType_1.ItemType.Ammunition:
-                break;
-        }
+    static create(data, options) {
+        const _super = Object.create(null, {
+            create: { get: () => super.create }
+        });
+        return __awaiter(this, void 0, void 0, function* () {
+            // We use a factory for default data instead of the template. This allows
+            // us to correctly synchronize our internal types - the data template is
+            // instead used only to create containers in which the data will be stored
+            // Handling this internally has a number of benefits. Mostly it allows strong
+            // and more thorough typing of data where the JSON template does not.
+            let factory;
+            switch (data.type) {
+                case ItemType_1.ItemType.Weapon:
+                    factory = new WeaponFactory_1.default();
+                    break;
+                case ItemType_1.ItemType.Armor:
+                    factory = new ArmorFactory_1.default();
+                    break;
+                case ItemType_1.ItemType.Ammunition:
+                    factory = new AmmunitionFactory_1.default();
+                    break;
+            }
+            // This will only compile if *every* actor type is handled
+            const factoryData = factory.create(data);
+            return _super.create.call(this, factoryData, options);
+        });
     }
     // </editor-fold>
     // <editor-fold desc="Getters & Setters"></editor-fold>
@@ -1198,20 +1202,67 @@ class SR5ItemProxy extends Item {
     }
 }
 exports.default = SR5ItemProxy;
-},{"./SR5Armor":18,"./SR5Weapon":21,"./types/ItemType":23}],21:[function(require,module,exports){
+},{"./factory/AmmunitionFactory":20,"./factory/ArmorFactory":21,"./factory/WeaponFactory":23,"./types/ItemType":25}],19:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const SR5BaseItem_1 = require("./SR5BaseItem");
-class SR5Weapon extends SR5BaseItem_1.default {
+class AbstractItemFactory {
 }
-exports.default = SR5Weapon;
-},{"./SR5BaseItem":19}],22:[function(require,module,exports){
+exports.default = AbstractItemFactory;
+},{}],20:[function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const BaseItemFactory_1 = require("./BaseItemFactory");
+const ItemType_1 = require("../types/ItemType");
+class AmmunitionFactory extends BaseItemFactory_1.default {
+    create(data) {
+        return Object.assign(Object.assign({}, super.create(data)), { type: ItemType_1.ItemType.Ammunition });
+    }
+}
+exports.default = AmmunitionFactory;
+},{"../types/ItemType":25,"./BaseItemFactory":22}],21:[function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const BaseItemFactory_1 = require("./BaseItemFactory");
+const ItemType_1 = require("../types/ItemType");
+class ArmorFactory extends BaseItemFactory_1.default {
+    create(data) {
+        return Object.assign(Object.assign({}, super.create(data)), { type: ItemType_1.ItemType.Armor });
+    }
+}
+exports.default = ArmorFactory;
+},{"../types/ItemType":25,"./BaseItemFactory":22}],22:[function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const AbstractItemFactory_1 = require("./AbstractItemFactory");
+class BaseItemFactory extends AbstractItemFactory_1.default {
+    create(data) {
+        return {
+            data: {},
+            flags: {},
+            name: data.name,
+            type: data.type,
+        };
+    }
+}
+exports.default = BaseItemFactory;
+},{"./AbstractItemFactory":19}],23:[function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const BaseItemFactory_1 = require("./BaseItemFactory");
+const ItemType_1 = require("../types/ItemType");
+class WeaponFactory extends BaseItemFactory_1.default {
+    create(data) {
+        return Object.assign(Object.assign({}, super.create(data)), { type: ItemType_1.ItemType.Weapon });
+    }
+}
+exports.default = WeaponFactory;
+},{"../types/ItemType":25,"./BaseItemFactory":22}],24:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 class SR5BaseItemSheet extends ItemSheet {
 }
 exports.default = SR5BaseItemSheet;
-},{}],23:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ItemType = void 0;
@@ -1219,8 +1270,8 @@ var ItemType;
 (function (ItemType) {
     ItemType["Weapon"] = "Weapon";
     ItemType["Armor"] = "Armor";
-    ItemType["Device"] = "Device";
-    ItemType["Program"] = "Program";
+    // Device = 'Device',
+    // Program = 'Program',
     ItemType["Ammunition"] = "Ammunition";
 })(ItemType = exports.ItemType || (exports.ItemType = {}));
 },{}]},{},[2])

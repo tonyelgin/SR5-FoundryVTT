@@ -1,7 +1,7 @@
+
 import BaseActorFactory from './BaseActorFactory';
-import { IPreCreateActorData } from '../../common/Hooks';
 import { ISR5GruntDataContainer } from '../SR5Grunt';
-import { ActorFactoryData } from './AbstractActorFactory';
+import { ActorFactoryData, IPreCreateActorData } from './AbstractActorFactory';
 
 export default class GruntFactory extends BaseActorFactory {
     create(data: IPreCreateActorData): ActorFactoryData<ISR5GruntDataContainer> {

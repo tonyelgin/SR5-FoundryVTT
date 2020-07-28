@@ -27,6 +27,10 @@ export default class Setup {
         Items.unregisterSheet('core', ItemSheet);
         Items.registerSheet(SYSTEM_NAME, SR5BaseItemSheet, { makeDefault: true });
 
+        Hooks.on('preCreateItem', (...args) => {
+            console.warn(args);
+        });
+
         // Register Handlebars Helpers
         // if equal
         Handlebars.registerHelper('ife', function (v1, v2, options) {
