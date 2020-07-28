@@ -4,4 +4,5 @@ export enum ItemType {
     // Device = 'Device',
     // Program = 'Program',
     Ammunition = 'Ammunition',
+    Metatype = 'Metatype',
 }

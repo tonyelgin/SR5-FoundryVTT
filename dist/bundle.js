@@ -113,7 +113,7 @@ class Setup {
     }
 }
 exports.default = Setup;
-},{"./Constants":1,"./actor/SR5ActorProxy":4,"./actor/sheet/SR5BaseActorSheet":12,"./actor/sheet/SR5GruntSheet":13,"./actor/sheet/SR5RunnerSheet":14,"./item/SR5ItemProxy":18,"./item/sheet/SR5BaseItemSheet":24}],4:[function(require,module,exports){
+},{"./Constants":1,"./actor/SR5ActorProxy":4,"./actor/sheet/SR5BaseActorSheet":12,"./actor/sheet/SR5GruntSheet":13,"./actor/sheet/SR5RunnerSheet":14,"./item/SR5ItemProxy":18,"./item/sheet/SR5BaseItemSheet":25}],4:[function(require,module,exports){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -271,11 +271,11 @@ const AbstractActorFactory_1 = require("./AbstractActorFactory");
 class BaseActorFactory extends AbstractActorFactory_1.default {
     create(data) {
         return {
+            name: data.name,
+            type: data.type,
             data: {},
             flags: {},
             img: '',
-            name: data.name,
-            type: data.type,
         };
     }
 }
@@ -284,13 +284,14 @@ exports.default = BaseActorFactory;
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const BaseActorFactory_1 = require("./BaseActorFactory");
+const ActorType_1 = require("../types/ActorType");
 class GruntFactory extends BaseActorFactory_1.default {
     create(data) {
-        return super.create(data);
+        return Object.assign(Object.assign({}, super.create(data)), { type: ActorType_1.ActorType.Grunt });
     }
 }
 exports.default = GruntFactory;
-},{"./BaseActorFactory":9}],11:[function(require,module,exports){
+},{"../types/ActorType":15,"./BaseActorFactory":9}],11:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const Attribute_1 = require("../../common/Attribute");
@@ -1163,6 +1164,7 @@ const ItemType_1 = require("./types/ItemType");
 const ArmorFactory_1 = require("./factory/ArmorFactory");
 const WeaponFactory_1 = require("./factory/WeaponFactory");
 const AmmunitionFactory_1 = require("./factory/AmmunitionFactory");
+const MetatypeFactory_1 = require("./factory/MetatypeFactory");
 class SR5ItemProxy extends Item {
     // </editor-fold>
     // <editor-fold desc="Constructor & Initialization">
@@ -1187,6 +1189,9 @@ class SR5ItemProxy extends Item {
                 case ItemType_1.ItemType.Ammunition:
                     factory = new AmmunitionFactory_1.default();
                     break;
+                case ItemType_1.ItemType.Metatype:
+                    factory = new MetatypeFactory_1.default();
+                    break;
             }
             // This will only compile if *every* actor type is handled
             const factoryData = factory.create(data);
@@ -1202,7 +1207,7 @@ class SR5ItemProxy extends Item {
     }
 }
 exports.default = SR5ItemProxy;
-},{"./factory/AmmunitionFactory":20,"./factory/ArmorFactory":21,"./factory/WeaponFactory":23,"./types/ItemType":25}],19:[function(require,module,exports){
+},{"./factory/AmmunitionFactory":20,"./factory/ArmorFactory":21,"./factory/MetatypeFactory":23,"./factory/WeaponFactory":24,"./types/ItemType":26}],19:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 class AbstractItemFactory {
@@ -1219,7 +1224,7 @@ class AmmunitionFactory extends BaseItemFactory_1.default {
     }
 }
 exports.default = AmmunitionFactory;
-},{"../types/ItemType":25,"./BaseItemFactory":22}],21:[function(require,module,exports){
+},{"../types/ItemType":26,"./BaseItemFactory":22}],21:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const BaseItemFactory_1 = require("./BaseItemFactory");
@@ -1230,7 +1235,7 @@ class ArmorFactory extends BaseItemFactory_1.default {
     }
 }
 exports.default = ArmorFactory;
-},{"../types/ItemType":25,"./BaseItemFactory":22}],22:[function(require,module,exports){
+},{"../types/ItemType":26,"./BaseItemFactory":22}],22:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const AbstractItemFactory_1 = require("./AbstractItemFactory");
@@ -1250,19 +1255,30 @@ exports.default = BaseItemFactory;
 Object.defineProperty(exports, "__esModule", { value: true });
 const BaseItemFactory_1 = require("./BaseItemFactory");
 const ItemType_1 = require("../types/ItemType");
+class MetatypeFactory extends BaseItemFactory_1.default {
+    create(data) {
+        return Object.assign(Object.assign({}, super.create(data)), { type: ItemType_1.ItemType.Metatype });
+    }
+}
+exports.default = MetatypeFactory;
+},{"../types/ItemType":26,"./BaseItemFactory":22}],24:[function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const BaseItemFactory_1 = require("./BaseItemFactory");
+const ItemType_1 = require("../types/ItemType");
 class WeaponFactory extends BaseItemFactory_1.default {
     create(data) {
         return Object.assign(Object.assign({}, super.create(data)), { type: ItemType_1.ItemType.Weapon });
     }
 }
 exports.default = WeaponFactory;
-},{"../types/ItemType":25,"./BaseItemFactory":22}],24:[function(require,module,exports){
+},{"../types/ItemType":26,"./BaseItemFactory":22}],25:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 class SR5BaseItemSheet extends ItemSheet {
 }
 exports.default = SR5BaseItemSheet;
-},{}],25:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ItemType = void 0;
@@ -1273,6 +1289,7 @@ var ItemType;
     // Device = 'Device',
     // Program = 'Program',
     ItemType["Ammunition"] = "Ammunition";
+    ItemType["Metatype"] = "Metatype";
 })(ItemType = exports.ItemType || (exports.ItemType = {}));
 },{}]},{},[2])
 

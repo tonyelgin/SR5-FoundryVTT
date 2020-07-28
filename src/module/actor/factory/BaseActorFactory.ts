@@ -4,11 +4,11 @@ import AbstractActorFactory, { ActorFactoryData, IPreCreateActorData } from './A
 export default abstract class BaseActorFactory extends AbstractActorFactory<ISR5BaseActorDataContainer> {
     public create(data: IPreCreateActorData): ActorFactoryData<ISR5BaseActorDataContainer> {
         return {
+            name: data.name,
+            type: data.type,
             data: {},
             flags: {},
             img: '',
-            name: data.name,
-            type: data.type,
         };
     }
 }

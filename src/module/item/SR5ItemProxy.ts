@@ -4,6 +4,7 @@ import { ItemType } from './types/ItemType';
 import ArmorFactory from './factory/ArmorFactory';
 import WeaponFactory from './factory/WeaponFactory';
 import AmmunitionFactory from './factory/AmmunitionFactory';
+import MetatypeFactory from './factory/MetatypeFactory';
 
 export default class SR5ItemProxy extends Item {
     // <editor-fold desc="Static Properties"></editor-fold>
@@ -30,6 +31,9 @@ export default class SR5ItemProxy extends Item {
                 break;
             case ItemType.Ammunition:
                 factory = new AmmunitionFactory();
+                break;
+            case ItemType.Metatype:
+                factory = new MetatypeFactory();
                 break;
         }
         // This will only compile if *every* actor type is handled

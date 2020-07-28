@@ -3,6 +3,7 @@ import { ActorType } from './types/ActorType';
 
 export interface ISR5GruntDataContainer extends ISR5BaseActorDataContainer {
     data: ISR5GruntData;
+    type: ActorType.Grunt;
 }
 export interface ISR5GruntData extends ISR5BaseActorData {}
 

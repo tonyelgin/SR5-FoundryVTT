@@ -32,7 +32,7 @@ export interface WeaponRanges {
     attribute: AttributeName;
 }
 
-// Alias encase we change later
+// Alias in case we change later
 export type WeaponRecoil = number;
 
 export enum WeaponType {
