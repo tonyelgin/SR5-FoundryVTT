@@ -13,13 +13,7 @@
     {{else}}
     <h1>Runner</h1>
 
-    <h2>Attributes</h2>
-    {{#each data.attributes as |attribute|}}
-    <div>
-        <label>{{attribute.name}}</label>
-        <input type="number" name="data.attributes.{{ attribute.name }}.value" value="{{attribute.value}}" />
-    </div>
-    {{/each}}
+    {{> "systems/shadowrun5e/dist/templates/common/parts/attributes.html"}}
 
     <h2>Skills</h2>
     {{#each data.skills.active as |skill|}}
