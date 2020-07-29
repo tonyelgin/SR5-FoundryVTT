@@ -9,6 +9,7 @@ export default class ArmorFactory extends ItemWithEmbedsFactory {
     create(data: IPreCreateItemData): ItemFactoryData<ISR5ArmorDataContainer> {
         const superData = super.create(data);
         return {
+            _id: superData._id,
             name: superData.name,
             type: ItemType.Armor,
             data: {

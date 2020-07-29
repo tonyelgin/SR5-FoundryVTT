@@ -1,8 +1,10 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.SYSTEM_NAME = void 0;
+exports.EMBEDDED_ACTORS_KEY = exports.EMBEDDED_ITEMS_KEY = exports.SYSTEM_NAME = void 0;
 exports.SYSTEM_NAME = 'shadowrun5e';
+exports.EMBEDDED_ITEMS_KEY = 'embeddedItems';
+exports.EMBEDDED_ACTORS_KEY = 'embeddedActors';
 },{}],2:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
@@ -48,9 +50,8 @@ class Setup {
         Items.unregisterSheet('core', ItemSheet);
         Items.registerSheet(Constants_1.SYSTEM_NAME, SR5ArmorSheet_1.default, { makeDefault: true });
         Items.registerSheet(Constants_1.SYSTEM_NAME, SR5MetatypeSheet_1.default, { makeDefault: false });
-        Hooks.on('preCreateItem', (...args) => {
-            console.warn(args);
-        });
+        // Bind all required Foundry Hooks
+        Setup.bindHooks();
         // Register Handlebars Helpers
         Setup.handlebarsHelpers();
         // Above code will run synchronously with Foundry
@@ -61,8 +62,7 @@ class Setup {
         return __awaiter(this, void 0, void 0, function* () { });
     }
     static ready() {
-        return __awaiter(this, void 0, void 0, function* () {
-        });
+        return __awaiter(this, void 0, void 0, function* () { });
     }
     static handlebarsHelpers() {
         // if equal
@@ -122,9 +122,14 @@ class Setup {
             return loadTemplates(['systems/shadowrun5e/dist/templates/common/parts/attributes.html']);
         });
     }
+    static bindHooks() {
+        Hooks.on('preCreateItem', (...args) => {
+            console.warn(args);
+        });
+    }
 }
 exports.default = Setup;
-},{"./Constants":1,"./actor/SR5ActorProxy":4,"./actor/sheet/SR5BaseActorSheet":12,"./actor/sheet/SR5GruntSheet":13,"./actor/sheet/SR5RunnerSheet":14,"./item/SR5ItemProxy":21,"./item/sheet/SR5ArmorSheet":31,"./item/sheet/SR5MetatypeSheet":34}],4:[function(require,module,exports){
+},{"./Constants":1,"./actor/SR5ActorProxy":4,"./actor/sheet/SR5BaseActorSheet":12,"./actor/sheet/SR5GruntSheet":13,"./actor/sheet/SR5RunnerSheet":14,"./item/SR5ItemProxy":22,"./item/sheet/SR5ArmorSheet":33,"./item/sheet/SR5MetatypeSheet":36}],4:[function(require,module,exports){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -887,7 +892,7 @@ class RunnerFactory extends BaseActorFactory_1.default {
     }
 }
 exports.default = RunnerFactory;
-},{"../../common/Attribute":16,"../../common/Skills":17,"./BaseActorFactory":9}],12:[function(require,module,exports){
+},{"../../common/Attribute":16,"../../common/Skills":18,"./BaseActorFactory":9}],12:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const ActorType_1 = require("../types/ActorType");
@@ -1034,6 +1039,24 @@ exports.RunnerAttributeName = Object.assign(Object.assign(Object.assign({}, Phys
 },{}],17:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.getBaseItemData = void 0;
+/**
+ * Helper to get base item data
+ * @param item
+ */
+function getBaseItemData(item) {
+    return {
+        _id: item._id,
+        name: item.name,
+        type: item.data.type,
+        data: item.data,
+        flags: item.data.flags,
+    };
+}
+exports.getBaseItemData = getBaseItemData;
+},{}],18:[function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.KnowledgeSkillType = exports.SkillGroupName = exports.ActiveSkillName = exports.VehicleSkillName = exports.TechnicalSkillName = exports.SocialSkillName = exports.ResonanceSkillName = exports.PhysicalSkillName = exports.MagicalSkillName = exports.CombatSkillName = void 0;
 var CombatSkillName;
 (function (CombatSkillName) {
@@ -1158,21 +1181,28 @@ var KnowledgeSkillType;
     KnowledgeSkillType["Interest"] = "interest";
     KnowledgeSkillType["Language"] = "language";
 })(KnowledgeSkillType = exports.KnowledgeSkillType || (exports.KnowledgeSkillType = {}));
-},{}],18:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const SR5BaseItem_1 = require("./SR5BaseItem");
 class SR5Ammunition extends SR5BaseItem_1.default {
 }
 exports.default = SR5Ammunition;
-},{"./SR5BaseItem":20}],19:[function(require,module,exports){
+},{"./SR5BaseItem":21}],20:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const SR5BaseItem_1 = require("./SR5BaseItem");
-class SR5Armor extends SR5BaseItem_1.default {
+const ItemType_1 = require("./types/ItemType");
+const SR5ItemWithEmbeds_1 = require("./SR5ItemWithEmbeds");
+class SR5Armor extends SR5ItemWithEmbeds_1.default {
+    // </editor-fold>
+    // <editor-fold desc="Constructor & Initialization"></editor-fold>
+    // <editor-fold desc="Getters & Setters">
+    get allowedEmbeddedItemTypes() {
+        return [ItemType_1.ItemType.Metatype];
+    }
 }
 exports.default = SR5Armor;
-},{"./SR5BaseItem":20}],20:[function(require,module,exports){
+},{"./SR5ItemWithEmbeds":23,"./types/ItemType":37}],21:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 class SR5BaseItem extends Item {
@@ -1183,7 +1213,7 @@ class SR5BaseItem extends Item {
     }
 }
 exports.default = SR5BaseItem;
-},{}],21:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -1257,7 +1287,11 @@ class SR5ItemProxy extends Item {
         });
     }
     // </editor-fold>
-    // <editor-fold desc="Getters & Setters"></editor-fold>
+    // <editor-fold desc="Getters & Setters">
+    get Impl() {
+        return this._implementation;
+    }
+    // </editor-fold>
     // <editor-fold desc="Instance Methods">
     /** @override */
     update(data, options) {
@@ -1265,14 +1299,103 @@ class SR5ItemProxy extends Item {
     }
 }
 exports.default = SR5ItemProxy;
-},{"./SR5Ammunition":18,"./SR5Armor":19,"./SR5Metatype":22,"./SR5Weapon":23,"./factory/AmmunitionFactory":25,"./factory/ArmorFactory":26,"./factory/MetatypeFactory":29,"./factory/WeaponFactory":30,"./types/ItemType":35}],22:[function(require,module,exports){
+},{"./SR5Ammunition":19,"./SR5Armor":20,"./SR5Metatype":24,"./SR5Weapon":25,"./factory/AmmunitionFactory":27,"./factory/ArmorFactory":28,"./factory/MetatypeFactory":31,"./factory/WeaponFactory":32,"./types/ItemType":37}],23:[function(require,module,exports){
+"use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const SR5BaseItem_1 = require("./SR5BaseItem");
+const Constants_1 = require("../Constants");
+class SR5ItemWithEmbeds extends SR5BaseItem_1.default {
+    /**
+     * Overridable value - default behavior checks this field to see if id-based
+     * duplicates should be permitted.
+     */
+    get allowDuplicateEmbeddedItems() {
+        return true;
+    }
+    // </editor-fold>
+    // <editor-fold desc="Instance Methods">
+    /**
+     * Return an array of all embedded item instances contained within this item.
+     */
+    getEmbeddedItems() {
+        // Factory ensures this exists.
+        return this.getFlag(Constants_1.SYSTEM_NAME, Constants_1.EMBEDDED_ITEMS_KEY) || [];
+    }
+    /**
+     * Set the embeddedItems map to the newly provided array
+     * @param items
+     */
+    setEmbeddedItems(items) {
+        return __awaiter(this, void 0, void 0, function* () {
+            console.warn(`attempting embedded item set`);
+            console.warn(this);
+            console.warn(items);
+            // Unset clears old items, otherwise Foundry merges old + new by default
+            // TODO: Race condition.
+            //  If another request to add an item for example is dispatched between the unset and set
+            //  the read will show 0 items, which will cause items to be "cleared". As such I'm just
+            //  disabling the unset for now - this will probably be solved with a specific removeItem
+            //  method that performs a single atomic operation that can't be intercepted as easily.
+            // await this.unsetFlag(SYSTEM_NAME, EMBEDDED_ITEMS_KEY);
+            return this.setFlag(Constants_1.SYSTEM_NAME, Constants_1.EMBEDDED_ITEMS_KEY, items);
+        });
+    }
+    /**
+     * Returns whether the provide item is able to be embedded into this item.
+     * @param itemData
+     */
+    isEmbeddable(itemData) {
+        return this.allowedEmbeddedItemTypes.includes(itemData.type);
+    }
+    preAddEmbeddedItem(itemData) { }
+    /**
+     * Add an item to the collection of embedded items
+     * @param itemData
+     * @param render If the sheet should be re-rendered after adding
+     */
+    addEmbeddedItem(itemData, render = true) {
+        return __awaiter(this, void 0, void 0, function* () {
+            console.warn(`attempting embedded item insert`);
+            console.warn(this);
+            console.warn(itemData);
+            if (!this.isEmbeddable(itemData)) {
+                throw new Error(`Tried to embedded a ${itemData.type} in a ${this.data.type} - this is not allowed.`);
+            }
+            const currentItems = this.getEmbeddedItems();
+            if (currentItems.find((item) => item._id === itemData._id) && !this.allowDuplicateEmbeddedItems) {
+                throw new Error(`Tried to embedded ${itemData._id} but duplicates are disabled and it already exists.`);
+            }
+            currentItems.push(itemData);
+            yield this.setEmbeddedItems(currentItems);
+            // prepareData has a chicken-egg scenario
+            yield this.prepareData();
+            yield this.prepareEmbeddedEntities();
+            yield this.prepareData();
+            yield this.render(render);
+        });
+    }
+    updateEmbeddedItem(itemData, render = true) {
+        return __awaiter(this, void 0, void 0, function* () { });
+    }
+}
+exports.default = SR5ItemWithEmbeds;
+},{"../Constants":1,"./SR5BaseItem":21}],24:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const SR5BaseItem_1 = require("./SR5BaseItem");
 class SR5Metatype extends SR5BaseItem_1.default {
 }
 exports.default = SR5Metatype;
-},{"./SR5BaseItem":20}],23:[function(require,module,exports){
+},{"./SR5BaseItem":21}],25:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.WeaponType = void 0;
@@ -1287,13 +1410,13 @@ var WeaponType;
 class SR5Weapon extends SR5BaseItem_1.default {
 }
 exports.default = SR5Weapon;
-},{"./SR5BaseItem":20}],24:[function(require,module,exports){
+},{"./SR5BaseItem":21}],26:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 class AbstractItemFactory {
 }
 exports.default = AbstractItemFactory;
-},{}],25:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const BaseItemFactory_1 = require("./BaseItemFactory");
@@ -1304,7 +1427,7 @@ class AmmunitionFactory extends BaseItemFactory_1.default {
     }
 }
 exports.default = AmmunitionFactory;
-},{"../types/ItemType":35,"./BaseItemFactory":27}],26:[function(require,module,exports){
+},{"../types/ItemType":37,"./BaseItemFactory":29}],28:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const ItemType_1 = require("../types/ItemType");
@@ -1314,6 +1437,7 @@ class ArmorFactory extends ItemWithEmbedsFactory_1.default {
     create(data) {
         const superData = super.create(data);
         return {
+            _id: superData._id,
             name: superData.name,
             type: ItemType_1.ItemType.Armor,
             data: Object.assign(Object.assign({}, superData.data), { armor: {
@@ -1340,12 +1464,12 @@ class ArmorFactory extends ItemWithEmbedsFactory_1.default {
                         },
                     },
                 } }),
-            flags: superData.flags
+            flags: superData.flags,
         };
     }
 }
 exports.default = ArmorFactory;
-},{"../../types/common/Damage":36,"../types/ItemType":35,"./ItemWithEmbedsFactory":28}],27:[function(require,module,exports){
+},{"../../types/common/Damage":38,"../types/ItemType":37,"./ItemWithEmbedsFactory":30}],29:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const AbstractItemFactory_1 = require("./AbstractItemFactory");
@@ -1356,22 +1480,24 @@ class BaseItemFactory extends AbstractItemFactory_1.default {
             flags: {},
             name: data.name,
             type: data.type,
+            // '' still forces foundry to generate which is the desired behavior
+            _id: '',
         };
     }
 }
 exports.default = BaseItemFactory;
-},{"./AbstractItemFactory":24}],28:[function(require,module,exports){
+},{"./AbstractItemFactory":26}],30:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const BaseItemFactory_1 = require("./BaseItemFactory");
 class ItemWithEmbedsFactory extends BaseItemFactory_1.default {
     create(data) {
         const superData = super.create(data);
-        return Object.assign(Object.assign({}, superData), { flags: Object.assign(Object.assign({}, superData.flags), { embeddedItems: [] }) });
+        return Object.assign({}, superData);
     }
 }
 exports.default = ItemWithEmbedsFactory;
-},{"./BaseItemFactory":27}],29:[function(require,module,exports){
+},{"./BaseItemFactory":29}],31:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const BaseItemFactory_1 = require("./BaseItemFactory");
@@ -1390,7 +1516,7 @@ class MetatypeFactory extends BaseItemFactory_1.default {
     }
 }
 exports.default = MetatypeFactory;
-},{"../../common/Attribute":16,"../types/ItemType":35,"./BaseItemFactory":27}],30:[function(require,module,exports){
+},{"../../common/Attribute":16,"../types/ItemType":37,"./BaseItemFactory":29}],32:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const BaseItemFactory_1 = require("./BaseItemFactory");
@@ -1401,20 +1527,16 @@ class WeaponFactory extends BaseItemFactory_1.default {
     }
 }
 exports.default = WeaponFactory;
-},{"../types/ItemType":35,"./BaseItemFactory":27}],31:[function(require,module,exports){
+},{"../types/ItemType":37,"./BaseItemFactory":29}],33:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const SR5ItemWithEmbedsSheet_1 = require("./SR5ItemWithEmbedsSheet");
-const ItemType_1 = require("../types/ItemType");
 class SR5ArmorSheet extends SR5ItemWithEmbedsSheet_1.default {
     // <editor-fold desc="Static Properties"></editor-fold>
     // <editor-fold desc="Static Methods"></editor-fold>
     // <editor-fold desc="Properties"></editor-fold>
     // <editor-fold desc="Constructor & Initialization"></editor-fold>
     // <editor-fold desc="Getters & Setters">
-    get validDropTypes() {
-        return [ItemType_1.ItemType.Metatype];
-    }
     get template() {
         return `systems/shadowrun5e/dist/templates/item/armor.html`;
     }
@@ -1422,96 +1544,116 @@ class SR5ArmorSheet extends SR5ItemWithEmbedsSheet_1.default {
     // <editor-fold desc="Instance Methods">
     getData() {
         const data = super.getData();
-        console.warn(`SR5ArmorSheet data for ${this.item.name}`);
-        console.warn(data);
         return data;
     }
 }
 exports.default = SR5ArmorSheet;
-},{"../types/ItemType":35,"./SR5ItemWithEmbedsSheet":33}],32:[function(require,module,exports){
+},{"./SR5ItemWithEmbedsSheet":35}],34:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 class SR5BaseItemSheet extends ItemSheet {
-    // <editor-fold desc="Static Properties"></editor-fold>
+    // <editor-fold desc="Static Properties">
+    static get defaultOptions() {
+        var _a;
+        const options = super.defaultOptions;
+        (_a = options.classes) === null || _a === void 0 ? void 0 : _a.push('sr5', 'item');
+        return options;
+    }
+    // </editor-fold>
     // <editor-fold desc="Static Methods"></editor-fold>
     // <editor-fold desc="Properties"></editor-fold>
     // <editor-fold desc="Constructor & Initialization"></editor-fold>
     // <editor-fold desc="Getters & Setters"></editor-fold>
     // <editor-fold desc="Instance Methods">
+    _onDragStart(event) {
+        super._onDragStart(event);
+    }
     getData() {
         const data = super.getData();
-        console.warn(`SR5BaseItemSheet data for ${this.item.name}`);
-        console.warn(data);
         return data;
     }
 }
 exports.default = SR5BaseItemSheet;
-},{}],33:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const SR5BaseItemSheet_1 = require("./SR5BaseItemSheet");
 const ItemType_1 = require("../types/ItemType");
+const Helpers_1 = require("../../common/Helpers");
 class SR5ItemWithEmbedsSheet extends SR5BaseItemSheet_1.default {
+    get item() {
+        // TODO: Can we safely cast this?
+        return super.item;
+    }
+    activateListeners(html) {
+        super.activateListeners(html);
+        const form = $(this.form);
+        form.on('drop', this._onDrop.bind(this));
+        form.on('dragover', this._onDragOver.bind(this));
+    }
     _onDragOver(event) {
         event.preventDefault();
-        console.warn(event);
-        return false;
-    }
-    _onDragStart(event) {
-        console.warn('onDragStart');
-        super._onDragStart(event);
+        return true;
     }
     _onDrop(event) {
+        var _a;
         event.preventDefault();
         event.stopPropagation();
         console.warn(`_onDrop`);
         console.warn(event);
-        if (!event.dataTransfer) {
-            return;
-        }
-        let data;
-        let type;
-        try {
-            data = JSON.parse(event.dataTransfer.getData('text/plain'));
-            if (!ItemType_1.isItemType(data.type)) {
-                console.log('Shadowrun5e | Can only drop Items');
+        // @ts-ignore
+        console.warn(event.originalEvent.dataTransfer.getData('text/plain'));
+        if (event.originalEvent) {
+            const dropArgs = (_a = event.originalEvent.dataTransfer) === null || _a === void 0 ? void 0 : _a.getData('text/plain');
+            if (dropArgs === undefined) {
                 return;
             }
-            type = data.type;
+            const parsedArgs = JSON.parse(dropArgs);
+            if (parsedArgs.type && parsedArgs.type === 'Item') {
+                const id = parsedArgs.id;
+                let item = game.items.get(id);
+                // ensure item is of our item types
+                if (!ItemType_1.isItemType(item.data.type)) {
+                    return;
+                }
+                // Can't recurse items infinitely
+                if (item.id === this.item.id) {
+                    return;
+                }
+                // now safe to cast
+                const sr5item = item;
+                // TODO: Can we safely cast this? It *should* be fine given the many layers of checks we have now.
+                const insertTo = this.item.Impl;
+                // TODO: Does this need awaiting?
+                insertTo.addEmbeddedItem(Helpers_1.getBaseItemData(sr5item));
+            }
+            // let item;
+            //
+            // // Case 1 - Data explicitly provided
+            // if (data.data) {
+            //     // TODO test
+            //     if (this.item.isOwned && data.actorId === this.item.actor?._id && data.data._id === this.item._id) {
+            //         console.log('Shadowrun5e | Cant drop item on itself');
+            //         // @ts-ignore
+            //         ui.notifications.error('Are you trying to break the game??');
+            //     }
+            //     item = data;
+            // } else if (data.pack) {
+            //     console.log(data);
+            //     // Case 2 - From a Compendium Pack
+            //     // TODO test
+            //     item = await this._getItemFromCollection(data.pack, data.id);
+            // } else {
+            //     // Case 3 - From a World Entity
+            //     item = game.items.get(data.id);
+            // }
+            //
+            // this.item.createOwnedItem(item.data);
         }
-        catch (err) {
-            console.error('Error Dropping Entity');
-            console.error(event);
-            return;
-        }
-        console.warn(data);
-        console.warn(type);
-        // let item;
-        //
-        // // Case 1 - Data explicitly provided
-        // if (data.data) {
-        //     // TODO test
-        //     if (this.item.isOwned && data.actorId === this.item.actor?._id && data.data._id === this.item._id) {
-        //         console.log('Shadowrun5e | Cant drop item on itself');
-        //         // @ts-ignore
-        //         ui.notifications.error('Are you trying to break the game??');
-        //     }
-        //     item = data;
-        // } else if (data.pack) {
-        //     console.log(data);
-        //     // Case 2 - From a Compendium Pack
-        //     // TODO test
-        //     item = await this._getItemFromCollection(data.pack, data.id);
-        // } else {
-        //     // Case 3 - From a World Entity
-        //     item = game.items.get(data.id);
-        // }
-        //
-        // this.item.createOwnedItem(item.data);
     }
 }
 exports.default = SR5ItemWithEmbedsSheet;
-},{"../types/ItemType":35,"./SR5BaseItemSheet":32}],34:[function(require,module,exports){
+},{"../../common/Helpers":17,"../types/ItemType":37,"./SR5BaseItemSheet":34}],36:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const SR5BaseItemSheet_1 = require("./SR5BaseItemSheet");
@@ -1534,7 +1676,7 @@ class SR5MetatypeSheet extends SR5BaseItemSheet_1.default {
     }
 }
 exports.default = SR5MetatypeSheet;
-},{"./SR5BaseItemSheet":32}],35:[function(require,module,exports){
+},{"./SR5BaseItemSheet":34}],37:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.isItemType = exports.ItemType = void 0;
@@ -1560,7 +1702,7 @@ function isItemType(value) {
     return false;
 }
 exports.isItemType = isItemType;
-},{}],36:[function(require,module,exports){
+},{}],38:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DamageElement = exports.DamageType = void 0;

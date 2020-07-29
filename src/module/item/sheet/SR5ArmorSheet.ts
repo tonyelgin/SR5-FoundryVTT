@@ -8,10 +8,6 @@ export default class SR5ArmorSheet extends SR5ItemWithEmbedsSheet {
     // <editor-fold desc="Constructor & Initialization"></editor-fold>
     // <editor-fold desc="Getters & Setters">
 
-    protected get validDropTypes(): ItemType[] {
-        return [ItemType.Metatype];
-    }
-
     get template(): string {
         return `systems/shadowrun5e/dist/templates/item/armor.html`;
     }
@@ -21,9 +17,6 @@ export default class SR5ArmorSheet extends SR5ItemWithEmbedsSheet {
 
     getData(): ItemSheetData {
         const data = super.getData();
-
-        console.warn(`SR5ArmorSheet data for ${this.item.name}`);
-        console.warn(data);
 
         return data;
     }

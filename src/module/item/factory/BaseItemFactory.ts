@@ -8,6 +8,8 @@ export default abstract class BaseItemFactory extends AbstractItemFactory<ISR5Ba
             flags: {},
             name: data.name,
             type: data.type,
+            // '' still forces foundry to generate which is the desired behavior
+            _id: '',
         };
     }
 }

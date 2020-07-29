@@ -7,10 +7,6 @@ export default abstract class ItemWithEmbedsFactory extends BaseItemFactory {
         const superData = super.create(data);
         return {
             ...superData,
-            flags: {
-                ...superData.flags,
-                embeddedItems: [],
-            },
         };
     }
 }

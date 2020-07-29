@@ -3,6 +3,7 @@ import { ItemType } from './types/ItemType';
 export interface ISR5BaseItemDataContainer extends BaseEntityData {
     data: ISR5BaseItemData;
     type: ItemType;
+    _id: string;
 }
 
 export interface ISR5BaseItemData {}

@@ -66,12 +66,21 @@ export default class SR5ItemProxy extends Item {
     }
 
     // </editor-fold>
-    // <editor-fold desc="Getters & Setters"></editor-fold>
+    // <editor-fold desc="Getters & Setters">
+
+    public get Impl(): SR5BaseItem {
+        return this._implementation;
+    }
+
+    // </editor-fold>
     // <editor-fold desc="Instance Methods">
 
     /** @override */
     update(data: any, options: any): Promise<Item> {
         return this._implementation.update(data, options);
     }
+
+    _onDragStart;
+
     // </editor-fold>
 }

@@ -31,9 +31,8 @@ export default class Setup {
         Items.registerSheet(SYSTEM_NAME, SR5ArmorSheet, { makeDefault: true });
         Items.registerSheet(SYSTEM_NAME, SR5MetatypeSheet, { makeDefault: false });
 
-        Hooks.on('preCreateItem', (...args) => {
-            console.warn(args);
-        });
+        // Bind all required Foundry Hooks
+        Setup.bindHooks();
 
         // Register Handlebars Helpers
         Setup.handlebarsHelpers();
@@ -86,5 +85,11 @@ export default class Setup {
     }
     protected static async handlebarsPartials(): Promise<void> {
         return loadTemplates(['systems/shadowrun5e/dist/templates/common/parts/attributes.html']);
+    }
+
+    protected static bindHooks(): void {
+        Hooks.on('preCreateItem', (...args) => {
+            console.warn(args);
+        });
     }
 }
