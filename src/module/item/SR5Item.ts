@@ -583,6 +583,7 @@ export class SR5Item extends Item {
         if (attribute && attribute.label) parts.addPart(attribute.label, attribute.value);
 
         // if we have a valid skill, don't look for a second attribute
+        // NOTE: Only the level matters, not bonus or specializations.
         if (skill && skill.label) {
             parts.addUniquePart(skill.label, skill.value);
             if (skill.value === 0) {

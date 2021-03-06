@@ -788,7 +788,8 @@
 
     "SR5.Warnings": {
         "NegativeLimitValue": "Limit values must be above zero",
-        "TokenSelectionNeeded": "One ore more tokens need to be selected"
+        "TokenSelectionNeeded": "One ore more tokens need to be selected",
+        "VehicleDriverSkillsCantBeEdited": "Driver skills can only be edited using it's personal actor sheet."
     },
 
     "SR5.Errors": {

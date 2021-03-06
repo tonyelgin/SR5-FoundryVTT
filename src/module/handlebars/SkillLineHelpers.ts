@@ -80,16 +80,23 @@ export const registerSkillLineHelpers = () => {
             title: game.i18n.localize('SR5.DeleteSkill'),
             cssClass: '',
         };
+
+        //@ts-ignore
+        // Allow both true and undefined to be valid
+        const allowEdit = skill.editable !== false;
+
         switch (skillType) {
             case 'active':
-                editIcon.cssClass = 'skill-edit';
+                //@ts-ignore
+                editIcon.cssClass = allowEdit ? 'skill-edit' : '';
+                editIcon.icon = allowEdit ? editIcon.icon : 'fas';
                 return [editIcon];
             case 'language':
-                editIcon.cssClass = 'language-skill-edit';
+                editIcon.cssClass = allowEdit ? 'language-skill-edit' : '';
                 removeIcon.cssClass = 'remove-language';
                 return [editIcon, removeIcon];
             case 'knowledge':
-                editIcon.cssClass = 'knowledge-skill-edit';
+                editIcon.cssClass = allowEdit ? 'knowledge-skill-edit' : '';
                 removeIcon.cssClass = 'remove-knowledge';
                 return [editIcon, removeIcon];
             default:

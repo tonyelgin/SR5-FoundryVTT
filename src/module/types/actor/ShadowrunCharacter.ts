@@ -7,10 +7,14 @@ declare namespace Shadowrun {
         filters: SR5SheetFilters;
         isCharacter: boolean;
         isSpirit: boolean;
+        isVehicle: boolean;
+        isSprite: boolean;
+        isCritter: boolean;
         awakened: boolean;
         emerged: boolean;
         woundTolerance: number;
         vehicle: SR5VehicleSheetData;
+        skillEditable: boolean;
     };
 
      export type SR5VehicleSheetData = {

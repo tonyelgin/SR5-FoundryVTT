@@ -250,6 +250,12 @@ export class SR5Actor extends Actor {
         return this.findActiveSkill(name);
     }
 
+    /** Get ALL the actors skills in default formatting.
+     */
+    getSkills() {
+        return this.data.data.skills;
+    }
+
     getSkill(skillId: string): SkillField | undefined {
         const { skills } = this.data.data;
         if (skills.active.hasOwnProperty(skillId)) {
@@ -794,6 +800,7 @@ export class SR5Actor extends Actor {
         const vehicle = this.asVehicleData();
         if (!vehicle) return ;
 
+        // Vehicle based values.
         if (vehicle.data.controlMode === 'autopilot') {
             const parts = new PartsList<number>();
 
@@ -816,7 +823,10 @@ export class SR5Actor extends Actor {
                     title: game.i18n.localize('SR5.Labels.ActorSheet.RollDronePerception'),
                 });
             }
+
+        // Meat-driver based values.
         } else {
+            // Fallback to vehicle actor values for no driver.
             const driver = this.getVehicleDriver();
             const actor = driver ? driver : this;
             await actor.rollActiveSkill('perception', options);
@@ -856,6 +866,7 @@ export class SR5Actor extends Actor {
         } else {
             const skillName = this.getVehicleTypeSkillName();
             if (!skillName) return;
+            // Fallback to vehicle actor values for no driver.
             const driver = this.getVehicleDriver();
             const actor = driver ? driver : this;
 
@@ -894,6 +905,7 @@ export class SR5Actor extends Actor {
 
         // Meat-driver based values.
         } else {
+            // Fallback to vehicle actor values for no driver.
             const driver = this.getVehicleDriver();
             const actor = driver ? driver : this;
             await actor.rollActiveSkill('sneaking', options);
@@ -1566,4 +1578,6 @@ export class SR5Actor extends Actor {
         if (!vehicle) return;
         return this.findLimit(vehicle.data.environment);
     }
+
+
 }

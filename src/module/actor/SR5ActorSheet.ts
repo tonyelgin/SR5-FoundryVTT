@@ -89,10 +89,18 @@ export class SR5ActorSheet extends ActorSheet {
         this._prepareActorAttributes(data);
 
         this._prepareItems(data);
-        this._prepareSkillsWithFilters(data);
         this._prepareActorTypeFields(data);
         this._prepareCharacterFields(data);
-        this._prepareVehicleFields(data);
+
+        this._prepareSkillEditable(data);
+
+        if (this.actor.isVehicle()) {
+            this._prepareVehicleFields(data);
+            this._prepareVehicleSkills(data);
+        }
+
+        // Filter last to avoid any changes on skill data after filtering.
+        this._prepareSkillsWithFilters(data);
 
         return data;
     }
@@ -147,9 +155,34 @@ export class SR5ActorSheet extends ActorSheet {
         };
     }
 
+    _prepareVehicleSkills(data: SR5ActorSheetData) {
+        if (!this.actor.isVehicle()) return;
+
+        const driver = this.actor.getVehicleDriver();
+        if (!driver) return;
+
+        // A defined driver will overwrite skill of the vehicle during testing and should do so during display.
+        // Use duplication as getData shouldn't work on original data and skill filtering will break those!
+        data.data.skills = duplicate(driver.getSkills());
+
+        // Disable editing for drivers skills on the vehicle they are driving.
+        // Only allow editing on the Character sheet of the driver.
+        //@ts-ignore
+        Object.values(data.data.skills.active).forEach(skill => skill.editable = false);
+    }
+
+    /** Allow the template to differentiate the type of actor it's displaying.
+     */
     _prepareActorTypeFields(data: SR5ActorSheetData) {
         data.isCharacter = this.actor.isCharacter();
         data.isSpirit = this.actor.isSpirit();
+        data.isVehicle = this.actor.isVehicle();
+        data.isSprite = this.actor.isSprite();
+        data.isCritter = this.actor.isCritter();
+    }
+
+    _prepareSkillEditable(data: SR5ActorSheetData) {
+        data.skillEditable = !(this.actor.isVehicle() && this.actor.hasDriver());
     }
 
     _prepareMatrixAttributes(data) {
@@ -177,6 +210,10 @@ export class SR5ActorSheet extends ActorSheet {
         }
     }
 
+    /** Remove skill from data that don't fit the filter criteria set on the ActorSheet
+     *
+     * @param data Make sure to supply duplicated actor data.
+     */
     _prepareSkillsWithFilters(data: SR5ActorSheetData) {
         this._filterActiveSkills(data);
         this._filterKnowledgeSkills(data);
@@ -878,8 +915,20 @@ export class SR5ActorSheet extends ActorSheet {
 
     async _onRollActiveSkill(event) {
         event.preventDefault();
+        // Prepare actual skill roll.
         const skill = Helpers.listItemId(event);
-        return this.actor.rollActiveSkill(skill, { event: event });
+        const options = {event};
+
+        // Some actors might have other actors doing roll for them.
+        if (this.actor.isVehicle()) {
+            const driver = this.actor.getVehicleDriver();
+            const actor = driver ? driver : this.actor;
+            return await actor.rollActiveSkill(skill, options);
+        }
+        else {
+            return this.actor.rollActiveSkill(skill, options);
+        }
+
     }
 
     async _onRollAttribute(event) {
@@ -978,14 +1027,19 @@ export class SR5ActorSheet extends ActorSheet {
     _onShowEditLanguageSkill(event) {
         event.preventDefault();
         const skill = Helpers.listItemId(event);
-        // new LanguageSkillEditForm(this.actor, skill, { event: event }).render(true);
         this._showSkillEditForm(LanguageSkillEditForm, this.actor, { event: event }, skill);
     }
 
     _onShowEditSkill(event) {
         event.preventDefault();
         const skill = Helpers.listItemId(event);
-        // new SkillEditForm(this.actor, skill, { event: event }).render(true);
+
+        // This is mostly a sanity check, however should still fire should be ever be relevant.
+        if (this.actor.isVehicle() && this.actor.hasDriver()) {
+            ui.notifications.warn("SR5.Warning.VehicleDriverSkillsCantBeEdited");
+            return;
+        }
+
         this._showSkillEditForm(SkillEditForm, this.actor, { event: event }, skill);
     }
 

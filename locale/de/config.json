@@ -760,7 +760,8 @@
 
     "SR5.Warnings": {
         "NegativeLimitValue": "Limit Werte müssen über Null liegen",
-        "TokenSelectionNeeded": "Ein oder mehrere Tokens müssen ausgewählt sein"
+        "TokenSelectionNeeded": "Ein oder mehrere Tokens müssen ausgewählt sein",
+        "VehicleDriverSkillsCantBeEdited": "Fertigkeiten des Fahrers müssen über dessen persönlichen Actor angepasst werden."
     },
 
     "SR5.Errors": {
