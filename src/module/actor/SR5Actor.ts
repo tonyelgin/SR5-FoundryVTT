@@ -222,9 +222,10 @@ export class SR5Actor extends Actor {
     }
 
     getVehicleTypeSkillName(): string | undefined {
-        if (!("vehicleType" in this.data.data)) return;
+        const vehicle = this.asVehicleData();
+        if (!vehicle) return;
 
-        switch (this.data.data.vehicleType) {
+        switch (vehicle.data.vehicleType) {
             case 'air':
                 return 'pilot_aircraft';
             case 'ground':
@@ -243,7 +244,7 @@ export class SR5Actor extends Actor {
     }
 
     getVehicleTypeSkill(): SkillField | undefined {
-        if (this.isVehicle()) return;
+        if (!this.isVehicle()) return;
 
         const name = this.getVehicleTypeSkillName();
         return this.findActiveSkill(name);
@@ -266,6 +267,14 @@ export class SR5Actor extends Actor {
                 }
             }
         }
+    }
+
+    /** A shorthand to directly get the numerical pool of the skill
+     * @param skillId The internal skill id (not the label)
+     */
+    getSkillPool(skillId: string): number {
+        const skill = this.getSkill(skillId);
+        return skill ? Helpers.calcTotal(skill) : 0;
     }
 
     getSkillLabel(skillId: string): string {
@@ -540,7 +549,7 @@ export class SR5Actor extends Actor {
         const parts = new PartsList<number>();
         parts.addUniquePart(attr.label, attr.value);
         this._addMatrixParts(parts, attr);
-        this._addGlobalParts(parts);
+        this._addGlobalModifierParts(parts);
 
         return ShadowrunRoller.advancedRoll({
             actor: this,
@@ -560,7 +569,7 @@ export class SR5Actor extends Actor {
         parts.addPart(attr1.label, attr1.value);
         parts.addPart(attr2.label, attr2.value);
         this._addMatrixParts(parts, [attr1, attr2]);
-        this._addGlobalParts(parts);
+        this._addGlobalModifierParts(parts);
 
         return ShadowrunRoller.advancedRoll({
             actor: this,
@@ -660,7 +669,7 @@ export class SR5Actor extends Actor {
                     if (att !== undefined) {
                         if (att.value && att.label) parts.addPart(att.label, att.value);
                         this._addMatrixParts(parts, true);
-                        this._addGlobalParts(parts);
+                        this._addGlobalModifierParts(parts);
                         return ShadowrunRoller.advancedRoll({
                             event: options?.event,
                             actor: this,
@@ -693,7 +702,7 @@ export class SR5Actor extends Actor {
         // add device rating twice as this is the most common roll
         parts.addPart(title, rating);
         parts.addPart(title, rating);
-        this._addGlobalParts(parts);
+        this._addGlobalModifierParts(parts);
         return ShadowrunRoller.advancedRoll({
             event: options?.event,
             title,
@@ -725,7 +734,7 @@ export class SR5Actor extends Actor {
             if (modifiers.memory) parts.addUniquePart('SR5.Bonus', modifiers.memory);
         }
 
-        this._addGlobalParts(parts);
+        this._addGlobalModifierParts(parts);
         return ShadowrunRoller.advancedRoll({
             event: options?.event,
             actor: this,
@@ -734,7 +743,7 @@ export class SR5Actor extends Actor {
         });
     }
 
-    async rollSkill(skill: SkillField, options?: SkillRollOptions) {
+    async rollSkill(skill: SkillField, options?: SkillRollOptions): Promise<ShadowrunRoll|undefined> {
         let title = game.i18n.localize(skill.label);
 
         const attributeName = options?.attribute ? options.attribute : skill.attribute;
@@ -745,7 +754,7 @@ export class SR5Actor extends Actor {
         const parts = new PartsList<number>();
         parts.addUniquePart(skill.label, skill.value);
         this._addMatrixParts(parts, [att, skill]);
-        this._addGlobalParts(parts);
+        this._addGlobalModifierParts(parts);
 
         // Directly test, without further skill dialog.
         if (options?.event && Helpers.hasModifiers(options?.event)) {
@@ -782,14 +791,13 @@ export class SR5Actor extends Actor {
     }
 
     async rollDronePerception(options?: ActorRollOptions) {
-        if (!this.isVehicle())
-            return;
+        const vehicle = this.asVehicleData();
+        if (!vehicle) return ;
 
-        const actorData = duplicate(this.data.data) as VehicleActorData;
-        if (actorData.controlMode === 'autopilot') {
+        if (vehicle.data.controlMode === 'autopilot') {
             const parts = new PartsList<number>();
 
-            const pilot = Helpers.calcTotal(actorData.vehicle_stats.pilot);
+            const pilot = Helpers.calcTotal(vehicle.data.vehicle_stats.pilot);
             // TODO possibly look for autosoft item level?
             const perception = this.findActiveSkill('perception');
             const limit = this.findLimit('sensor');
@@ -798,7 +806,7 @@ export class SR5Actor extends Actor {
                 parts.addPart('SR5.Vehicle.Clearsight', Helpers.calcTotal(perception));
                 parts.addPart('SR5.Vehicle.Stats.Pilot', pilot);
 
-                this._addGlobalParts(parts);
+                this._addGlobalModifierParts(parts);
 
                 return ShadowrunRoller.advancedRoll({
                     event: options?.event,
@@ -809,29 +817,31 @@ export class SR5Actor extends Actor {
                 });
             }
         } else {
-            await this.rollActiveSkill('perception', options);
+            const driver = this.getVehicleDriver();
+            const actor = driver ? driver : this;
+            await actor.rollActiveSkill('perception', options);
         }
     }
 
     async rollPilotVehicle(options?: ActorRollOptions) {
-        if (!this.isVehicle()) {
-            return undefined;
-        }
-        const actorData = duplicate(this.data.data) as VehicleActorData;
-        if (actorData.controlMode === 'autopilot') {
+        const vehicle = this.asVehicleData();
+        if (!vehicle) return;
+
+        // Vehicle based values.
+        if (vehicle.data.controlMode === 'autopilot') {
             const parts = new PartsList<number>();
 
-            const pilot = Helpers.calcTotal(actorData.vehicle_stats.pilot);
-            let skill: SkillField | undefined = this.getVehicleTypeSkill();
-            const environment = actorData.environment;
-            const limit = this.findLimit(environment);
+            // TODO: why total here?
+            const pilot = Helpers.calcTotal(vehicle.data.vehicle_stats.pilot);
+            const skill = this.getVehicleTypeSkill();
+            const limit = this.getVehicleEnvironmentLimit();
 
             if (skill && limit) {
-                parts.addPart('SR5.Vehicle.Stats.Pilot', pilot);
                 // TODO possibly look for autosoft item level?
+                parts.addPart('SR5.Vehicle.Stats.Pilot', pilot);
                 parts.addPart('SR5.Vehicle.Maneuvering', Helpers.calcTotal(skill));
 
-                this._addGlobalParts(parts);
+                this._addGlobalModifierParts(parts);
 
                 return await ShadowrunRoller.advancedRoll({
                     event: options?.event,
@@ -841,22 +851,28 @@ export class SR5Actor extends Actor {
                     title: game.i18n.localize('SR5.Labels.ActorSheet.RollPilotVehicleTest'),
                 });
             }
+
+        // Meat-driver based values.
         } else {
             const skillName = this.getVehicleTypeSkillName();
             if (!skillName) return;
-            return await this.rollActiveSkill(skillName, options);
+            const driver = this.getVehicleDriver();
+            const actor = driver ? driver : this;
+
+            return await actor.rollActiveSkill(skillName, options);
         }
     }
 
     async rollDroneInfiltration(options?: ActorRollOptions) {
-        if (!this.isVehicle()) {
-            return undefined;
-        }
-        const actorData = duplicate(this.data.data) as VehicleActorData;
-        if (actorData.controlMode === 'autopilot') {
+        const vehicle = this.asVehicleData();
+        if (!vehicle) return;
+
+        // Vehicle based values.
+        if (vehicle.data.controlMode === 'autopilot') {
             const parts = new PartsList<number>();
 
-            const pilot = Helpers.calcTotal(actorData.vehicle_stats.pilot);
+            // TODO: Refactor this into a 'pool' method, similar to getSkillPoll
+            const pilot = Helpers.calcTotal(vehicle.data.vehicle_stats.pilot);
             // TODO possibly look for autosoft item level?
             const sneaking = this.findActiveSkill('sneaking');
             const limit = this.findLimit('sensor');
@@ -865,7 +881,7 @@ export class SR5Actor extends Actor {
                 parts.addPart('SR5.Vehicle.Stealth', Helpers.calcTotal(sneaking));
                 parts.addPart('SR5.Vehicle.Stats.Pilot', pilot);
 
-                this._addGlobalParts(parts);
+                this._addGlobalModifierParts(parts);
 
                 return ShadowrunRoller.advancedRoll({
                     event: options?.event,
@@ -875,8 +891,12 @@ export class SR5Actor extends Actor {
                     title: game.i18n.localize('SR5.Labels.ActorSheet.RollDroneInfiltration'),
                 });
             }
+
+        // Meat-driver based values.
         } else {
-            await this.rollActiveSkill('sneaking', options);
+            const driver = this.getVehicleDriver();
+            const actor = driver ? driver : this;
+            await actor.rollActiveSkill('sneaking', options);
         }
     }
 
@@ -895,9 +915,14 @@ export class SR5Actor extends Actor {
         return this.rollSkill(skill, options);
     }
 
-    rollActiveSkill(skillId: string, options?: SkillRollOptions) {
-        const skill = duplicate(this.data.data.skills.active[skillId]);
-        return this.rollSkill(skill, options);
+    async rollActiveSkill(skillId: string, options?: SkillRollOptions) {
+        const skill = this.getSkill(skillId);
+        if (!skill) {
+            ui.notifications.error('SR5.Errors.MissingSkill');
+            return;
+        }
+
+        return await this.rollSkill(skill, options);
     }
 
     rollAttribute(attId, options?: ActorRollOptions) {
@@ -939,7 +964,7 @@ export class SR5Actor extends Actor {
                         parts.addUniquePart('SR5.Defaulting', -1);
                     }
                     this._addMatrixParts(parts, [att, att2]);
-                    this._addGlobalParts(parts);
+                    this._addGlobalModifierParts(parts);
                     return ShadowrunRoller.advancedRoll({
                         event: options?.event,
                         title: `${title} Test`,
@@ -960,7 +985,8 @@ export class SR5Actor extends Actor {
             if (matrix.running_silent) parts.addUniquePart('SR5.RunningSilent', -2);
         }
     }
-    _addGlobalParts(parts: PartsList<number>) {
+
+    _addGlobalModifierParts(parts: PartsList<number>) {
         if (this.data.data.modifiers.global) {
             parts.addUniquePart('SR5.Global', this.data.data.modifiers.global);
         }
@@ -1520,6 +1546,8 @@ export class SR5Actor extends Actor {
         return data.data.driver.length > 0;
     }
 
+    /** Get the actor defined as current driver of a Vehicle.
+     */
     getVehicleDriver(): SR5Actor|undefined {
         if (!this.hasDriver()) return;
         const data = this.asVehicleData();
@@ -1529,5 +1557,13 @@ export class SR5Actor extends Actor {
         // If no driver id is set, we won't get an actor and should explicitly return undefined.
         if (!driver) return;
         return driver;
+    }
+
+    /** Get the appropriate limit of a vehicle based on it's current environment setup.
+     */
+    getVehicleEnvironmentLimit(): LimitField | undefined {
+        const vehicle = this.asVehicleData();
+        if (!vehicle) return;
+        return this.findLimit(vehicle.data.environment);
     }
 }

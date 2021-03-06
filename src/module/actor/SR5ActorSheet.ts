@@ -466,11 +466,7 @@ export class SR5ActorSheet extends ActorSheet {
         $(html).find('.horizontal-cell-input .cell').on('click', this._onSetCellInput.bind(this));
         $(html).find('.horizontal-cell-input .cell').on('contextmenu', this._onClearCellInput.bind(this));
 
-        /**
-         * New API to use for rolling from the actor sheet
-         * the clickable label needs the css class Roll
-         * a parent of the label needs to have the css class RollId, and then have data-roll-id set
-         */
+        // General purpose roll for predefined sheet rolls. Uses data-roll-id HTML-data to determine what's rolled.
         $(html).find('.Roll').on('click', this._onRollFromSheet.bind(this));
 
         // updates matrix condition monitor on the device the actor has equippe

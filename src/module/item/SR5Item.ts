@@ -605,7 +605,7 @@ export class SR5Item extends Item {
         if (attribute2 !== undefined) atts.push(attribute2);
         if (skill !== undefined) atts.push(skill);
         // add global parts from actor
-        this.actor._addGlobalParts(parts);
+        this.actor._addGlobalModifierParts(parts);
         this.actor._addMatrixParts(parts, atts);
         this._addWeaponParts(parts);
 
