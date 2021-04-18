@@ -48,9 +48,9 @@
     "gridDistance": 1,
     "gridUnits": "m",
     "socket": true,
-    "manifest": "https://raw.githubusercontent.com/tonyelgin/SR5-FoundryVTT/master/system.json",
-    "url": "https://github.com/tonyelgin/SR5-FoundryVTT",
-    "download": "https://github.com/tonyelgin/SR5-FoundryVTT/archive/v0.7.15.zip",
+    "manifest": "https://raw.githubusercontent.com/tonyelgin/SR6-Dev/Sr6/system.json",
+    "url": "https://github.com/tonyelgin/SR6-devT",
+    "download": "https://github.com/tonyelgin/SR6-Dev/releases/download/Sr6/SR6.zip",
     "allowBugReporter": true,
-    "bugs": "https://github.com/tonyelgin/SR5-FoundryVTT/issues"
+    "bugs": "https://github.com/tonyelgin/SR6-Dev/issues"
 }
