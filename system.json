@@ -2,7 +2,7 @@
     "name": "shadowrun6 - dev",
     "title": "Shadowrun 6th Edition - dev",
     "description": "Shadowrun 6th Edition game",
-    "version": "0.0.1",
+    "version": "1.0.1",
     "templateVersion": "1.8",
     "author": "Tony Aiello from code provided by:Shawn Milligan [n3rf_herder#9026], Andrew Cuccinello [DJ#1982], Jan Schoska [taM#9507]",
     "esmodules": ["dist/bundle.js"],
@@ -49,7 +49,7 @@
     "gridUnits": "m",
     "socket": true,
     "manifest": "https://raw.githubusercontent.com/tonyelgin/SR6-Dev/Sr6/system.json",
-    "url": "https://github.com/tonyelgin/SR6-dev",
+    "url": "https://github.com/tonyelgin/SR6-Dev",
     "download": "https://github.com/tonyelgin/SR6-Dev/releases/download/Sr6/SR6.zip",
     "allowBugReporter": true,
     "bugs": "https://github.com/tonyelgin/SR6-Dev/issues"
