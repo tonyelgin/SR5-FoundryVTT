@@ -48,7 +48,7 @@
     "gridDistance": 1,
     "gridUnits": "m",
     "socket": true,
-    "manifest": "https://raw.githubusercontent.com/tonyelgin/SR6-Dev/Sr6/system.json",
+    "manifest": "https://raw.githubusercontent.com/tonyelgin/SR6-Dev/master/system.json",
     "url": "https://github.com/tonyelgin/SR6-Dev",
     "download": "https://github.com/tonyelgin/SR6-Dev/releases/download/Sr6/SR6.zip",
     "allowBugReporter": true,
