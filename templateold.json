@@ -139,7 +139,7 @@
             "skills": {
                 "skills": {
                     "active": {
-                        "archery": {
+                        "Astral": {
                             "value": 0,
                             "attribute": "agility",
                             "canDefault": true,
@@ -147,7 +147,7 @@
                             "mod": [],
                             "specs": []
                         },
-                        "automatics": {
+                        "Athletics": {
                             "value": 0,
                             "attribute": "agility",
                             "canDefault": true,
